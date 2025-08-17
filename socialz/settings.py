@@ -1,10 +1,9 @@
 """
-Django settings for socialz project (Production-ready).
+Django settings for socialz project (Production-ready, hard-coded).
 """
 
 from pathlib import Path
 import os
-from decouple import config, Csv
 
 # -------------------------
 # Paths
@@ -14,9 +13,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # -------------------------
 # Security
 # -------------------------
-SECRET_KEY = config('SECRET_KEY')  # From .env
-DEBUG = config('DEBUG', default=False, cast=bool)
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())  # e.g., "example.com,www.example.com"
+SECRET_KEY = 'django-insecure-CHANGE_THIS_TO_A_SECRET_KEY'
+DEBUG = False
+ALLOWED_HOSTS = ["128.199.24.211", "localhost", "127.0.0.1"]
+
+SECURE_SSL_REDIRECT = False  # True only if you set up HTTPS
 
 # -------------------------
 # Installed apps
@@ -48,7 +49,6 @@ MIDDLEWARE = [
 # URLs and WSGI
 # -------------------------
 ROOT_URLCONF = 'socialz.urls'
-
 WSGI_APPLICATION = 'socialz.wsgi.application'
 
 # -------------------------
@@ -57,7 +57,7 @@ WSGI_APPLICATION = 'socialz.wsgi.application'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],  # optional, for project-level templates
+        'DIRS': [BASE_DIR / 'templates'],  # optional
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -76,7 +76,7 @@ TEMPLATES = [
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': config('DATABASE_NAME', default=BASE_DIR / 'db.sqlite3'),
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
@@ -128,7 +128,6 @@ LOGOUT_REDIRECT_URL = '/admin-login/'
 # -------------------------
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = False  # True only if HTTPS
+CSRF_COOKIE_SECURE = False     # True only if HTTPS
 X_FRAME_OPTIONS = 'DENY'
-SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=True, cast=bool)  # Only if HTTPS
