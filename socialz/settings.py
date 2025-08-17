@@ -15,7 +15,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # -------------------------
 SECRET_KEY = 'django-insecure-CHANGE_THIS_TO_A_SECRET_KEY'
 DEBUG = False
-ALLOWED_HOSTS = ["128.199.24.211", "localhost", "127.0.0.1"]
+ALLOWED_HOSTS = ["128.199.24.211", "socialzwater.in", "www.socialzwater.in"]
 
 SECURE_SSL_REDIRECT = False  # True only if you set up HTTPS
 
