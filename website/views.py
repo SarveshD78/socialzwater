@@ -280,7 +280,7 @@ def dashboard(request):
                 messages.success(request, 'Inquiry deleted successfully.')
             except:
                 messages.error(request, 'Error deleting inquiry.')
-        return redirect(f'?type={selected_type}')
+        return redirect('website:dashboard')
     
     context = {
         'inquiries': inquiries,
