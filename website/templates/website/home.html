@@ -1,0 +1,358 @@
+{% extends 'website/base.html' %}
+
+{% block title %}Home - Socialz Water{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center" style="min-height: 80vh;">
+            <!-- Left Side Content -->
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4" style="font-size: clamp(2.5rem, 5vw, 3.5rem); line-height: 1.2;">
+                    Scan your bottles
+                </h1>
+                <p class="lead mb-4" style="font-size: 1.25rem; color: rgba(255,255,255,0.9); line-height: 1.6;">
+                    Scan QR codes on water bottles, watch engaging advertisements, 
+                    and earn instant rewards up to ₹10 with Socialz Water.
+                </p>
+                <div class="d-flex gap-3 flex-wrap">
+                    <a href="#connect" class="btn btn-primary btn-lg">
+                        <i class="fas fa-play me-2"></i>Get Started
+                    </a>
+                    <a href="#connect" class="btn btn-outline-light btn-lg">
+                        Learn More
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Right Side Content -->
+            <div class="col-lg-6 text-center">
+                <div class="bg-white rounded-4 p-5 shadow-lg" style="background: rgba(255,255,255,0.98); min-height: 400px; display: flex; flex-direction: column; justify-content: center;">
+                    <h3 class="fw-bold mb-4" style="color: var(--dark-gray); font-size: 1.75rem;">It's easier than you think</h3>
+                    
+                    <!-- Process Steps -->
+                    <div class="row g-4 mb-4">
+                        <div class="col-4">
+                            <div class="process-step">
+                                <div class="feature-icon icon-green mb-3" style="width: 75px; height: 75px; margin: 0 auto;">
+                                    <i class="fas fa-qrcode" style="font-size: 2rem;"></i>
+                                </div>
+                                <h6 class="fw-bold mb-2" style="color: var(--dark-gray);">Scan</h6>
+                                <small style="color: var(--gray);">QR Code on Bottle</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="process-step">
+                                <div class="feature-icon icon-blue mb-3" style="width: 75px; height: 75px; margin: 0 auto;">
+                                    <i class="fas fa-video" style="font-size: 2rem;"></i>
+                                </div>
+                                <h6 class="fw-bold mb-2" style="color: var(--dark-gray);">Watch</h6>
+                                <small style="color: var(--gray);">30sec Advertisement</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="process-step">
+                                <div class="feature-icon icon-orange mb-3" style="width: 75px; height: 75px; margin: 0 auto;">
+                                    <i class="fas fa-coins" style="font-size: 2rem;"></i>
+                                </div>
+                                <h6 class="fw-bold mb-2" style="color: var(--dark-gray);">Earn</h6>
+                                <small style="color: var(--gray);">₹10 Instant Reward</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center">
+                        <p class="text-muted mb-0" style="font-size: 0.9rem;">Join thousands earning daily rewards!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Three Ways to Connect Section -->
+<section id="connect" class="py-5 bg-white">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold section-title mb-3">Three Ways to Partner with Socialz Water</h2>
+            <p class="section-subtitle" style="font-size: 1.1rem; max-width: 600px; margin: 0 auto;">
+                Innovative partnership opportunities designed for brands, businesses, and entrepreneurs to grow together.
+            </p>
+        </div>
+        
+        <div class="row g-4 d-flex align-items-stretch justify-content-center">
+            <!-- Partners & Smart Brands -->
+            <div class="col-lg-4 col-md-6 d-flex">
+                <div class="feature-card p-4 text-center w-100 d-flex flex-column">
+                    <div class="feature-icon icon-blue mb-4" style="width: 80px; height: 80px; margin: 0 auto;">
+                        <i class="fas fa-bullhorn" style="font-size: 2rem;"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">Partners & Smart Brands</h4>
+                    <p class="section-subtitle mb-4 flex-grow-1">
+                        Advertise with us through innovative water bottle QR technology. 
+                        Reach your target audience with engaging video campaigns and detailed analytics.
+                    </p>
+                    
+                    <div class="bg-light rounded-3 p-3 mb-4">
+                        <div class="row g-2 text-start">
+                            <div class="col-6">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-video text-primary me-2"></i>
+                                    <small class="fw-medium">Video Ads</small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-chart-bar text-success me-2"></i>
+                                    <small class="fw-medium">Live Analytics</small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-users-cog text-info me-2"></i>
+                                    <small class="fw-medium">Target Audience</small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-share-alt text-primary me-2"></i>
+                                    <small class="fw-medium">Brand Reach</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary w-100 mt-auto">
+                        <i class="fas fa-rocket me-2"></i>Start Advertising
+                    </button>
+                </div>
+            </div>
+            
+            <!-- For Business -->
+            <div class="col-lg-4 col-md-6 d-flex">
+                <div class="feature-card p-4 text-center w-100 d-flex flex-column">
+                    <div class="feature-icon icon-green mb-4" style="width: 80px; height: 80px; margin: 0 auto;">
+                        <i class="fas fa-building" style="font-size: 2rem;"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">For Business</h4>
+                    <p class="section-subtitle mb-4 flex-grow-1">
+                        Hotels, events, corporate offices - we supply premium water bottles with QR technology. 
+                        Enhance your guest experience while generating additional revenue.
+                    </p>
+                    
+                    <div class="bg-light rounded-3 p-3 mb-4">
+                        <div class="row g-2 text-start">
+                            <div class="col-6">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-hotel text-primary me-2"></i>
+                                    <small class="fw-medium">Hotels</small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-calendar-alt text-success me-2"></i>
+                                    <small class="fw-medium">Events</small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-building text-info me-2"></i>
+                                    <small class="fw-medium">Corporate</small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-handshake text-primary me-2"></i>
+                                    <small class="fw-medium">Bulk Supply</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary w-100 mt-auto">
+                        <i class="fas fa-phone me-2"></i>Get Quote
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Earn with Us -->
+            <div class="col-lg-4 col-md-6 d-flex">
+                <div class="feature-card p-4 text-center w-100 d-flex flex-column">
+                    <div class="feature-icon icon-orange mb-4" style="width: 80px; height: 80px; margin: 0 auto;">
+                        <i class="fas fa-coins" style="font-size: 2rem;"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">Earn with Us</h4>
+                    <p class="section-subtitle mb-4 flex-grow-1">
+                        Join as dealer, supplier, or manufacturer. Become part of our distribution network 
+                        and earn attractive commissions while building a sustainable business.
+                    </p>
+                    
+                    <div class="bg-light rounded-3 p-3 mb-4">
+                        <div class="row g-2 text-start">
+                            <div class="col-6">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-store text-warning me-2"></i>
+                                    <small class="fw-medium">Dealers</small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-truck text-primary me-2"></i>
+                                    <small class="fw-medium">Suppliers</small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-industry text-secondary me-2"></i>
+                                    <small class="fw-medium">Manufacturers</small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-chart-line text-success me-2"></i>
+                                    <small class="fw-medium">High Profits</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <a href="{% url 'website:contact' %}" class="btn btn-primary w-100 mt-auto">
+                        <i class="fas fa-handshake me-2"></i>Join Network
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Environmental Impact Section -->
+<section class="py-5" style="background: var(--beige);">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold section-title mb-3">The Impact You're Making</h2>
+            <p class="section-subtitle" style="font-size: 1.1rem; max-width: 600px; margin: 0 auto;">
+                Every bottle you scan helps create a sustainable future and reduces environmental waste.
+            </p>
+        </div>
+        
+        <div class="row g-4 d-flex align-items-stretch">
+            <div class="col-lg-2 col-md-4 col-6 d-flex">
+                <div class="stats-card text-center p-4 w-100">
+                    <div class="feature-icon icon-green mb-3" style="width: 60px; height: 60px; margin: 0 auto;">
+                        <i class="fas fa-recycle" style="font-size: 1.5rem;"></i>
+                    </div>
+                    <div class="stats-number">50K+</div>
+                    <div class="stats-label">Bottles Recycled</div>
+                </div>
+            </div>
+            
+            <div class="col-lg-2 col-md-4 col-6 d-flex">
+                <div class="stats-card text-center p-4 w-100">
+                    <div class="feature-icon icon-blue mb-3" style="width: 60px; height: 60px; margin: 0 auto;">
+                        <i class="fas fa-leaf" style="font-size: 1.5rem;"></i>
+                    </div>
+                    <div class="stats-number">2.5T</div>
+                    <div class="stats-label">CO2 Reduced</div>
+                </div>
+            </div>
+            
+            <div class="col-lg-2 col-md-4 col-6 d-flex">
+                <div class="stats-card text-center p-4 w-100">
+                    <div class="feature-icon icon-orange mb-3" style="width: 60px; height: 60px; margin: 0 auto;">
+                        <i class="fas fa-tree" style="font-size: 1.5rem;"></i>
+                    </div>
+                    <div class="stats-number">1,200</div>
+                    <div class="stats-label">Trees Saved</div>
+                </div>
+            </div>
+            
+            <div class="col-lg-2 col-md-4 col-6 d-flex">
+                <div class="stats-card text-center p-4 w-100">
+                    <div class="feature-icon icon-coral mb-3" style="width: 60px; height: 60px; margin: 0 auto;">
+                        <i class="fas fa-water" style="font-size: 1.5rem;"></i>
+                    </div>
+                    <div class="stats-number">85%</div>
+                    <div class="stats-label">Water Conservation</div>
+                </div>
+            </div>
+            
+            <div class="col-lg-2 col-md-4 col-6 d-flex">
+                <div class="stats-card text-center p-4 w-100">
+                    <div class="feature-icon icon-green mb-3" style="width: 60px; height: 60px; margin: 0 auto;">
+                        <i class="fas fa-users" style="font-size: 1.5rem;"></i>
+                    </div>
+                    <div class="stats-number">95%</div>
+                    <div class="stats-label">Community Participation</div>
+                </div>
+            </div>
+            
+            <div class="col-lg-2 col-md-4 col-6 d-flex">
+                <div class="stats-card text-center p-4 w-100">
+                    <div class="feature-icon icon-blue mb-3" style="width: 60px; height: 60px; margin: 0 auto;">
+                        <i class="fas fa-heart" style="font-size: 1.5rem;"></i>
+                    </div>
+                    <div class="stats-number">92%</div>
+                    <div class="stats-label">User Satisfaction</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- App Promotion Section -->
+<section class="py-5 bg-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h2 class="display-6 fw-bold section-title mb-4">
+                    Rewarding advertising at your fingertips with the Socialz Water platform
+                </h2>
+                <p class="section-subtitle mb-4">
+                    Join thousands of users who are earning rewards while staying hydrated. 
+                    Our platform makes it easy to connect brands with consumers.
+                </p>
+                <a href="{% url 'website:contact' %}" class="btn btn-primary btn-lg">
+                    Find out more <i class="fas fa-arrow-right ms-2"></i>
+                </a>
+            </div>
+            <div class="col-lg-6 text-center">
+                <div class="position-relative">
+                    <div style="background: var(--orange); width: 280px; height: 360px; border-radius: 25px; margin: 0 auto; display: flex; align-items: center; justify-content: center; transform: rotate(-3deg);">
+                        <div style="background: white; width: 240px; height: 320px; border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem;">
+                            <i class="fas fa-mobile-screen-button" style="font-size: 2.5rem; color: var(--primary-blue);"></i>
+                            <div class="text-center">
+                                <h6 class="fw-bold">Socialz Water</h6>
+                                <small class="text-muted">Scan • Watch • Earn</small>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <div class="bg-primary rounded" style="width: 25px; height: 3px;"></div>
+                                <div class="bg-secondary rounded" style="width: 15px; height: 3px;"></div>
+                                <div class="bg-warning rounded" style="width: 20px; height: 3px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Final CTA Section -->
+<section class="py-5" style="background: var(--primary-blue); color: white;">
+    <div class="container text-center">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="display-6 fw-bold mb-3">Ready to Start Earning?</h2>
+                <p class="lead mb-4">
+                    Join the Socialz Water community today and turn your hydration into rewards.
+                </p>
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    <a href="{% url 'website:contact' %}" class="btn btn-outline-light btn-lg px-4">
+                        <i class="fas fa-envelope me-2"></i>Get Started
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

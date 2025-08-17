@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Socialz Water - Scan, Watch, Earn{% endblock %}</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-blue: #4A5FC1;
+            --dark-blue: #3D4DB7;
+            --light-blue: #E8F0FE;
+            --orange: #F5A623;
+            --coral: #FF6B6B;
+            --green: #4CAF50;
+            --yellow: #FFD93D;
+            --beige: #F8F5F0;
+            --gray: #6C757D;
+            --dark-gray: #2C3E50;
+            --white: #FFFFFF;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: var(--dark-gray);
+            background: var(--white);
+        }
+        
+        /* Header */
+        .main-header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--dark-blue) 100%);
+            padding: 1rem 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header-brand {
+            display: flex;
+            align-items: center;
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+        
+        .header-brand i {
+            font-size: 1.8rem;
+            margin-right: 0.5rem;
+        }
+        
+        .header-brand:hover {
+            color: var(--white);
+        }
+        
+        .nav-pills {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            justify-content: flex-end;
+        }
+        
+        .nav-pill {
+            background: rgba(255,255,255,0.1);
+            color: var(--white);
+            padding: 0.6rem 1.2rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.2);
+            /* Added consistent sizing properties */
+            min-width: 100px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            white-space: nowrap;
+        }
+        
+        .nav-pill:hover, .nav-pill.active {
+            background: var(--white);
+            color: var(--primary-blue);
+            transform: translateY(-1px);
+        }
+        
+        /* Dropdown button styling to match other nav pills */
+        .dropdown .nav-pill {
+            min-width: 140px; /* Slightly wider for "Partner with us" */
+        }
+        
+        .cta-btn {
+            background: var(--green);
+            color: var(--white);
+            padding: 0.6rem 1.2rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.2);
+            margin-left: 1rem;
+            font-size: 0.9rem;
+            /* Consistent sizing with nav pills */
+            min-width: 140px;
+            height: 40px;
+            white-space: nowrap;
+        }
+        
+        .cta-btn:hover {
+            background: #45A049;
+            color: var(--white);
+            transform: translateY(-1px);
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--dark-blue) 100%);
+            padding-top: 120px;
+            padding-bottom: 100px;
+            color: var(--white);
+            overflow: hidden;
+        }
+        
+        /* Process Steps */
+        .process-step {
+            transition: transform 0.3s ease;
+        }
+        
+        .process-step:hover {
+            transform: translateY(-5px);
+        }
+        
+        /* Cards */
+        .feature-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border: none;
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+        
+        .feature-icon {
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+        }
+        
+        .icon-green { background: linear-gradient(135deg, #4CAF50, #45A049); }
+        .icon-blue { background: linear-gradient(135deg, #2196F3, #1976D2); }
+        .icon-orange { background: linear-gradient(135deg, #FF9800, #F57C00); }
+        .icon-coral { background: linear-gradient(135deg, #FF6B6B, #FF5252); }
+        
+        /* Buttons */
+        .btn-primary {
+            background: var(--primary-blue);
+            border: none;
+            border-radius: 25px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: var(--dark-blue);
+            transform: translateY(-2px);
+        }
+        
+        .btn-outline-light {
+            border: 2px solid rgba(255,255,255,0.5);
+            color: var(--white);
+            background: transparent;
+            border-radius: 25px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-outline-light:hover {
+            background: var(--white);
+            color: var(--primary-blue);
+            border-color: var(--white);
+        }
+        
+        /* Stats */
+        .stats-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+        
+        .stats-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .stats-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stats-label {
+            color: var(--gray);
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+        
+        /* Footer */
+        .main-footer {
+            background: var(--primary-blue);
+            color: var(--white);
+            padding: 2rem 0 1rem;
+            position: relative;
+        }
+        
+        .main-footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .footer-link {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-link:hover {
+            color: var(--white);
+        }
+        
+        /* Footer Social Buttons */
+        .footer-social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            color: var(--white);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+        }
+        
+        .footer-social-btn:hover {
+            color: var(--white);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        /* Typography */
+        .section-title {
+            font-weight: 700;
+            color: var(--dark-gray);
+            margin-bottom: 1rem;
+        }
+        
+        .section-subtitle {
+            color: var(--gray);
+            line-height: 1.6;
+        }
+        
+        /* Dropdown Menu Styles */
+        .dropdown-menu {
+            background: var(--white);
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            padding: 0.5rem 0;
+            margin-top: 0.5rem;
+        }
+        
+        .dropdown-item {
+            color: var(--dark-gray);
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .dropdown-item:hover {
+            background: var(--light-blue);
+            color: var(--primary-blue);
+        }
+        
+        .dropdown-toggle::after {
+            margin-left: 0.5rem;
+        }
+        
+        @media (max-width: 991px) {
+            .nav-pills {
+                flex-wrap: wrap;
+                justify-content: center;
+                margin-top: 1rem;
+            }
+            
+            .cta-btn {
+                margin-left: 0;
+                margin-top: 0.5rem;
+            }
+            
+            .hero-section {
+                padding-top: 140px;
+                padding-bottom: 60px;
+            }
+            
+            .hero-section .row {
+                text-align: center;
+            }
+            
+            .hero-section .col-lg-6:first-child {
+                margin-bottom: 2rem;
+            }
+            
+            /* Maintain consistent sizing on mobile */
+            .nav-pill {
+                min-width: 90px;
+                height: 38px;
+                font-size: 0.85rem;
+                padding: 0.5rem 1rem;
+            }
+            
+            .dropdown .nav-pill {
+                min-width: 120px;
+            }
+            
+            .cta-btn {
+                min-width: 120px;
+                height: 38px;
+                font-size: 0.85rem;
+                padding: 0.5rem 1rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .container {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+            
+            .feature-card {
+                padding: 1.5rem;
+            }
+            
+            .stats-card {
+                padding: 1rem;
+            }
+            
+            .nav-pills {
+                gap: 0.25rem;
+            }
+            
+            .nav-pill {
+                min-width: 80px;
+                height: 36px;
+                font-size: 0.8rem;
+                padding: 0.4rem 0.8rem;
+            }
+            
+            .dropdown .nav-pill {
+                min-width: 110px;
+            }
+            
+            .cta-btn {
+                min-width: 110px;
+                height: 36px;
+                font-size: 0.8rem;
+                padding: 0.4rem 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="main-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-3 col-md-3 col-6">
+                    <a href="{% url 'website:home' %}" class="header-brand">
+                        <i class="fas fa-bottle-water"></i>
+                        <span>Socialz Water</span>
+                    </a>
+                </div>
+                
+                <div class="col-lg-9 col-md-9 col-6">
+                    <div class="nav-pills">
+                        <a href="{% url 'website:home' %}" class="nav-pill">Home</a>
+                        <a href="{% url 'website:about' %}" class="nav-pill">About</a>
+                        
+                        <!-- Dropdown Menu -->
+                        <div class="dropdown">
+                            <a href="#" class="nav-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                Partner with us
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{% url 'website:business_hotels' %}">
+                                    <i class="fas fa-hotel me-2"></i>For Business Hotels & Events
+                                </a></li>
+                                <li><a class="dropdown-item" href="{% url 'website:smart_brands' %}">
+                                    <i class="fas fa-bullhorn me-2"></i>For Smart Brands
+                                </a></li>
+                                <li><a class="dropdown-item" href="{% url 'website:earn_with_us' %}">
+                                    <i class="fas fa-coins me-2"></i>Earn with Us
+                                </a></li>
+                            </ul>
+                        </div>
+                        
+                        <a href="{% url 'website:contact' %}" class="nav-pill">Contact</a>
+                        <a href="{% url 'website:contact' %}" class="cta-btn">
+                            <i class="fas fa-phone"></i>
+                            Get in Touch
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Simplified Footer -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-bottle-water fs-4 me-2"></i>
+                        <h5 class="mb-0 fw-bold">Socialz Water</h5>
+                    </div>
+                    <small style="color: rgba(255,255,255,0.7);">
+                        Revolutionizing water bottle advertising with QR technology.
+                    </small>
+                </div>
+                
+                <div class="col-md-4 mb-3 mb-md-0 text-center">
+                    <div class="d-flex justify-content-center gap-3 flex-wrap">
+                        <a href="{% url 'website:home' %}" class="footer-link">Home</a>
+                        <a href="{% url 'website:about' %}" class="footer-link">About</a>
+                        <a href="#" class="footer-link">Solutions</a>
+                        <a href="{% url 'website:contact' %}" class="footer-link">Contact</a>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 text-md-end text-center">
+                    <div class="d-flex justify-content-md-end justify-content-center gap-2 mb-2">
+                        <a href="#" class="footer-social-btn" style="background: #1877F2;">
+                            <i class="fab fa-facebook"></i>
+                        </a>
+                        <a href="#" class="footer-social-btn" style="background: #1DA1F2;">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="footer-social-btn" style="background: #E4405F;">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="footer-social-btn" style="background: #0A66C2;">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                    </div>
+                    <small style="color: rgba(255,255,255,0.6);">
+                        &copy; 2025 Socialz Water. All rights reserved.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ 
+                        behavior: 'smooth',
+                        block: 'start' 
+                    });
+                }
+            });
+        });
+        
+        // Active navigation highlighting
+        const currentPath = window.location.pathname;
+        document.querySelectorAll('.nav-pill').forEach(link => {
+            if (link.getAttribute('href') === currentPath) {
+                link.classList.add('active');
+            }
+        });
+        
+        // Form validation
+        (function() {
+            'use strict';
+            window.addEventListener('load', function() {
+                const forms = document.getElementsByClassName('needs-validation');
+                Array.prototype.filter.call(forms, function(form) {
+                    form.addEventListener('submit', function(event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+        
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        // Observe elements for animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const animateElements = document.querySelectorAll('.feature-card, .stats-card');
+            animateElements.forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(el);
+            });
+        });
+    </script>
+</body>
+</html>

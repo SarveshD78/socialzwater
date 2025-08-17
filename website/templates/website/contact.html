@@ -1,0 +1,426 @@
+{% extends 'website/base.html' %}
+
+{% block title %}Contact Us - Socialz Water{% endblock %}
+
+{% block content %}
+<!-- Contact Us Banner -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center text-center" style="min-height: 80vh;">
+            <div class="col-12">
+                <h1 class="display-3 fw-bold mb-4" style="font-size: clamp(2.5rem, 5vw, 4rem); line-height: 1.2;">
+                    Get in Touch
+                </h1>
+                <p class="lead mb-5" style="font-size: 1.5rem; color: rgba(255,255,255,0.9); max-width: 800px; margin: 0 auto;">
+                    Ready to join the Socialz Water revolution? We'd love to hear from you. 
+                    Reach out for partnerships, support, or just to say hello.
+                </p>
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    <a href="#contact-form" class="btn btn-primary btn-lg">
+                        <i class="fas fa-envelope me-2"></i>Send Message
+                    </a>
+                    <a href="#contact-info" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-phone me-2"></i>Call Us
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Contact Information Cards -->
+<!-- Contact Form Section - Updated -->
+<section id="contact-form" class="py-5" style="background: var(--beige);">
+    <div class="container">
+        <div class="row">
+            <!-- Form -->
+            <div class="col-lg-8">
+                <div class="bg-white rounded-4 p-5 shadow-lg">
+                    <h3 class="fw-bold mb-4" style="color: var(--dark-gray);">Send Us a Message</h3>
+                    <p class="section-subtitle mb-4">
+                        Fill out the form below and we'll get back to you as soon as possible.
+                    </p>
+                    
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                <i class="fas fa-check-circle me-2"></i>{{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    
+                    <form method="post" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        <div class="row g-3">
+                            <!-- Name -->
+                            <div class="col-md-6">
+                                <label for="{{ form.name.id_for_label }}" class="form-label fw-medium">{{ form.name.label }}</label>
+                                {{ form.name }}
+                                {% if form.name.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.name.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Email -->
+                            <div class="col-md-6">
+                                <label for="{{ form.email.id_for_label }}" class="form-label fw-medium">{{ form.email.label }}</label>
+                                {{ form.email }}
+                                {% if form.email.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.email.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Phone -->
+                            <div class="col-md-6">
+                                <label for="{{ form.phone.id_for_label }}" class="form-label fw-medium">{{ form.phone.label }}</label>
+                                {{ form.phone }}
+                                {% if form.phone.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.phone.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- City -->
+                            <div class="col-md-6">
+                                <label for="{{ form.city.id_for_label }}" class="form-label fw-medium">{{ form.city.label }}</label>
+                                {{ form.city }}
+                                {% if form.city.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.city.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Interest -->
+                            <div class="col-12">
+                                <label for="{{ form.interest.id_for_label }}" class="form-label fw-medium">{{ form.interest.label }}</label>
+                                {{ form.interest }}
+                                {% if form.interest.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.interest.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Message -->
+                            <div class="col-12">
+                                <label for="{{ form.message.id_for_label }}" class="form-label fw-medium">{{ form.message.label }}</label>
+                                {{ form.message }}
+                                {% if form.message.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.message.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Captcha -->
+                            <div class="col-12">
+                                <div class="form-check">
+                                    {{ form.verification }}
+                                    <label class="form-check-label" for="{{ form.verification.id_for_label }}">
+                                        {{ form.verification.label }} *
+                                    </label>
+                                    {% if form.verification.errors %}
+                                        <div class="invalid-feedback d-block">{{ form.verification.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <!-- Submit Button -->
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-primary btn-lg px-5">
+                                    <i class="fas fa-paper-plane me-2"></i>Send Message
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Side Information -->
+            <div class="col-lg-4">
+                <div class="bg-white rounded-4 p-4 shadow-lg mb-4">
+                    <h5 class="fw-bold mb-3" style="color: var(--dark-gray);">Quick Response</h5>
+                    <p class="section-subtitle mb-3" style="font-size: 0.95rem;">
+                        We typically respond to all inquiries within 24 hours during business days.
+                    </p>
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-clock text-primary me-2"></i>
+                        <small>Business Hours: 9 AM - 6 PM IST</small>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-calendar text-primary me-2"></i>
+                        <small>Monday - Friday</small>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-4 p-4 shadow-lg mb-4">
+                    <h5 class="fw-bold mb-3" style="color: var(--dark-gray);">Follow Us</h5>
+                    <p class="section-subtitle mb-3" style="font-size: 0.95rem;">
+                        Stay updated with our latest news and updates.
+                    </p>
+                    <div class="d-flex gap-2">
+                        <a href="#" style="display: flex; align-items: center; justify-content: center; width: 35px; height: 35px; border-radius: 8px; background: #1877F2; color: white; text-decoration: none; transition: all 0.3s ease;">
+                            <i class="fab fa-facebook" style="font-size: 1rem;"></i>
+                        </a>
+                        <a href="#" style="display: flex; align-items: center; justify-content: center; width: 35px; height: 35px; border-radius: 8px; background: #1DA1F2; color: white; text-decoration: none; transition: all 0.3s ease;">
+                            <i class="fab fa-twitter" style="font-size: 1rem;"></i>
+                        </a>
+                        <a href="#" style="display: flex; align-items: center; justify-content: center; width: 35px; height: 35px; border-radius: 8px; background: #E4405F; color: white; text-decoration: none; transition: all 0.3s ease;">
+                            <i class="fab fa-instagram" style="font-size: 1rem;"></i>
+                        </a>
+                        <a href="#" style="display: flex; align-items: center; justify-content: center; width: 35px; height: 35px; border-radius: 8px; background: #0A66C2; color: white; text-decoration: none; transition: all 0.3s ease;">
+                            <i class="fab fa-linkedin" style="font-size: 1rem;"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-4 p-4 shadow-lg">
+                    <h5 class="fw-bold mb-3" style="color: var(--dark-gray);">Need Immediate Help?</h5>
+                    <p class="section-subtitle mb-3" style="font-size: 0.95rem;">
+                        For urgent matters, call us directly or send a WhatsApp message.
+                    </p>
+                    <a href="tel:+919876543210" class="btn btn-success btn-sm me-2 mb-2">
+                        <i class="fab fa-whatsapp me-1"></i>WhatsApp
+                    </a>
+                    <a href="tel:+919876543210" class="btn btn-primary btn-sm mb-2">
+                        <i class="fas fa-phone me-1"></i>Call Now
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Form Section - Updated -->
+<section id="contact-form" class="py-5" style="background: var(--beige);">
+    <div class="container">
+        <div class="row">
+            <!-- Form -->
+            <div class="col-lg-8">
+                <div class="bg-white rounded-4 p-5 shadow-lg">
+                    <h3 class="fw-bold mb-4" style="color: var(--dark-gray);">Send Us a Message</h3>
+                    <p class="section-subtitle mb-4">
+                        Fill out the form below and we'll get back to you as soon as possible.
+                    </p>
+                    
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    
+                    <form method="post" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        <div class="row g-3">
+                            <!-- Name -->
+                            <div class="col-md-6">
+                                <label for="{{ form.name.id_for_label }}" class="form-label fw-medium">{{ form.name.label }}</label>
+                                {{ form.name }}
+                                {% if form.name.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.name.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Email -->
+                            <div class="col-md-6">
+                                <label for="{{ form.email.id_for_label }}" class="form-label fw-medium">{{ form.email.label }}</label>
+                                {{ form.email }}
+                                {% if form.email.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.email.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Phone -->
+                            <div class="col-md-6">
+                                <label for="{{ form.phone.id_for_label }}" class="form-label fw-medium">{{ form.phone.label }}</label>
+                                {{ form.phone }}
+                                {% if form.phone.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.phone.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- City -->
+                            <div class="col-md-6">
+                                <label for="{{ form.city.id_for_label }}" class="form-label fw-medium">{{ form.city.label }}</label>
+                                {{ form.city }}
+                                {% if form.city.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.city.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Interest -->
+                            <div class="col-12">
+                                <label for="{{ form.interest.id_for_label }}" class="form-label fw-medium">{{ form.interest.label }}</label>
+                                {{ form.interest }}
+                                {% if form.interest.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.interest.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Message -->
+                            <div class="col-12">
+                                <label for="{{ form.message.id_for_label }}" class="form-label fw-medium">{{ form.message.label }}</label>
+                                {{ form.message }}
+                                {% if form.message.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.message.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Captcha -->
+                            <div class="col-12">
+                                <div class="form-check">
+                                    {{ form.verification }}
+                                    <label class="form-check-label" for="{{ form.verification.id_for_label }}">
+                                        {{ form.verification.label }} *
+                                    </label>
+                                    {% if form.verification.errors %}
+                                        <div class="invalid-feedback d-block">{{ form.verification.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <!-- Submit Button -->
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-primary btn-lg px-5">
+                                    <i class="fas fa-paper-plane me-2"></i>Send Message
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Side Information -->
+            <div class="col-lg-4">
+                <div class="bg-white rounded-4 p-4 shadow-lg mb-4">
+                    <h5 class="fw-bold mb-3" style="color: var(--dark-gray);">Quick Response</h5>
+                    <p class="section-subtitle mb-3" style="font-size: 0.95rem;">
+                        We typically respond to all inquiries within 24 hours during business days.
+                    </p>
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-clock text-primary me-2"></i>
+                        <small>Business Hours: 9 AM - 6 PM IST</small>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-calendar text-primary me-2"></i>
+                        <small>Monday - Friday</small>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-4 p-4 shadow-lg mb-4">
+                    <h5 class="fw-bold mb-3" style="color: var(--dark-gray);">Follow Us</h5>
+                    <p class="section-subtitle mb-3" style="font-size: 0.95rem;">
+                        Stay updated with our latest news and updates.
+                    </p>
+                    <div class="d-flex gap-2">
+                        <a href="#" style="display: flex; align-items: center; justify-content: center; width: 35px; height: 35px; border-radius: 8px; background: #1877F2; color: white; text-decoration: none; transition: all 0.3s ease;">
+                            <i class="fab fa-facebook" style="font-size: 1rem;"></i>
+                        </a>
+                        <a href="#" style="display: flex; align-items: center; justify-content: center; width: 35px; height: 35px; border-radius: 8px; background: #1DA1F2; color: white; text-decoration: none; transition: all 0.3s ease;">
+                            <i class="fab fa-twitter" style="font-size: 1rem;"></i>
+                        </a>
+                        <a href="#" style="display: flex; align-items: center; justify-content: center; width: 35px; height: 35px; border-radius: 8px; background: #E4405F; color: white; text-decoration: none; transition: all 0.3s ease;">
+                            <i class="fab fa-instagram" style="font-size: 1rem;"></i>
+                        </a>
+                        <a href="#" style="display: flex; align-items: center; justify-content: center; width: 35px; height: 35px; border-radius: 8px; background: #0A66C2; color: white; text-decoration: none; transition: all 0.3s ease;">
+                            <i class="fab fa-linkedin" style="font-size: 1rem;"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-4 p-4 shadow-lg">
+                    <h5 class="fw-bold mb-3" style="color: var(--dark-gray);">Need Immediate Help?</h5>
+                    <p class="section-subtitle mb-3" style="font-size: 0.95rem;">
+                        For urgent matters, call us directly or send a WhatsApp message.
+                    </p>
+                    <a href="tel:+919876543210" class="btn btn-success btn-sm me-2 mb-2">
+                        <i class="fab fa-whatsapp me-1"></i>WhatsApp
+                    </a>
+                    <a href="tel:+919876543210" class="btn btn-primary btn-sm mb-2">
+                        <i class="fas fa-phone me-1"></i>Call Now
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Partnership Opportunities -->
+<section class="py-5 bg-white">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold section-title mb-3">Partnership Opportunities</h2>
+            <p class="section-subtitle" style="font-size: 1.1rem; max-width: 600px; margin: 0 auto;">
+                Join our ecosystem and be part of the innovative advertising revolution.
+            </p>
+        </div>
+        
+        <div class="row g-4">
+            <!-- Partners & Smart Brands -->
+            <div class="col-lg-4 col-md-6 d-flex">
+                <div class="feature-card text-center p-4 w-100 d-flex flex-column">
+                    <div class="feature-icon icon-blue mb-3" style="width: 60px; height: 60px; margin: 0 auto;">
+                        <i class="fas fa-bullhorn" style="font-size: 1.5rem;"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">Partners & Smart Brands</h5>
+                    <p class="section-subtitle mb-3 flex-grow-1" style="font-size: 0.9rem;">
+                        Advertise with us through innovative water bottle QR technology and reach your target audience.
+                    </p>
+                    <a href="mailto:partners@socialzwater.com?subject=Brand Partnership" class="btn btn-outline-primary btn-sm mt-auto">
+                        Learn More
+                    </a>
+                </div>
+            </div>
+            
+            <!-- For Business -->
+            <div class="col-lg-4 col-md-6 d-flex">
+                <div class="feature-card text-center p-4 w-100 d-flex flex-column">
+                    <div class="feature-icon icon-green mb-3" style="width: 60px; height: 60px; margin: 0 auto;">
+                        <i class="fas fa-building" style="font-size: 1.5rem;"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">For Business</h5>
+                    <p class="section-subtitle mb-3 flex-grow-1" style="font-size: 0.9rem;">
+                        Hotels, events, corporate offices - we supply premium water bottles with QR technology.
+                    </p>
+                    <a href="mailto:partners@socialzwater.com?subject=Business Partnership" class="btn btn-outline-primary btn-sm mt-auto">
+                        Learn More
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Earn with Us -->
+            <div class="col-lg-4 col-md-6 d-flex">
+                <div class="feature-card text-center p-4 w-100 d-flex flex-column">
+                    <div class="feature-icon icon-orange mb-3" style="width: 60px; height: 60px; margin: 0 auto;">
+                        <i class="fas fa-coins" style="font-size: 1.5rem;"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">Earn with Us</h5>
+                    <p class="section-subtitle mb-3 flex-grow-1" style="font-size: 0.9rem;">
+                        Join as dealer, supplier, or manufacturer. Become part of our distribution network.
+                    </p>
+                    <a href="mailto:partners@socialzwater.com?subject=Distribution Partnership" class="btn btn-outline-primary btn-sm mt-auto">
+                        Learn More
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Final CTA -->
+<section class="py-5" style="background: var(--primary-blue); color: white;">
+    <div class="container text-center">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="display-6 fw-bold mb-3">Ready to Get Started?</h2>
+                <p class="lead mb-4">
+                    Whether you're interested in earning rewards, advertising your brand, or partnering with us, 
+                    we're here to help you succeed.
+                </p>
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    <a href="tel:+919876543210" class="btn btn-outline-light btn-lg px-4">
+                        <i class="fas fa-phone me-2"></i>Call Us Now
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
