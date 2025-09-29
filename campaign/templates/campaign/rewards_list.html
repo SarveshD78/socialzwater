@@ -1,0 +1,360 @@
+{% extends 'campaign/base.html' %}
+{% load static %}
+
+{% block page_title %}Reward Management{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="breadcrumb-item active" aria-current="page">Rewards</li>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Page Header (aligned with client page) */
+    .page-header {
+        margin-bottom: 2rem;
+    }
+    .page-title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 0.25rem;
+        letter-spacing: 0.1px;
+    }
+    .page-subtitle {
+        font-size: 1rem;
+        color: var(--text-secondary);
+    }
+
+    /* Search / Filter section */
+    .search-section {
+        background: var(--bg-primary);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: var(--shadow-sm);
+    }
+
+    /* Grid (match client grid) */
+    .rewards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    /* Card (align to client-card) */
+    .reward-card {
+        background: var(--bg-primary);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+        transition: all 0.3s ease;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        cursor: pointer;
+    }
+    .reward-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-md);
+        border-color: var(--primary);
+    }
+
+    /* Header: gradient like client-header */
+    .reward-header {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        padding: 1.25rem 1.5rem;
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+    }
+    .reward-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+    }
+    .reward-client {
+        background: rgba(255,255,255,0.15);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.25rem 0.6rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        margin-top: 0.35rem;
+    }
+    .reward-status {
+        background: rgba(255,255,255,0.18);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.25rem 0.7rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        white-space: nowrap;
+    }
+    .reward-status .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        display: inline-block;
+        background: #22c55e;
+    }
+    .reward-status.ended .dot {
+        background: #9ca3af;
+    }
+
+    /* Body */
+    .reward-body {
+        padding: 1.25rem 1.5rem;
+        flex: 1;
+    }
+
+    /* Stats (match sizing from client detail font scale) */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+    }
+    .stat-item {
+        background: var(--bg-tertiary);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 0.75rem;
+        text-align: center;
+    }
+    .stat-value {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        line-height: 1.1;
+    }
+    .stat-label {
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+        margin-top: 0.25rem;
+    }
+
+    /* Budget summary: toned to system tokens */
+    .budget-summary {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: white;
+        padding: 0.9rem 1rem;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+    }
+    .budget-title {
+        font-size: 0.75rem;
+        opacity: 0.9;
+        margin-bottom: 0.35rem;
+    }
+    .budget-value {
+        font-size: 1.35rem;
+        font-weight: 700;
+        letter-spacing: 0.1px;
+    }
+
+    /* Status breakdown chips */
+    .status-breakdown {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 0.25rem;
+    }
+    .status-chip {
+        flex: 1;
+        text-align: center;
+        padding: 0.5rem;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        border: 1px solid var(--border);
+        background: var(--bg-tertiary);
+        color: var(--text-primary);
+    }
+    .status-chip.pending {
+        background: #fef3c7;
+        color: #92400e;
+        border-color: #f5d08a;
+    }
+    .status-chip.granted {
+        background: #d1fae5;
+        color: #065f46;
+        border-color: #92e7c4;
+    }
+    .status-chip.invalid {
+        background: #fee2e2;
+        color: #991b1b;
+        border-color: #f2b7b7;
+    }
+
+    /* Footer actions (align with client-footer) */
+    .reward-footer {
+        padding: 1rem 1.5rem;
+        border-top: 1px solid var(--border);
+        background: var(--bg-tertiary);
+        display: flex;
+        gap: 0.5rem;
+    }
+    .reward-footer .btn {
+        flex: 1;
+        font-size: 0.875rem;
+        padding: 0.5rem;
+    }
+
+    /* Empty state (borrow client empty state) */
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: var(--bg-primary);
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow-sm);
+    }
+    .empty-icon {
+        font-size: 4rem;
+        color: var(--text-muted);
+        margin-bottom: 1.25rem;
+    }
+    .empty-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+    }
+    .empty-text {
+        color: var(--text-secondary);
+        margin-bottom: 1.25rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .rewards-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h1 class="page-title">Reward Management</h1>
+            <p class="page-subtitle">Track and manage campaign rewards</p>
+        </div>
+        <a href="{% url 'sw:campaign_list' %}" class="btn btn-outline-primary">
+            <i class="fas fa-bullhorn me-2"></i>View Campaigns
+        </a>
+    </div>
+</div>
+
+<!-- Search Section -->
+<div class="search-section">
+    <form method="get" action="{% url 'sw:rewards_list' %}">
+        <div class="row g-3">
+            <div class="col-md-10">
+                <input type="text"
+                       name="search"
+                       class="form-control"
+                       placeholder="Search campaigns..."
+                       value="{{ search_query }}">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-search me-2"></i>Search
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Rewards Grid -->
+{% if campaigns %}
+<div class="rewards-grid">
+    {% for campaign in campaigns %}
+    <div class="reward-card" onclick="window.location.href='{% url 'sw:rewards_detail' campaign.id %}'">
+        <div class="reward-header">
+            <div>
+                <div class="reward-title">{{ campaign.camp_name }}</div>
+                <div class="reward-client">
+                    <i class="fas fa-building"></i>
+                    {{ campaign.client.company_name }}
+                </div>
+            </div>
+            {% if campaign.is_active %}
+                <span class="reward-status">
+                    <span class="dot"></span> Active
+                </span>
+            {% else %}
+                <span class="reward-status ended">
+                    <span class="dot"></span> Ended
+                </span>
+            {% endif %}
+        </div>
+
+        <div class="reward-body">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value">{{ campaign.total_scans|default:0 }}</div>
+                    <div class="stat-label">Total Scans</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">{{ campaign.total_submissions|default:0 }}</div>
+                    <div class="stat-label">Submissions</div>
+                </div>
+            </div>
+
+            <div class="budget-summary">
+                <div class="budget-title">Total Reward Budget</div>
+                <div class="budget-value">₹{{ campaign.budget_of_rewards|floatformat:0 }}</div>
+            </div>
+
+            <div class="status-breakdown">
+                <div class="status-chip pending">
+                    <strong>{{ campaign.pending_rewards|default:0 }}</strong>
+                    <div>Pending</div>
+                </div>
+                <div class="status-chip granted">
+                    <strong>{{ campaign.granted_rewards|default:0 }}</strong>
+                    <div>Granted</div>
+                </div>
+                <div class="status-chip invalid">
+                    <strong>{{ campaign.invalid_rewards|default:0 }}</strong>
+                    <div>Invalid</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="reward-footer">
+            <a href="{% url 'sw:rewards_detail' campaign.id %}" class="btn btn-outline-success btn-sm">
+                <i class="fas fa-cog"></i> Manage
+            </a>
+            <a href="{% url 'sw:campaign_list' %}?client={{ campaign.client.id }}" class="btn btn-outline-primary btn-sm">
+                <i class="fas fa-bullhorn"></i> Campaign
+            </a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+    <i class="fas fa-gift empty-icon"></i>
+    <h2 class="empty-title">No Campaigns Found</h2>
+    <p class="empty-text">
+        {% if search_query %}
+            No campaigns match the search criteria. Try another term.
+        {% else %}
+            Create a campaign to start managing rewards.
+        {% endif %}
+    </p>
+    <a href="{% url 'sw:campaign_list' %}" class="btn btn-primary btn-lg">
+        <i class="fas fa-plus me-2"></i>Create Campaign
+    </a>
+</div>
+{% endif %}
+{% endblock %}

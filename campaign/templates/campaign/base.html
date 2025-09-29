@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Socialz Water - {% block page_title %}Dashboard{% endblock %}{% endblock %}</title>
+    
+    <!-- CSS Dependencies -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js for Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-light: #3b82f6;
+            --secondary: #64748b;
+            --success: #059669;
+            --danger: #dc2626;
+            --warning: #d97706;
+            --text-primary: #111827;
+            --text-secondary: #6b7280;
+            --text-muted: #9ca3af;
+            --border: #e5e7eb;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #f1f5f9;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navbar Styles */
+        .navbar-main {
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            padding: 1rem 0;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .navbar-brand:hover {
+            color: var(--primary-dark);
+        }
+
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .nav-menu-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .nav-menu-link:hover {
+            color: var(--primary);
+            background: var(--bg-tertiary);
+        }
+
+        .nav-menu-link.active {
+            color: var(--primary);
+            background: rgba(37, 99, 235, 0.1);
+        }
+
+        .navbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-user {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 1rem;
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            cursor: pointer;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .btn-logout {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-logout:hover {
+            background: #b91c1c;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        /* Breadcrumb Styles */
+        .breadcrumb-section {
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 0;
+        }
+
+        .breadcrumb {
+            margin: 0;
+            padding: 0;
+            background: transparent;
+        }
+
+        .breadcrumb-item {
+            font-size: 14px;
+        }
+
+        .breadcrumb-item a {
+            color: var(--text-secondary);
+            text-decoration: none;
+        }
+
+        .breadcrumb-item a:hover {
+            color: var(--primary);
+        }
+
+        .breadcrumb-item.active {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 2rem 0;
+        }
+
+        /* Footer Styles */
+.footer-main {
+    background: var(--bg-primary);
+    border-top: 1px solid var(--border);
+    padding: 2rem 0;
+    margin-top: auto;
+}
+
+.footer-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+.footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.footer-copyright {
+    color: var(--text-muted);
+    font-size: 14px;
+    text-align: center;
+}
+
+        /* Scroll to Top Button */
+        .scroll-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 48px;
+            height: 48px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+            opacity: 0;
+            visibility: hidden;
+            z-index: 999;
+        }
+
+        .scroll-to-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .scroll-to-top:hover {
+            background: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
+        }
+
+        .scroll-to-top i {
+            font-size: 20px;
+        }
+
+        /* Messages */
+        .messages-container {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 9999;
+            max-width: 400px;
+        }
+
+        .alert {
+            box-shadow: var(--shadow-md);
+            border: none;
+            border-radius: 8px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Utility Classes */
+        .btn-primary {
+            background: var(--primary);
+            border: 1px solid var(--primary);
+            border-radius: 8px;
+            font-weight: 600;
+            padding: 0.625rem 1.25rem;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            border-color: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+            
+            .navbar-actions {
+                margin-left: auto;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+        }
+
+        {% block extra_css %}{% endblock %}
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar-main">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <a href="{% url 'sw:overview' %}" class="navbar-brand">
+                    <div class="brand-icon">
+                        <i class="fas fa-tint"></i>
+                    </div>
+                    <span>Socialz Water</span>
+                </a>
+
+                <ul class="nav-menu">
+                    <li>
+                        <a href="{% url 'sw:overview' %}" class="nav-menu-link {% if page == 'overview' %}active{% endif %}">
+                            <i class="fas fa-home"></i>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'sw:client_list' %}" class="nav-menu-link {% if page == 'client' %}active{% endif %}">
+                            <i class="fas fa-users"></i>
+                            Clients
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'sw:campaign_list' %}" class="nav-menu-link {% if page == 'campaign' %}active{% endif %}">
+                            <i class="fas fa-bullhorn"></i>
+                            Campaigns
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'sw:report_list' %}" class="nav-menu-link {% if page == 'reports' %}active{% endif %}">
+                            <i class="fas fa-chart-line"></i>
+                            Reports
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="navbar-actions">
+                    <a href="{% url 'sw:custom_logout' %}" class="btn-logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout
+                    </a>
+                    <div class="nav-user">
+                        <div class="user-avatar">
+                            {% if user.first_name %}
+                                {{ user.first_name.0 }}{{ user.last_name.0|default:'' }}
+                            {% else %}
+                                {{ user.username.0|upper }}
+                            {% endif %}
+                        </div>
+                        <div>
+                            <div style="font-size: 14px; font-weight: 600;">
+                                {{ user.get_full_name|default:user.username }}
+                            </div>
+                            <div style="font-size: 12px; color: var(--text-muted);">Administrator</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Breadcrumb -->
+    {% block breadcrumb %}
+    <div class="breadcrumb-section">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'sw:overview' %}">Home</a></li>
+                    {% block breadcrumb_items %}
+                    <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+                    {% endblock %}
+                </ol>
+            </nav>
+        </div>
+    </div>
+    {% endblock %}
+
+    <!-- Messages -->
+    {% if messages %}
+    <div class="messages-container">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show" role="alert">
+            <i class="fas fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}exclamation-circle{% else %}info-circle{% endif %} me-2"></i>
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer-main">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="brand-icon">
+                        <i class="fas fa-tint"></i>
+                    </div>
+                    <span style="font-size: 18px; font-weight: 600; color: var(--primary);">Socialz Water</span>
+                </div>
+                <div class="footer-copyright">
+                    &copy; 2024 Socialz Water. All rights reserved.
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+
+    <!-- Scroll to Top Button -->
+    <button class="scroll-to-top" id="scrollToTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Auto-dismiss messages
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
+
+        // Scroll to Top functionality
+        const scrollToTopBtn = document.getElementById('scrollToTop');
+        
+        window.addEventListener('scroll', function() {
+            if (window.pageYOffset > 300) {
+                scrollToTopBtn.classList.add('show');
+            } else {
+                scrollToTopBtn.classList.remove('show');
+            }
+        });
+        
+        scrollToTopBtn.addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    </script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

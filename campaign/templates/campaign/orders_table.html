@@ -1,0 +1,441 @@
+{% extends 'campaign/base.html' %}
+{% load static %}
+
+{% block page_title %}Order Management{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="breadcrumb-item active">Orders</li>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Header */
+    .page-header {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+    }
+    
+    /* Stats Cards */
+    .stats-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 1.5rem;
+    }
+    
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1f2937;
+    }
+    
+    .stat-label {
+        font-size: 0.875rem;
+        color: #6b7280;
+        margin-top: 0.5rem;
+    }
+    
+    /* Table */
+    .table-container {
+        background: white;
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+        overflow: hidden;
+    }
+    
+    .data-table th {
+        background: #f9fafb;
+        padding: 1rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #4b5563;
+        border-bottom: 2px solid #e5e7eb;
+    }
+    
+    .data-table td {
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid #f3f4f6;
+        vertical-align: middle;
+    }
+    
+    .data-table tbody tr:hover {
+        background: #f9fafb;
+    }
+    
+    /* Status Badges */
+    .status-select {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+        border-radius: 6px;
+        border: 1px solid #d1d5db;
+        cursor: pointer;
+    }
+    
+    .status-select.pending { background: #fef3c7; color: #92400e; }
+    .status-select.processing { background: #dbeafe; color: #1e3a8a; }
+    .status-select.completed { background: #d1fae5; color: #065f46; }
+    .status-select.delivered { background: #e0e7ff; color: #3730a3; }
+    .status-select.cancelled { background: #fee2e2; color: #991b1b; }
+    
+    /* Priority Badges */
+    .priority-select {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+        border-radius: 6px;
+        border: 1px solid #d1d5db;
+        cursor: pointer;
+    }
+    
+    .priority-select.low { background: #f3f4f6; color: #4b5563; }
+    .priority-select.medium { background: #dbeafe; color: #1e3a8a; }
+    .priority-select.high { background: #fed7aa; color: #9a3412; }
+    .priority-select.urgent { background: #fecaca; color: #7f1d1d; }
+    
+    /* Filter Bar */
+    .filter-bar {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+        margin-bottom: 2rem;
+    }
+    
+    /* Quick Actions */
+    .quick-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+    
+    .btn-icon {
+        padding: 0.375rem;
+        font-size: 0.875rem;
+        border-radius: 6px;
+        border: 1px solid #d1d5db;
+        background: white;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    
+    .btn-icon:hover {
+        background: #f3f4f6;
+        transform: translateY(-1px);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h1 class="page-title">Order Management</h1>
+            <p class="mb-0 opacity-90">Track and manage manufacturing orders</p>
+        </div>
+        <button class="btn btn-white" data-bs-toggle="modal" data-bs-target="#addOrderModal">
+            <i class="fas fa-plus me-2"></i>New Order
+        </button>
+    </div>
+</div>
+
+<!-- Statistics -->
+<div class="stats-row">
+    <div class="stat-card">
+        <div class="stat-value">{{ stats.total|default:0 }}</div>
+        <div class="stat-label">Total Orders</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">{{ stats.pending|default:0 }}</div>
+        <div class="stat-label">Pending</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">{{ stats.processing|default:0 }}</div>
+        <div class="stat-label">Processing</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">₹{{ stats.total_value|floatformat:0 }}</div>
+        <div class="stat-label">Total Value</div>
+    </div>
+</div>
+
+<!-- Filter Bar -->
+<div class="filter-bar">
+    <form method="get">
+        <div class="row g-3">
+            <div class="col-md-3">
+                <input type="text" name="search" class="form-control" 
+                       placeholder="Search orders..." value="{{ search_query }}">
+            </div>
+            <div class="col-md-3">
+                <select name="manufacturer" class="form-select">
+                    <option value="">All Manufacturers</option>
+                    {% for manufacturer in manufacturers %}
+                    <option value="{{ manufacturer.id }}" {% if selected_manufacturer == manufacturer.id|stringformat:"s" %}selected{% endif %}>
+                        {{ manufacturer.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select name="status" class="form-select">
+                    <option value="">All Status</option>
+                    {% for value, label in status_choices %}
+                    <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select name="priority" class="form-select">
+                    <option value="">All Priority</option>
+                    {% for value, label in priority_choices %}
+                    <option value="{{ value }}" {% if priority_filter == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-filter me-2"></i>Filter
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Orders Table -->
+<div class="table-container">
+    <div class="table-header p-3 border-bottom">
+        <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Orders ({{ orders.paginator.count }})</h5>
+            <button class="btn btn-sm btn-outline-primary" onclick="exportOrders()">
+                <i class="fas fa-download me-1"></i>Export
+            </button>
+        </div>
+    </div>
+    
+    <div class="table-responsive">
+        <table class="table data-table mb-0">
+            <thead>
+                <tr>
+                    <th width="30">
+                        <input type="checkbox" id="selectAll">
+                    </th>
+                    <th>Order #</th>
+                    <th>Manufacturer</th>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Amount</th>
+                    <th>Order Date</th>
+                    <th>Expected</th>
+                    <th>Status</th>
+                    <th>Priority</th>
+                    <th width="100">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr data-id="{{ order.id }}">
+                    <td>
+                        <input type="checkbox" class="row-select" value="{{ order.id }}">
+                    </td>
+                    <td>
+                        <strong>#{{ order.order_number }}</strong>
+                    </td>
+                    <td>{{ order.manufacturer.name }}</td>
+                    <td>
+                        <div>{{ order.product_name }}</div>
+                        {% if order.product_description %}
+                        <small class="text-muted">{{ order.product_description|truncatewords:10 }}</small>
+                        {% endif %}
+                    </td>
+                    <td>{{ order.quantity }}</td>
+                    <td>₹{{ order.total_amount|floatformat:0 }}</td>
+                    <td>{{ order.order_date|date:"d/m/Y" }}</td>
+                    <td>
+                        {{ order.expected_delivery|date:"d/m/Y" }}
+                        {% if order.is_overdue %}
+                        <span class="badge bg-danger ms-1">Overdue</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <form method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="update_status">
+                            <input type="hidden" name="order_id" value="{{ order.id }}">
+                            <select name="status" class="status-select {{ order.status }}" onchange="this.form.submit()">
+                                {% for value, label in status_choices %}
+                                <option value="{{ value }}" {% if order.status == value %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </form>
+                    </td>
+                    <td>
+                        <form method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="update_priority">
+                            <input type="hidden" name="order_id" value="{{ order.id }}">
+                            <select name="priority" class="priority-select {{ order.priority }}" onchange="this.form.submit()">
+                                {% for value, label in priority_choices %}
+                                <option value="{{ value }}" {% if order.priority == value %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </form>
+                    </td>
+                    <td>
+                        <div class="quick-actions">
+                            <button class="btn-icon" onclick="viewOrder({{ order.id }})" title="View">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn-icon text-danger" onclick="deleteOrder({{ order.id }}, '{{ order.order_number|escapejs }}')" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="11" class="text-center py-5">
+                        <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No orders found</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- Pagination -->
+    {% if orders.has_other_pages %}
+    <div class="p-3 border-top">
+        <nav>
+            <ul class="pagination justify-content-center mb-0">
+                {% if orders.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ orders.previous_page_number }}">Previous</a>
+                </li>
+                {% endif %}
+                
+                {% for num in orders.paginator.page_range %}
+                    {% if orders.number == num %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ num }}</span>
+                    </li>
+                    {% elif num > orders.number|add:'-3' and num < orders.number|add:'3' %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                    </li>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if orders.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ orders.next_page_number }}">Next</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Add Order Modal -->
+<div class="modal fade" id="addOrderModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Create New Order</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="create">
+                
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Order Number *</label>
+                            <input type="text" class="form-control" name="order_number" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Manufacturer *</label>
+                            <select class="form-select" name="manufacturer" required>
+                                <option value="">Select Manufacturer</option>
+                                {% for manufacturer in manufacturers %}
+                                <option value="{{ manufacturer.id }}">{{ manufacturer.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Product Name *</label>
+                            <input type="text" class="form-control" name="product_name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Priority</label>
+                            <select class="form-select" name="priority">
+                                {% for value, label in priority_choices %}
+                                <option value="{{ value }}">{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Product Description</label>
+                            <textarea class="form-control" name="product_description" rows="2"></textarea>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Quantity *</label>
+                            <input type="number" class="form-control" name="quantity" min="1" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Unit Price *</label>
+                            <input type="number" class="form-control" name="unit_price" step="0.01" min="0" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Expected Delivery *</label>
+                            <input type="date" class="form-control" name="expected_delivery" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Notes</label>
+                            <textarea class="form-control" name="notes" rows="2"></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create Order</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function deleteOrder(id, orderNumber) {
+    if(confirm(`Delete order #${orderNumber}?`)) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.innerHTML = `
+            {% csrf_token %}
+            <input type="hidden" name="action" value="delete">
+            <input type="hidden" name="order_id" value="${id}">
+        `;
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+
+function exportOrders() {
+    window.location.href = '{% url "sw:export_orders" %}';
+}
+</script>
+{% endblock %}

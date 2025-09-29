@@ -1,0 +1,490 @@
+{% extends 'campaign/base.html' %}
+
+{% load static %}
+
+{% block page_title %}Client Management{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="breadcrumb-item active" aria-current="page">Clients</li>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Page Header */
+    .page-header {
+        margin-bottom: 2rem;
+    }
+    
+    .page-title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 0.25rem;
+    }
+    
+    .page-subtitle {
+        font-size: 1rem;
+        color: var(--text-secondary);
+    }
+
+    /* Search Bar */
+    .search-section {
+        background: var(--bg-primary);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: var(--shadow-sm);
+    }
+
+    /* Client Grid */
+    .clients-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    /* Client Card */
+    .client-card {
+        background: var(--bg-primary);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+        transition: all 0.3s ease;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .client-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-md);
+        border-color: var(--primary);
+    }
+
+    .client-header {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        padding: 1.5rem;
+        color: white;
+    }
+
+    .client-name {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .client-industry {
+        background: rgba(255, 255, 255, 0.2);
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+
+    .campaign-badge {
+        background: rgba(255, 255, 255, 0.15);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        margin-left: 0.5rem;
+    }
+
+    .client-body {
+        padding: 1.5rem;
+        flex: 1;
+    }
+
+    .client-detail {
+        display: flex;
+        align-items: start;
+        margin-bottom: 1rem;
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+    }
+
+    .client-detail:last-child {
+        margin-bottom: 0;
+    }
+
+    .client-detail i {
+        width: 20px;
+        margin-right: 0.75rem;
+        color: var(--text-muted);
+        margin-top: 2px;
+    }
+
+    .client-detail-content {
+        flex: 1;
+        line-height: 1.4;
+    }
+
+    .client-detail-label {
+        font-weight: 600;
+        color: var(--text-primary);
+        display: block;
+    }
+
+    .client-footer {
+        padding: 1rem 1.5rem;
+        border-top: 1px solid var(--border);
+        background: var(--bg-tertiary);
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .client-footer .btn {
+        flex: 1;
+        font-size: 0.875rem;
+        padding: 0.5rem;
+    }
+
+    /* Add Client Card */
+    .add-client-card {
+        background: var(--bg-tertiary);
+        border: 2px dashed var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 350px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .add-client-card:hover {
+        background: var(--bg-primary);
+        border-color: var(--primary);
+        transform: translateY(-4px);
+    }
+
+    .add-client-icon {
+        font-size: 3rem;
+        color: var(--text-muted);
+        margin-bottom: 1rem;
+    }
+
+    .add-client-card:hover .add-client-icon {
+        color: var(--primary);
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: var(--bg-primary);
+        border-radius: 12px;
+        border: 1px solid var(--border);
+    }
+
+    .empty-icon {
+        font-size: 4rem;
+        color: var(--text-muted);
+        margin-bottom: 1.5rem;
+    }
+
+    .empty-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+    }
+
+    .empty-text {
+        color: var(--text-secondary);
+        margin-bottom: 2rem;
+    }
+
+    /* Modal Styles */
+    .modal-header {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        color: white;
+    }
+
+    .modal-header .btn-close {
+        filter: brightness(0) invert(1);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .clients-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h1 class="page-title">Client Management</h1>
+            <p class="page-subtitle">Manage your clients and their information</p>
+        </div>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addClientModal">
+            <i class="fas fa-plus me-2"></i>Add New Client
+        </button>
+    </div>
+</div>
+
+<!-- Search Section -->
+<div class="search-section">
+    <form method="get" action="{% url 'sw:client_list' %}">
+        <div class="row g-3">
+            <div class="col-md-10">
+                <input type="text" 
+                       name="search" 
+                       class="form-control" 
+                       placeholder="Search by company name, email, contact person, or industry..." 
+                       value="{{ search_query }}">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-search me-2"></i>Search
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Clients Grid -->
+{% if clients %}
+<div class="clients-grid">
+    {% for client in clients %}
+    <div class="client-card">
+        <div class="client-header">
+            <div class="client-name">{{ client.company_name }}</div>
+            <div>
+                <span class="client-industry">{{ client.industry_type }}</span>
+                <span class="campaign-badge">
+                    <i class="fas fa-bullhorn"></i>
+                    {{ client.campaigns.count }} Campaign{{ client.campaigns.count|pluralize }}
+                </span>
+            </div>
+        </div>
+        
+        <div class="client-body">
+            <div class="client-detail">
+                <i class="fas fa-user"></i>
+                <div class="client-detail-content">
+                    <span class="client-detail-label">Contact Person</span>
+                    {{ client.contact_person_name }}
+                </div>
+            </div>
+            
+            <div class="client-detail">
+                <i class="fas fa-phone"></i>
+                <div class="client-detail-content">{{ client.contact_phone_number }}</div>
+            </div>
+            
+            <div class="client-detail">
+                <i class="fas fa-envelope"></i>
+                <div class="client-detail-content">{{ client.email }}</div>
+            </div>
+            
+            <div class="client-detail">
+                <i class="fas fa-map-marker-alt"></i>
+                <div class="client-detail-content">{{ client.address|truncatewords:10 }}</div>
+            </div>
+        </div>
+        
+        <div class="client-footer">
+            <button class="btn btn-outline-primary btn-sm" 
+                    onclick="editClient({{ client.id }}, '{{ client.company_name|escapejs }}', '{{ client.email|escapejs }}', '{{ client.address|escapejs }}', '{{ client.industry_type|escapejs }}', '{{ client.contact_person_name|escapejs }}', '{{ client.contact_phone_number|escapejs }}')">
+                <i class="fas fa-edit"></i> Edit
+            </button>
+            <button class="btn btn-outline-danger btn-sm" 
+                    onclick="deleteClient({{ client.id }}, '{{ client.company_name|escapejs }}')">
+                <i class="fas fa-trash"></i> Delete
+            </button>
+            <a href="{% url 'sw:campaign_list' %}?client={{ client.id }}" 
+               class="btn btn-outline-success btn-sm">
+                <i class="fas fa-bullhorn"></i> View
+            </a>
+        </div>
+    </div>
+    {% endfor %}
+    
+    <!-- Add New Client Card -->
+    <div class="client-card add-client-card" data-bs-toggle="modal" data-bs-target="#addClientModal">
+        <div>
+            <i class="fas fa-plus-circle add-client-icon"></i>
+            <h5 class="text-muted">Add New Client</h5>
+            <p class="text-muted small">Click to add a new client</p>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="empty-state">
+    <i class="fas fa-users empty-icon"></i>
+    <h2 class="empty-title">No Clients Found</h2>
+    <p class="empty-text">
+        {% if search_query %}
+            No clients match your search criteria. Try adjusting your search.
+        {% else %}
+            Get started by adding your first client.
+        {% endif %}
+    </p>
+    <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#addClientModal">
+        <i class="fas fa-plus me-2"></i>Add Your First Client
+    </button>
+</div>
+{% endif %}
+
+<!-- Pagination -->
+{% if clients.has_other_pages %}
+<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+        {% if clients.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}">First</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ clients.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}">Previous</a>
+            </li>
+        {% endif %}
+        
+        {% for num in clients.paginator.page_range %}
+            {% if clients.number == num %}
+                <li class="page-item active">
+                    <span class="page-link">{{ num }}</span>
+                </li>
+            {% elif num > clients.number|add:'-3' and num < clients.number|add:'3' %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}">{{ num }}</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+        
+        {% if clients.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ clients.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}">Next</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ clients.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}">Last</a>
+            </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+
+<!-- Add/Edit Client Modal -->
+<div class="modal fade" id="addClientModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">Add New Client</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" action="{% url 'sw:client_list' %}" id="clientForm">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="create" id="formAction">
+                <input type="hidden" name="client_id" value="" id="clientId">
+                
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Company Name *</label>
+                            <input type="text" class="form-control" name="company_name" id="company_name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Industry Type *</label>
+                            <input type="text" class="form-control" name="industry_type" id="industry_type" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Contact Person *</label>
+                            <input type="text" class="form-control" name="contact_person_name" id="contact_person_name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Phone Number *</label>
+                            <input type="tel" class="form-control" name="contact_phone_number" id="contact_phone_number" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Email Address *</label>
+                            <input type="email" class="form-control" name="email" id="email" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Address *</label>
+                            <textarea class="form-control" name="address" id="address" rows="3" required></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-2"></i>Save Client
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" action="{% url 'sw:client_list' %}">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="delete">
+                <input type="hidden" name="client_id" id="deleteClientId">
+                
+                <div class="modal-body">
+                    <p>Are you sure you want to delete "<strong id="deleteClientName"></strong>"?</p>
+                    <p class="text-danger"><i class="fas fa-exclamation-triangle me-2"></i>This will also delete all associated campaigns.</p>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash me-2"></i>Delete
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function editClient(id, company_name, email, address, industry_type, contact_person_name, contact_phone_number) {
+    document.getElementById('modalTitle').textContent = 'Edit Client';
+    document.getElementById('formAction').value = 'update';
+    document.getElementById('clientId').value = id;
+    document.getElementById('company_name').value = company_name;
+    document.getElementById('email').value = email;
+    document.getElementById('address').value = address;
+    document.getElementById('industry_type').value = industry_type;
+    document.getElementById('contact_person_name').value = contact_person_name;
+    document.getElementById('contact_phone_number').value = contact_phone_number;
+    
+    new bootstrap.Modal(document.getElementById('addClientModal')).show();
+}
+
+function deleteClient(id, name) {
+    document.getElementById('deleteClientId').value = id;
+    document.getElementById('deleteClientName').textContent = name;
+    new bootstrap.Modal(document.getElementById('deleteModal')).show();
+}
+
+document.getElementById('addClientModal').addEventListener('hidden.bs.modal', function () {
+    document.getElementById('modalTitle').textContent = 'Add New Client';
+    document.getElementById('formAction').value = 'create';
+    document.getElementById('clientId').value = '';
+    document.getElementById('clientForm').reset();
+});
+</script>
+{% endblock %}

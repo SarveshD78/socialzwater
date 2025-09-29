@@ -15,7 +15,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # -------------------------
 SECRET_KEY = 'django-insecure-CHANGE_THIS_TO_A_SECRET_KEY'
 DEBUG = True
-ALLOWED_HOSTS = ["128.199.24.211", "socialzwater.in", "www.socialzwater.in"]
+ALLOWED_HOSTS = ["128.199.24.211", "socialzwater.in", "www.socialzwater.in","127.0.0.1"]
 
 SECURE_SSL_REDIRECT = False  # True only if you set up HTTPS
 
@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'website',  # Your main app
+    'campaign',
 ]
 
 # -------------------------
@@ -101,8 +102,14 @@ USE_TZ = True
 # -------------------------
 # Static files
 # -------------------------
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'website/static']  # development
+# ------------------------- 
+# Static files 
+# ------------------------- 
+STATIC_URL = '/static/' 
+STATICFILES_DIRS = [
+    BASE_DIR / 'website/static',
+    BASE_DIR / 'campaign/static',  # Add this line
+]
 STATIC_ROOT = BASE_DIR / 'staticfiles'  # production collectstatic
 
 # -------------------------
@@ -119,10 +126,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # -------------------------
 # Login URLs
 # -------------------------
-LOGIN_URL = '/admin-login/'
-LOGIN_REDIRECT_URL = '/admin-dashboard/'
-LOGOUT_REDIRECT_URL = '/admin-login/'
+# settings.py
 
+LOGIN_URL = '/sw/login/'
+LOGIN_REDIRECT_URL = '/sw/overview/'
+LOGOUT_REDIRECT_URL = '/'
 # -------------------------
 # Security enhancements for production
 # -------------------------
@@ -131,3 +139,8 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 SESSION_COOKIE_SECURE = False  # True only if HTTPS
 CSRF_COOKIE_SECURE = False     # True only if HTTPS
 X_FRAME_OPTIONS = 'DENY'
+
+
+SITE_DOMAIN = 'http://127.0.0.1:8000'
+TIME_ZONE = 'Asia/Kolkata'  # This sets IST as default
+USE_TZ = True

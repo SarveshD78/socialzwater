@@ -1,334 +1,998 @@
 {% extends 'website/base.html' %}
+{% load static %}
 
-{% block title %}Home - Socialz Water{% endblock %}
+{% block title %}
+Socialz Water - Refreshing Lives, Powering Brands!
+{% endblock %}
+
+{% block extra_css %}
+<!-- CRITICAL: Header transparency override - Must be FIRST before any other CSS -->
+<style>
+    /* Ultra-specific transparency override */
+    body header#header,
+    html header#header,
+    header#header.header,
+    #header {
+        background: transparent !important;
+        background-color: transparent !important;
+        backdrop-filter: none !important;
+        box-shadow: none !important;
+        border: none !important;
+    }
+    
+    body header#header.scrolled,
+    html header#header.scrolled,
+    header#header.scrolled.header,
+    #header.scrolled {
+        background: rgba(255, 255, 255, 0.95) !important;
+        background-color: rgba(255, 255, 255, 0.95) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+    }
+    
+    /* Override any Bootstrap navbar classes */
+    .navbar, .bg-light, .bg-white {
+        background: transparent !important;
+        background-color: transparent !important;
+    }
+</style>
+
+<!-- Now load external CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+<!-- HERO SECTION CSS -->
+<style>
+    .hero-section {
+        position: relative;
+        height: 100vh;
+        background-image: url('{% static "website/images/herobg.jpg" %}');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        overflow: hidden;
+        margin-top: -80px; /* Pull up behind header */
+        padding-top: 80px; /* Account for header space */
+    }
+    
+    .hero-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 1;
+    }
+    
+    .hero-container {
+        position: relative;
+        z-index: 2;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+    }
+    
+    .hero-heading {
+        font-size: 8rem;
+        font-weight: 800;
+        letter-spacing: 3px;
+        margin-bottom: 15px;
+        text-transform: uppercase;
+        line-height: 1;
+        text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+    
+    .hero-title-line1 {
+        color: #1E90FF;
+        display: block;
+    }
+    
+    .hero-title-line2 {
+        color: #00724c;
+        display: block;
+    }
+    
+    .hero-tagline {
+        font-size: 2rem;
+        font-weight: 300;
+        margin-bottom: 35px;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    
+    .tagline-refreshing {
+        color: #1E90FF;
+    }
+    
+    .tagline-powering {
+        color: #00B894;
+    }
+    
+    .hero-btn-group {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+    
+    .btn-hero {
+        padding: 16px 45px;
+        font-size: 17px;
+        font-weight: 600;
+        border-radius: 25px; /* Updated to 25px */
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-get-started {
+        background: #FFFFFF;
+        color: #1E90FF;
+        box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
+    }
+    
+    .btn-get-started:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 35px rgba(255, 255, 255, 0.4);
+    }
+    
+    .btn-learn-more {
+        background: transparent;
+        color: #FFFFFF;
+        border: 2px solid #FFFFFF;
+    }
+    
+    .btn-learn-more:hover {
+        background: #FFFFFF;
+        color: #1E90FF;
+    }
+    
+    .bottle-wrapper {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+    }
+    
+    .floating-bottle {
+        animation: floatBottle 3s ease-in-out infinite;
+        width: 100%;
+        text-align: center;
+    }
+    
+    .floating-bottle img {
+        width: 120%;
+        max-width: 800px;
+        height: auto;
+        filter: drop-shadow(0 25px 50px rgba(0, 0, 0, 0.3));
+    }
+    
+    @keyframes floatBottle {
+        0%, 100% {
+            transform: translateY(0px);
+        }
+        50% {
+            transform: translateY(-40px);
+        }
+    }
+    
+    @media (max-width: 1200px) {
+        .hero-heading {
+            font-size: 3.8rem;
+        }
+        .floating-bottle img {
+            max-width: 500px;
+        }
+    }
+    
+    @media (max-width: 991px) {
+        .hero-heading {
+            font-size: 4rem;
+        }
+        .bottle-wrapper {
+            margin-top: 30px;
+        }
+        .floating-bottle img {
+            max-width: 400px;
+        }
+        .hero-section {
+            margin-top: -70px;
+            padding-top: 70px;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .hero-heading {
+            font-size: 3rem;
+            text-align: center;
+        }
+        .hero-tagline {
+            font-size: 1.4rem;
+            text-align: center;
+        }
+        .hero-btn-group {
+            justify-content: center;
+        }
+        .floating-bottle img {
+            max-width: 350px;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .hero-heading {
+            font-size: 4rem;
+        }
+        .hero-tagline {
+            font-size: 1.2rem;
+        }
+        .btn-hero {
+            padding: 14px 35px;
+            font-size: 15px;
+        }
+        .floating-bottle img {
+            max-width: 700px;
+            padding-bottom: 100px;
+            padding-right: 50px;
+        }
+    }
+
+    /* Other sections spacing fix */
+    .intro-section {
+        padding: 60px 20px;
+        background: #ffffff;
+        position: relative;
+        margin-top: 0;
+    }
+</style>
+
+<!-- Additional section styles -->
+<style>
+    /* Introducing Section CSS */
+    .intro-image-wrapper {
+        height: 100%;
+        overflow: hidden;
+        border-radius: 20px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+    }
+    
+    .intro-image-wrapper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 20px;
+        display: block;
+    }
+    
+    .intro-content {
+        padding: 20px 30px;
+    }
+    
+    .intro-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #2C3E50;
+        line-height: 1.3;
+        margin-bottom: 20px;
+    }
+    
+    .intro-title .highlight {
+        background: linear-gradient(135deg, #1E90FF, #00B894);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .intro-text {
+        font-size: 1rem;
+        color: #636E72;
+        line-height: 1.6;
+        margin-bottom: 30px;
+    }
+    
+    .intro-buttons {
+        display: flex;
+        gap: 15px;
+    }
+    
+    .intro-buttons a {
+        padding: 12px 24px;
+        border-radius: 25px; /* Updated to 25px */
+        text-decoration: none;
+        font-weight: 600;
+        color: white;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #1E90FF, #00B894);
+    }
+    
+    .btn-secondary {
+        background: linear-gradient(135deg, #636E72, #2C3E50);
+    }
+    
+    .intro-buttons a:hover {
+        opacity: 0.85;
+        transform: translateY(-2px);
+    }
+    
+    /* Partner ways section */
+    .partner-ways-section {
+        padding: 60px 20px;
+        background: #f9faff;
+    }
+    
+    .section-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+    
+    .section-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #2C3E50;
+    }
+    
+    .section-subtitle {
+        font-size: 1rem;
+        color: #636E72;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+    
+    .partner-card {
+        background: #fff;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+    }
+    
+    .partner-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    .partner-icon-wrapper {
+        width: 60px;
+        height: 60px;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+        color: white;
+        font-size: 28px;
+    }
+    
+    .partner-icon-wrapper.blue { background: #1E40FF; }
+    .partner-icon-wrapper.green { background: #10B981; }
+    .partner-icon-wrapper.orange { background: #F59E0B; }
+    
+    .partner-card h3 {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+    
+    .partner-card p {
+        font-size: 0.95rem;
+        color: #636E72;
+        margin-bottom: 20px;
+    }
+    
+    .partner-features {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+    
+    .partner-features div {
+        background: #f1f5f9;
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    
+    .btn-learn {
+        background: #1E40FF;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 25px; /* Updated to 25px */
+        text-decoration: none;
+        font-weight: 600;
+        transition: background 0.3s ease;
+    }
+    
+    .btn-learn:hover { background: #2563EB; }
+    
+    /* Enhanced Choose us section - KEEPING ORIGINAL GRID STRUCTURE */
+    .choose-us-section { 
+        background: linear-gradient(135deg, rgba(30, 144, 255, 0.05), rgba(0, 184, 148, 0.05));
+        padding: 80px 20px;
+    }
+    
+    .choose-us-section .section-title {
+        font-size: 2.8rem;
+        font-weight: 700;
+        color: #2C3E50;
+        margin-bottom: 15px;
+    }
+    
+    .choose-us-section .section-subtitle {
+        font-size: 1.2rem;
+        color: #636E72;
+        margin-bottom: 60px;
+    }
+    
+    .choose-item {
+        display: flex;
+        gap: 25px;
+        background: #ffffff;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .choose-item:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 50px rgba(30, 144, 255, 0.15);
+    }
+    
+    .choose-icon {
+        font-size: 2.8rem;
+        color: #ffffff;
+        width: 80px;
+        height: 80px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        flex-shrink: 0;
+    }
+    
+    /* Colorful gradients for icons */
+    .choose-item:nth-child(1) .choose-icon {
+        background: linear-gradient(135deg, #00724c, #00213e);
+    }
+    
+    .choose-item:nth-child(2) .choose-icon {
+        background: linear-gradient(135deg, #4ECDC4, #44A08D);
+    }
+    
+    .choose-item:nth-child(3) .choose-icon {
+        background: linear-gradient(135deg, #45B7D1, #2E8B9E);
+    }
+    
+    .choose-item:nth-child(4) .choose-icon {
+        background: linear-gradient(135deg, #96CEB4, #FECA57);
+    }
+    
+    .choose-item:nth-child(5) .choose-icon {
+        background: linear-gradient(135deg, #FDA7DF, #9A9AE2);
+    }
+    
+    .choose-item:nth-child(6) .choose-icon {
+        background: linear-gradient(135deg, #FFA726, #FF7043);
+    }
+    
+    .choose-content h4 {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: #2C3E50;
+        margin-bottom: 12px;
+    }
+    
+    .choose-content p {
+        font-size: 1rem;
+        color: #636E72;
+        line-height: 1.7;
+        margin: 0;
+    }
+    
+    /* Reward section */
+    .reward-section { background: #ffffff; }
+    
+    .reward-content h2 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #2C3E50;
+        margin-bottom: 20px;
+    }
+    
+    .reward-content p {
+        font-size: 1rem;
+        color: #636E72;
+        line-height: 1.6;
+        margin-bottom: 30px;
+    }
+    
+    .btn-find-more {
+        display: inline-block;
+        padding: 12px 30px;
+        font-size: 1rem;
+        font-weight: 600;
+        background: #1E40FF;
+        color: #ffffff;
+        border-radius: 25px; /* Updated to 25px */
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-find-more:hover {
+        background: #2563EB;
+        transform: translateY(-2px);
+    }
+    
+    .reward-illustration { display: flex; justify-content: center; }
+    
+    .phone-frame {
+        width: 250px;
+        height: 450px;
+        background: #fff;
+        border: 6px solid #F59E0B;
+        border-radius: 30px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        transform: rotate(-5deg);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        position: relative;
+    }
+    
+    .phone-frame:hover { transform: rotate(0deg); }
+    
+    .phone-icon {
+        font-size: 40px;
+        color: #1E40FF;
+        margin-bottom: 20px;
+    }
+    
+    .phone-text h5 {
+        font-size: 1.2rem;
+        color: #2C3E50;
+        margin-bottom: 5px;
+    }
+    
+    .phone-text p {
+        font-size: 0.9rem;
+        color: #636E72;
+    }
+    
+    .phone-indicators {
+        display: flex;
+        gap: 8px;
+        margin-top: 20px;
+    }
+    
+    .indicator {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+    }
+    
+    .indicator.blue { background-color: #1E40FF; }
+    .indicator.grey { background-color: #6B7280; }
+    .indicator.yellow { background-color: #F59E0B; }
+    
+    /* Enhanced CTA Section - Matching Other Pages */
+    .cta-section {
+        padding: 100px 20px;
+        background: linear-gradient(135deg, #1E90FF 0%, #014a3b 50%, #000000 100%);
+        text-align: center;
+        color: #ffffff;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .cta-section::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(30, 144, 255, 0.1) 0%, rgba(1, 74, 59, 0.1) 50%, rgba(0, 0, 0, 0.1) 100%);
+        animation: rotate 30s linear infinite;
+    }
+    
+    .cta-section::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(45deg, transparent 0%, rgba(30, 144, 255, 0.05) 25%, rgba(1, 74, 59, 0.05) 50%, rgba(0, 0, 0, 0.1) 75%, transparent 100%);
+        animation: shimmer 4s ease-in-out infinite;
+    }
+    
+    @keyframes rotate {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+    
+    @keyframes shimmer {
+        0%, 100% { opacity: 0; }
+        50% { opacity: 1; }
+    }
+    
+    .cta-content {
+        position: relative;
+        z-index: 3;
+    }
+    
+    .cta-section h2 {
+        font-size: 3rem;
+        font-weight: 800;
+        line-height: 1.2;
+        margin-bottom: 20px;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+    
+    .cta-section p {
+        font-size: 1.3rem;
+        font-weight: 400;
+        margin-bottom: 40px;
+        opacity: 0.95;
+        text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    }
+    
+    .cta-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 25px;
+        flex-wrap: wrap;
+    }
+    
+    .cta-btn {
+        padding: 18px 50px;
+        font-size: 1.2rem;
+        font-weight: 700;
+        border-radius: 25px; /* Updated to 25px */
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    
+    .cta-btn-primary {
+        background: #ffffff;
+        color: #1E90FF;
+        box-shadow: 0 6px 25px rgba(255, 255, 255, 0.3);
+    }
+    
+    .cta-btn-primary:hover {
+        background: linear-gradient(135deg, #1E90FF, #014a3b);
+        color: #ffffff;
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: 0 10px 35px rgba(30, 144, 255, 0.4);
+    }
+    
+    .cta-btn-secondary {
+        background: transparent;
+        color: #ffffff;
+        border: 2px solid #ffffff;
+        box-shadow: 0 6px 25px rgba(255, 255, 255, 0.2);
+    }
+    
+    .cta-btn-secondary:hover {
+        background: #ffffff;
+        color: #014a3b;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 35px rgba(255, 255, 255, 0.4);
+    }
+    
+    /* Responsive */
+    @media (max-width: 991px) {
+        .intro-content {
+            padding: 20px;
+            text-align: center;
+        }
+        .intro-title { font-size: 2rem; }
+        .intro-buttons { justify-content: center; }
+        .section-title { font-size: 2rem; }
+        .reward-content h2 {
+            font-size: 1.75rem;
+            text-align: center;
+        }
+        .reward-content p { text-align: center; }
+        .btn-find-more {
+            display: block;
+            margin: 0 auto;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .intro-section { padding: 40px 15px; }
+        .intro-title { font-size: 1.8rem; }
+        .intro-text { font-size: 0.95rem; }
+        .intro-buttons a {
+            padding: 10px 20px;
+            font-size: 0.95rem;
+        }
+        .partner-card { text-align: center; }
+        .partner-features { justify-content: center; }
+        .choose-item {
+            flex-direction: column;
+            text-align: center;
+            align-items: center;
+        }
+        .choose-icon { margin-bottom: 15px; }
+        .cta-section h2 { font-size: 2.2rem; }
+        .cta-section p { font-size: 1.1rem; }
+        .cta-btn {
+            padding: 15px 35px;
+            font-size: 1rem;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .reward-content h2 { font-size: 1.5rem; }
+        .reward-content p { font-size: 0.95rem; }
+        .btn-find-more {
+            padding: 10px 20px;
+            font-size: 0.9rem;
+        }
+        .phone-frame {
+            width: 200px;
+            height: 350px;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
 <section class="hero-section">
-    <div class="container">
-        <div class="row align-items-center" style="min-height: 80vh;">
-            <!-- Left Side Content -->
-            <div class="col-lg-6">
-                <h1 class="display-4 fw-bold mb-4" style="font-size: clamp(2.5rem, 5vw, 3.5rem); line-height: 1.2;">
-                    Scan your bottles
-                </h1>
-                <p class="lead mb-4" style="font-size: 1.25rem; color: rgba(255,255,255,0.9); line-height: 1.6;">
-                    Scan QR codes on water bottles, watch engaging advertisements, 
-                    and earn instant rewards up to ₹10 with Socialz Water.
-                </p>
-                <div class="d-flex gap-3 flex-wrap">
-                    <a href="#connect" class="btn btn-primary btn-lg">
-                        <i class="fas fa-play me-2"></i>Get Started
-                    </a>
-                    <a href="#connect" class="btn btn-outline-light btn-lg">
-                        Learn More
-                    </a>
-                </div>
-            </div>
-            
-            <!-- Right Side Content -->
-            <div class="col-lg-6 text-center">
-                <div class="bg-white rounded-4 p-5 shadow-lg" style="background: rgba(255,255,255,0.98); min-height: 400px; display: flex; flex-direction: column; justify-content: center;">
-                    <h3 class="fw-bold mb-4" style="color: var(--dark-gray); font-size: 1.75rem;">It's easier than you think</h3>
-                    
-                    <!-- Process Steps -->
-                    <div class="row g-4 mb-4">
-                        <div class="col-4">
-                            <div class="process-step">
-                                <div class="feature-icon icon-green mb-3" style="width: 75px; height: 75px; margin: 0 auto;">
-                                    <i class="fas fa-qrcode" style="font-size: 2rem;"></i>
-                                </div>
-                                <h6 class="fw-bold mb-2" style="color: var(--dark-gray);">Scan</h6>
-                                <small style="color: var(--gray);">QR Code on Bottle</small>
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <div class="process-step">
-                                <div class="feature-icon icon-blue mb-3" style="width: 75px; height: 75px; margin: 0 auto;">
-                                    <i class="fas fa-video" style="font-size: 2rem;"></i>
-                                </div>
-                                <h6 class="fw-bold mb-2" style="color: var(--dark-gray);">Watch</h6>
-                                <small style="color: var(--gray);">30sec Advertisement</small>
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <div class="process-step">
-                                <div class="feature-icon icon-orange mb-3" style="width: 75px; height: 75px; margin: 0 auto;">
-                                    <i class="fas fa-coins" style="font-size: 2rem;"></i>
-                                </div>
-                                <h6 class="fw-bold mb-2" style="color: var(--dark-gray);">Earn</h6>
-                                <small style="color: var(--gray);">₹10 Instant Reward</small>
-                            </div>
-                        </div>
+    <div class="hero-overlay"></div>
+    <div class="hero-container">
+        <div class="container h-100">
+            <div class="row align-items-center h-100">
+                <div class="col-lg-6">
+                    <h1 class="hero-heading">
+                        <span class="hero-title-line1">SOCIALZ</span>
+                        <span class="hero-title-line2">WATER</span>
+                    </h1>
+                    <p class="hero-tagline">
+                        <span class="tagline-refreshing">Refreshing Lives</span>, 
+                        <span class="tagline-powering">Powering Brands</span>!
+                    </p>
+                    <div class="hero-btn-group">
+                        <a href="{% url 'website:get-started' %}" class="btn-hero btn-get-started">Get Started</a>
+                        <a href="#introducing" class="btn-hero btn-learn-more">Learn More</a>
                     </div>
-                    
-                    <div class="text-center">
-                        <p class="text-muted mb-0" style="font-size: 0.9rem;">Join thousands earning daily rewards!</p>
+                </div>
+                <div class="col-lg-6">
+                    <div class="bottle-wrapper">
+                        <div class="floating-bottle">
+                            <img src="{% static 'website/images/herobottle.png' %}" alt="Socialz Water Bottle">
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
-<!-- Three Ways to Connect Section -->
-<section id="connect" class="py-5 bg-white">
+
+<script>
+    // Smooth scroll for Learn More button
+    document.querySelector('.btn-learn-more').addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector('#introducing');
+        if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    });
+</script>
+
+<!-- INTRODUCING SECTION -->
+<section id="introducing" class="intro-section">
     <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="display-5 fw-bold section-title mb-3">Three Ways to Partner with Socialz Water</h2>
-            <p class="section-subtitle" style="font-size: 1.1rem; max-width: 600px; margin: 0 auto;">
+        <div class="row align-items-center gy-4">
+            <div class="col-lg-6">
+                <div class="intro-image-wrapper">
+                    <img src="{% static 'website/images/water-bottle.jpeg' %}" alt="Socialz Water Innovation">
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="intro-content">
+                    <h2 class="intro-title">
+                        Introducing <span class="highlight">Socialz Water</span><br>
+                        where every sip counts!
+                    </h2>
+                    <p class="intro-text">
+                        We turn everyday water bottles into mini-billboards with QR codes, rewards, and custom branding.
+                        Your brand gets noticed, customers get rewarded, and every sip builds a lasting connection.
+                    </p>
+                    <div class="intro-buttons">
+                        <a href="#" class="btn-primary">Learn More</a>
+                        <a href="#" class="btn-secondary">Get Started</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- PARTNER WAYS SECTION -->
+<section class="partner-ways-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Three Ways to Partner with Socialz Water</h2>
+            <p class="section-subtitle">
                 Innovative partnership opportunities designed for brands, businesses, and entrepreneurs to grow together.
             </p>
         </div>
-        
-        <div class="row g-4 d-flex align-items-stretch justify-content-center">
-            <!-- Partners & Smart Brands -->
-            <div class="col-lg-4 col-md-6 d-flex">
-                <div class="feature-card p-4 text-center w-100 d-flex flex-column">
-                    <div class="feature-icon icon-blue mb-4" style="width: 80px; height: 80px; margin: 0 auto;">
-                        <i class="fas fa-bullhorn" style="font-size: 2rem;"></i>
+
+        <div class="row g-4 justify-content-center">
+            <div class="col-lg-4 col-md-6">
+                <div class="partner-card">
+                    <div class="partner-icon-wrapper blue">
+                        <i class="fas fa-bullhorn"></i>
                     </div>
-                    <h4 class="fw-bold mb-3">Partners & Smart Brands</h4>
-                    <p class="section-subtitle mb-4 flex-grow-1">
-                        Advertise with us through innovative water bottle QR technology. 
-                        Reach your target audience with engaging video campaigns and detailed analytics.
+                    <h3>Partners & Smart Brands</h3>
+                    <p>
+                        Advertise with us through innovative water bottle QR technology. Reach your target audience with engaging video campaigns and detailed analytics.
                     </p>
-                    
-                    <div class="bg-light rounded-3 p-3 mb-4">
-                        <div class="row g-2 text-start">
-                            <div class="col-6">
-                                <div class="d-flex align-items-center">
-                                    <i class="fas fa-video text-primary me-2"></i>
-                                    <small class="fw-medium">Video Ads</small>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="d-flex align-items-center">
-                                    <i class="fas fa-chart-bar text-success me-2"></i>
-                                    <small class="fw-medium">Live Analytics</small>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="d-flex align-items-center">
-                                    <i class="fas fa-users-cog text-info me-2"></i>
-                                    <small class="fw-medium">Target Audience</small>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="d-flex align-items-center">
-                                    <i class="fas fa-share-alt text-primary me-2"></i>
-                                    <small class="fw-medium">Brand Reach</small>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="partner-features">
+                        <div><i class="fas fa-video"></i> Video Ads</div>
+                        <div><i class="fas fa-users"></i> Target Audience</div>
+                        <div><i class="fas fa-chart-line"></i> Live Analytics</div>
+                        <div><i class="fas fa-bullseye"></i> Brand Reach</div>
                     </div>
-                    
-                    <button class="btn btn-primary w-100 mt-auto">
-                        <i class="fas fa-rocket me-2"></i>Start Advertising
-                    </button>
+                    <a href="{% url 'website:partner' %}#brand" class="btn-learn">Start Advertising</a>
                 </div>
             </div>
-            
-            <!-- For Business -->
-            <div class="col-lg-4 col-md-6 d-flex">
-                <div class="feature-card p-4 text-center w-100 d-flex flex-column">
-                    <div class="feature-icon icon-green mb-4" style="width: 80px; height: 80px; margin: 0 auto;">
-                        <i class="fas fa-building" style="font-size: 2rem;"></i>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="partner-card">
+                    <div class="partner-icon-wrapper green">
+                        <i class="fas fa-building"></i>
                     </div>
-                    <h4 class="fw-bold mb-3">For Business</h4>
-                    <p class="section-subtitle mb-4 flex-grow-1">
-                        Hotels, events, corporate offices - we supply premium water bottles with QR technology. 
-                        Enhance your guest experience while generating additional revenue.
+                    <h3>For Business</h3>
+                    <p>
+                        Hotels, events, corporate offices - we supply premium water bottles with QR technology. Enhance guest experience while generating additional revenue.
                     </p>
-                    
-                    <div class="bg-light rounded-3 p-3 mb-4">
-                        <div class="row g-2 text-start">
-                            <div class="col-6">
-                                <div class="d-flex align-items-center">
-                                    <i class="fas fa-hotel text-primary me-2"></i>
-                                    <small class="fw-medium">Hotels</small>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="d-flex align-items-center">
-                                    <i class="fas fa-calendar-alt text-success me-2"></i>
-                                    <small class="fw-medium">Events</small>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="d-flex align-items-center">
-                                    <i class="fas fa-building text-info me-2"></i>
-                                    <small class="fw-medium">Corporate</small>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="d-flex align-items-center">
-                                    <i class="fas fa-handshake text-primary me-2"></i>
-                                    <small class="fw-medium">Bulk Supply</small>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="partner-features">
+                        <div><i class="fas fa-hotel"></i> Hotels</div>
+                        <div><i class="fas fa-calendar-alt"></i> Events</div>
+                        <div><i class="fas fa-building"></i> Corporate</div>
+                        <div><i class="fas fa-boxes"></i> Bulk Supply</div>
                     </div>
-                    
-                    <button class="btn btn-primary w-100 mt-auto">
-                        <i class="fas fa-phone me-2"></i>Get Quote
-                    </button>
+                    <a href="{% url 'website:partner' %}#business" class="btn-learn">Get Quote</a>
                 </div>
             </div>
-            
-            <!-- Earn with Us -->
-            <div class="col-lg-4 col-md-6 d-flex">
-                <div class="feature-card p-4 text-center w-100 d-flex flex-column">
-                    <div class="feature-icon icon-orange mb-4" style="width: 80px; height: 80px; margin: 0 auto;">
-                        <i class="fas fa-coins" style="font-size: 2rem;"></i>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="partner-card">
+                    <div class="partner-icon-wrapper orange">
+                        <i class="fas fa-coins"></i>
                     </div>
-                    <h4 class="fw-bold mb-3">Earn with Us</h4>
-                    <p class="section-subtitle mb-4 flex-grow-1">
-                        Join as dealer, supplier, or manufacturer. Become part of our distribution network 
-                        and earn attractive commissions while building a sustainable business.
+                    <h3>Earn with Us</h3>
+                    <p>
+                        Join as dealer, supplier, or manufacturer. Become part of our distribution network and earn attractive commissions while building a sustainable business.
                     </p>
-                    
-                    <div class="bg-light rounded-3 p-3 mb-4">
-                        <div class="row g-2 text-start">
-                            <div class="col-6">
-                                <div class="d-flex align-items-center">
-                                    <i class="fas fa-store text-warning me-2"></i>
-                                    <small class="fw-medium">Dealers</small>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="d-flex align-items-center">
-                                    <i class="fas fa-truck text-primary me-2"></i>
-                                    <small class="fw-medium">Suppliers</small>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="d-flex align-items-center">
-                                    <i class="fas fa-industry text-secondary me-2"></i>
-                                    <small class="fw-medium">Manufacturers</small>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="d-flex align-items-center">
-                                    <i class="fas fa-chart-line text-success me-2"></i>
-                                    <small class="fw-medium">High Profits</small>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="partner-features">
+                        <div><i class="fas fa-store"></i> Dealers</div>
+                        <div><i class="fas fa-truck"></i> Suppliers</div>
+                        <div><i class="fas fa-industry"></i> Manufacturers</div>
+                        <div><i class="fas fa-chart-line"></i> High Profits</div>
                     </div>
-                    
-                    <a href="{% url 'website:contact' %}" class="btn btn-primary w-100 mt-auto">
-                        <i class="fas fa-handshake me-2"></i>Join Network
-                    </a>
+                    <a href="{% url 'website:partner' %}#earn" class="btn-learn">Join Network</a>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Environmental Impact Section -->
-<section class="py-5" style="background: var(--beige);">
+<!-- WHY CHOOSE US SECTION - ENHANCED BUT KEEPING ORIGINAL STRUCTURE -->
+<section id="why-choose-us" class="choose-us-section py-5">
     <div class="container">
         <div class="text-center mb-5">
-            <h2 class="display-5 fw-bold section-title mb-3">The Impact You're Making</h2>
-            <p class="section-subtitle" style="font-size: 1.1rem; max-width: 600px; margin: 0 auto;">
-                Every bottle you scan helps create a sustainable future and reduces environmental waste.
-            </p>
+            <h2 class="section-title">Why Choose Socialz Water</h2>
+            <p class="section-subtitle">Transforming brands with revolutionary water bottle marketing technology</p>
         </div>
         
-        <div class="row g-4 d-flex align-items-stretch">
-            <div class="col-lg-2 col-md-4 col-6 d-flex">
-                <div class="stats-card text-center p-4 w-100">
-                    <div class="feature-icon icon-green mb-3" style="width: 60px; height: 60px; margin: 0 auto;">
-                        <i class="fas fa-recycle" style="font-size: 1.5rem;"></i>
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="choose-item">
+                    <div class="choose-icon"><i class="fas fa-chart-line"></i></div>
+                    <div class="choose-content">
+                        <h4>Trackable Results</h4>
+                        <p>Know exactly how many customers scanned your bottles and interacted with your brand. Every engagement is measurable.</p>
                     </div>
-                    <div class="stats-number">50K+</div>
-                    <div class="stats-label">Bottles Recycled</div>
                 </div>
             </div>
             
-            <div class="col-lg-2 col-md-4 col-6 d-flex">
-                <div class="stats-card text-center p-4 w-100">
-                    <div class="feature-icon icon-blue mb-3" style="width: 60px; height: 60px; margin: 0 auto;">
-                        <i class="fas fa-leaf" style="font-size: 1.5rem;"></i>
+            <div class="col-md-6">
+                <div class="choose-item">
+                    <div class="choose-icon"><i class="fas fa-gift"></i></div>
+                    <div class="choose-content">
+                        <h4>Instant Rewards</h4>
+                        <p>Customers get cashback, coupons, or deals for every scan, boosting loyalty and repeat sales.</p>
                     </div>
-                    <div class="stats-number">2.5T</div>
-                    <div class="stats-label">CO2 Reduced</div>
                 </div>
             </div>
             
-            <div class="col-lg-2 col-md-4 col-6 d-flex">
-                <div class="stats-card text-center p-4 w-100">
-                    <div class="feature-icon icon-orange mb-3" style="width: 60px; height: 60px; margin: 0 auto;">
-                        <i class="fas fa-tree" style="font-size: 1.5rem;"></i>
+            <div class="col-md-6">
+                <div class="choose-item">
+                    <div class="choose-icon"><i class="fas fa-qrcode"></i></div>
+                    <div class="choose-content">
+                        <h4>QR Code Engagement</h4>
+                        <p>Each bottle bridges offline to online by connecting customers directly to your website and social media.</p>
                     </div>
-                    <div class="stats-number">1,200</div>
-                    <div class="stats-label">Trees Saved</div>
                 </div>
             </div>
             
-            <div class="col-lg-2 col-md-4 col-6 d-flex">
-                <div class="stats-card text-center p-4 w-100">
-                    <div class="feature-icon icon-coral mb-3" style="width: 60px; height: 60px; margin: 0 auto;">
-                        <i class="fas fa-water" style="font-size: 1.5rem;"></i>
+            <div class="col-md-6">
+                <div class="choose-item">
+                    <div class="choose-icon"><i class="fas fa-palette"></i></div>
+                    <div class="choose-content">
+                        <h4>Custom Branding</h4>
+                        <p>Bottle labels designed to reflect your brand's vision, ensuring personalized visibility.</p>
                     </div>
-                    <div class="stats-number">85%</div>
-                    <div class="stats-label">Water Conservation</div>
                 </div>
             </div>
             
-            <div class="col-lg-2 col-md-4 col-6 d-flex">
-                <div class="stats-card text-center p-4 w-100">
-                    <div class="feature-icon icon-green mb-3" style="width: 60px; height: 60px; margin: 0 auto;">
-                        <i class="fas fa-users" style="font-size: 1.5rem;"></i>
+            <div class="col-md-6">
+                <div class="choose-item">
+                    <div class="choose-icon"><i class="fas fa-comment-dots"></i></div>
+                    <div class="choose-content">
+                        <h4>Clutter-Free Messaging</h4>
+                        <p>Your brand's message is clear, direct, and always in the customer's hand.</p>
                     </div>
-                    <div class="stats-number">95%</div>
-                    <div class="stats-label">Community Participation</div>
                 </div>
             </div>
             
-            <div class="col-lg-2 col-md-4 col-6 d-flex">
-                <div class="stats-card text-center p-4 w-100">
-                    <div class="feature-icon icon-blue mb-3" style="width: 60px; height: 60px; margin: 0 auto;">
-                        <i class="fas fa-heart" style="font-size: 1.5rem;"></i>
+            <div class="col-md-6">
+                <div class="choose-item">
+                    <div class="choose-icon"><i class="fas fa-dollar-sign"></i></div>
+                    <div class="choose-content">
+                        <h4>Cost-Effective Marketing</h4>
+                        <p>Reach a wider audience with minimal expense while enhancing brand presence and engagement.</p>
                     </div>
-                    <div class="stats-number">92%</div>
-                    <div class="stats-label">User Satisfaction</div>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- App Promotion Section -->
-<section class="py-5 bg-white">
+<!-- REWARD PLATFORM SECTION -->
+<section id="reward-platform" class="reward-section py-5">
     <div class="container">
-        <div class="row align-items-center">
+        <div class="row align-items-center gy-4">
             <div class="col-lg-6">
-                <h2 class="display-6 fw-bold section-title mb-4">
-                    Rewarding advertising at your fingertips with the Socialz Water platform
-                </h2>
-                <p class="section-subtitle mb-4">
-                    Join thousands of users who are earning rewards while staying hydrated. 
-                    Our platform makes it easy to connect brands with consumers.
-                </p>
-                <a href="{% url 'website:contact' %}" class="btn btn-primary btn-lg">
-                    Find out more <i class="fas fa-arrow-right ms-2"></i>
-                </a>
+                <div class="reward-content">
+                    <h2>Rewarding advertising at your fingertips with the Socialz Water platform</h2>
+                    <p>Join thousands of users who are earning rewards while staying hydrated. Our platform makes it easy to connect brands with consumers.</p>
+                    <a href="#" class="btn-find-more">Find out more →</a>
+                </div>
             </div>
             <div class="col-lg-6 text-center">
-                <div class="position-relative">
-                    <div style="background: var(--orange); width: 280px; height: 360px; border-radius: 25px; margin: 0 auto; display: flex; align-items: center; justify-content: center; transform: rotate(-3deg);">
-                        <div style="background: white; width: 240px; height: 320px; border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem;">
-                            <i class="fas fa-mobile-screen-button" style="font-size: 2.5rem; color: var(--primary-blue);"></i>
-                            <div class="text-center">
-                                <h6 class="fw-bold">Socialz Water</h6>
-                                <small class="text-muted">Scan • Watch • Earn</small>
-                            </div>
-                            <div class="d-flex gap-2">
-                                <div class="bg-primary rounded" style="width: 25px; height: 3px;"></div>
-                                <div class="bg-secondary rounded" style="width: 15px; height: 3px;"></div>
-                                <div class="bg-warning rounded" style="width: 20px; height: 3px;"></div>
-                            </div>
+                <div class="reward-illustration">
+                    <div class="phone-frame">
+                        <div class="phone-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <div class="phone-text">
+                            <h5>Socialz Water</h5>
+                            <p>Scan • Watch • Earn</p>
+                        </div>
+                        <div class="phone-indicators">
+                            <span class="indicator blue"></span>
+                            <span class="indicator grey"></span>
+                            <span class="indicator yellow"></span>
                         </div>
                     </div>
                 </div>
@@ -337,21 +1001,14 @@
     </div>
 </section>
 
-<!-- Final CTA Section -->
-<section class="py-5" style="background: var(--primary-blue); color: white;">
-    <div class="container text-center">
-        <div class="row">
-            <div class="col-lg-8 mx-auto">
-                <h2 class="display-6 fw-bold mb-3">Ready to Start Earning?</h2>
-                <p class="lead mb-4">
-                    Join the Socialz Water community today and turn your hydration into rewards.
-                </p>
-                <div class="d-flex justify-content-center gap-3 flex-wrap">
-                    <a href="{% url 'website:contact' %}" class="btn btn-outline-light btn-lg px-4">
-                        <i class="fas fa-envelope me-2"></i>Get Started
-                    </a>
-                </div>
-            </div>
+<!-- ENHANCED CTA SECTION -->
+<section class="cta-section">
+    <div class="cta-content">
+        <h2>Ready to Transform Your Brand with Socialz Water?</h2>
+        <p>Join the revolution in interactive advertising and create meaningful connections with your customers</p>
+        <div class="cta-buttons">
+            <a href="{% url 'website:get-started' %}" class="cta-btn cta-btn-primary">Get Started Today</a>
+            <a href="{% url 'website:partner' %}" class="cta-btn cta-btn-secondary">Become a Partner</a>
         </div>
     </div>
 </section>

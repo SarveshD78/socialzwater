@@ -1,0 +1,532 @@
+{% extends 'campaign/base.html' %}
+{% load static %}
+
+{% block page_title %}Supplier Management{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="breadcrumb-item active">Suppliers</li>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Header */
+    .page-header {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+    }
+    
+    .page-title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+    
+    /* Type Stats */
+    .type-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .type-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 1.25rem;
+        text-align: center;
+    }
+    
+    .type-count {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #1f2937;
+    }
+    
+    .type-name {
+        font-size: 0.875rem;
+        color: #6b7280;
+        margin-top: 0.25rem;
+    }
+    
+    /* Filter Bar */
+    .filter-bar {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+        margin-bottom: 2rem;
+    }
+    
+    /* Table Container */
+    .table-container {
+        background: white;
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+        overflow: hidden;
+    }
+    
+    .table-header {
+        padding: 1.5rem;
+        border-bottom: 1px solid #e5e7eb;
+        background: #f9fafb;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    /* Data Table */
+    .data-table {
+        width: 100%;
+    }
+    
+    .data-table thead {
+        background: #f9fafb;
+        border-bottom: 2px solid #e5e7eb;
+    }
+    
+    .data-table th {
+        padding: 1rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #4b5563;
+        text-align: left;
+    }
+    
+    .data-table td {
+        padding: 0.875rem 1rem;
+        border-bottom: 1px solid #f3f4f6;
+        vertical-align: middle;
+    }
+    
+    .data-table tbody tr:hover {
+        background: #f9fafb;
+    }
+    
+    /* Type Badge */
+    .type-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+    
+    .type-badge.hotel { background: #dbeafe; color: #1e3a8a; }
+    .type-badge.event { background: #fce7f3; color: #9f1239; }
+    .type-badge.distributor { background: #f3e8ff; color: #6b21a8; }
+    .type-badge.restaurant { background: #fed7aa; color: #9a3412; }
+    .type-badge.catering { background: #fef3c7; color: #92400e; }
+    .type-badge.retailer { background: #d1fae5; color: #065f46; }
+    .type-badge.other { background: #f3f4f6; color: #4b5563; }
+    
+    /* Status Toggle */
+    .status-toggle {
+        cursor: pointer;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        border: none;
+        transition: all 0.2s;
+    }
+    
+    .status-toggle.active {
+        background: #d1fae5;
+        color: #065f46;
+    }
+    
+    .status-toggle.inactive {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+    
+    /* Rating Stars */
+    .rating-stars {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+    
+    .rating-stars input {
+        display: none;
+    }
+    
+    .rating-stars label {
+        cursor: pointer;
+        color: #d1d5db;
+        font-size: 1rem;
+        margin: 0;
+    }
+    
+    .rating-stars label:hover,
+    .rating-stars label.active {
+        color: #fbbf24;
+    }
+    
+    /* Action Buttons */
+    .btn-action {
+        padding: 0.375rem;
+        font-size: 0.875rem;
+        border-radius: 6px;
+        border: 1px solid #d1d5db;
+        background: white;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    
+    .btn-action:hover {
+        background: #f3f4f6;
+        transform: translateY(-1px);
+    }
+    
+    /* Contact Info */
+    .contact-info {
+        font-size: 0.875rem;
+        color: #6b7280;
+    }
+    
+    .contact-name {
+        font-weight: 600;
+        color: #1f2937;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h1 class="page-title">Supplier Management</h1>
+            <p class="mb-0 opacity-90">Manage hotels, events, distributors and other suppliers</p>
+        </div>
+        <button class="btn btn-white" data-bs-toggle="modal" data-bs-target="#addSupplierModal">
+            <i class="fas fa-plus me-2"></i>Add Supplier
+        </button>
+    </div>
+</div>
+
+<!-- Type Statistics -->
+<div class="type-stats">
+    {% for type_name, count in type_stats.items %}
+    <div class="type-card">
+        <div class="type-count">{{ count|default:0 }}</div>
+        <div class="type-name">{{ type_name }}</div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Filter Bar -->
+<div class="filter-bar">
+    <form method="get">
+        <div class="row g-3">
+            <div class="col-md-5">
+                <input type="text" name="search" class="form-control" 
+                       placeholder="Search suppliers..." value="{{ search_query }}">
+            </div>
+            <div class="col-md-3">
+                <select name="type" class="form-select">
+                    <option value="">All Types</option>
+                    {% for value, label in supplier_types %}
+                    <option value="{{ value }}" {% if type_filter == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select name="status" class="form-select">
+                    <option value="">All Status</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-filter me-2"></i>Filter
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Suppliers Table -->
+<div class="table-container">
+    <div class="table-header">
+        <h5 class="mb-0">Suppliers ({{ total_count }})</h5>
+        <div>
+            <button class="btn btn-sm btn-outline-primary" onclick="exportSuppliers()">
+                <i class="fas fa-download me-1"></i>Export
+            </button>
+        </div>
+    </div>
+    
+    <div class="table-responsive">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th width="30">
+                        <input type="checkbox" id="selectAll">
+                    </th>
+                    <th>Supplier Name</th>
+                    <th>Type</th>
+                    <th>Contact</th>
+                    <th>Location</th>
+                    <th>Supplies</th>
+                    <th>Rating</th>
+                    <th>Status</th>
+                    <th width="120">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for supplier in suppliers %}
+                <tr data-id="{{ supplier.id }}">
+                    <td>
+                        <input type="checkbox" class="row-select" value="{{ supplier.id }}">
+                    </td>
+                    <td>
+                        <div>
+                            <strong>{{ supplier.name }}</strong>
+                            {% if supplier.business_license %}
+                            <br><small class="text-muted">License: {{ supplier.business_license }}</small>
+                            {% endif %}
+                        </div>
+                    </td>
+                    <td>
+                        <span class="type-badge {{ supplier.supplier_type }}">
+                            {{ supplier.get_supplier_type_display }}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="contact-info">
+                            <div class="contact-name">{{ supplier.contact_person }}</div>
+                            <div>{{ supplier.contact_number }}</div>
+                            {% if supplier.email %}
+                            <a href="mailto:{{ supplier.email }}">{{ supplier.email }}</a>
+                            {% endif %}
+                        </div>
+                    </td>
+                    <td>
+                        {{ supplier.city }}, {{ supplier.state }}
+                        {% if supplier.postal_code %}<br>{{ supplier.postal_code }}{% endif %}
+                    </td>
+                    <td>
+                        <span class="badge bg-primary">{{ supplier.supply_count|default:0 }}</span>
+                        {% if supplier.active_supply_count > 0 %}
+                        <br><small class="text-muted">{{ supplier.active_supply_count }} active</small>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="rating-stars" data-id="{{ supplier.id }}">
+                            {% for i in "12345" %}
+                            <input type="radio" id="star{{ i }}_{{ supplier.id }}" name="rating_{{ supplier.id }}" value="{{ i }}">
+                            <label for="star{{ i }}_{{ supplier.id }}" 
+                                   class="{% if supplier.rating >= i|add:0 %}active{% endif %}"
+                                   onclick="updateRating({{ supplier.id }}, {{ i }})">
+                                <i class="fas fa-star"></i>
+                            </label>
+                            {% endfor %}
+                        </div>
+                        <small class="text-muted">{{ supplier.rating|floatformat:1 }}/5</small>
+                    </td>
+                    <td>
+                        <form method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="toggle_status">
+                            <input type="hidden" name="supplier_id" value="{{ supplier.id }}">
+                            <button type="submit" class="status-toggle {% if supplier.is_active %}active{% else %}inactive{% endif %}">
+                                {% if supplier.is_active %}
+                                    <i class="fas fa-check-circle"></i> Active
+                                {% else %}
+                                    <i class="fas fa-times-circle"></i> Inactive
+                                {% endif %}
+                            </button>
+                        </form>
+                    </td>
+                    <td>
+                        <div class="d-flex gap-1">
+                            <button class="btn-action" onclick="editSupplier({{ supplier.id }})" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <a href="{% url 'sw:supply_list' %}?supplier={{ supplier.id }}" 
+                               class="btn-action" title="View Supplies">
+                                <i class="fas fa-truck"></i>
+                            </a>
+                            <button class="btn-action text-danger" 
+                                    onclick="deleteSupplier({{ supplier.id }}, '{{ supplier.name|escapejs }}')" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9" class="text-center py-5">
+                        <i class="fas fa-truck fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No suppliers found</p>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSupplierModal">
+                            Add First Supplier
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- Pagination -->
+    {% if suppliers.has_other_pages %}
+    <div class="p-3 border-top">
+        <nav>
+            <ul class="pagination justify-content-center mb-0">
+                {% if suppliers.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ suppliers.previous_page_number }}">Previous</a>
+                </li>
+                {% endif %}
+                
+                {% for num in suppliers.paginator.page_range %}
+                    {% if suppliers.number == num %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ num }}</span>
+                    </li>
+                    {% elif num > suppliers.number|add:'-3' and num < suppliers.number|add:'3' %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                    </li>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if suppliers.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ suppliers.next_page_number }}">Next</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Add/Edit Supplier Modal -->
+<div class="modal fade" id="addSupplierModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Supplier</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="create">
+                <input type="hidden" name="supplier_id" id="supplierId">
+                
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Supplier Name *</label>
+                            <input type="text" class="form-control" name="name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Type *</label>
+                            <select class="form-select" name="supplier_type" required>
+                                <option value="">Select Type</option>
+                                {% for value, label in supplier_types %}
+                                <option value="{{ value }}">{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Contact Person *</label>
+                            <input type="text" class="form-control" name="contact_person" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Phone Number *</label>
+                            <input type="tel" class="form-control" name="contact_number" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" name="email">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Address *</label>
+                            <textarea class="form-control" name="address" rows="2" required></textarea>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">City *</label>
+                            <input type="text" class="form-control" name="city" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">State *</label>
+                            <input type="text" class="form-control" name="state" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Postal Code</label>
+                            <input type="text" class="form-control" name="postal_code">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Business License</label>
+                            <input type="text" class="form-control" name="business_license">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">GST Number</label>
+                            <input type="text" class="form-control" name="gst_number">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Supplier</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function updateRating(supplierId, rating) {
+    fetch('{% url "sw:supplier_list" %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: `action=update_rating&supplier_id=${supplierId}&rating=${rating}`
+    }).then(response => {
+        if(response.ok) {
+            location.reload();
+        }
+    });
+}
+
+function deleteSupplier(id, name) {
+    if(confirm(`Delete supplier "${name}"?`)) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.innerHTML = `
+            {% csrf_token %}
+            <input type="hidden" name="action" value="delete">
+            <input type="hidden" name="supplier_id" value="${id}">
+        `;
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+
+function exportSuppliers() {
+    window.location.href = '{% url "sw:export_suppliers" %}';
+}
+
+// Select All
+document.getElementById('selectAll').addEventListener('change', function() {
+    const checkboxes = document.querySelectorAll('.row-select');
+    checkboxes.forEach(cb => cb.checked = this.checked);
+});
+</script>
+{% endblock %}

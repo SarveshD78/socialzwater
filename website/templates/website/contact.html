@@ -1,426 +1,716 @@
+<!-- contact.html - Django Contact Us Page Template -->
 {% extends 'website/base.html' %}
+{% load static %}
 
 {% block title %}Contact Us - Socialz Water{% endblock %}
 
-{% block content %}
-<!-- Contact Us Banner -->
-<section class="hero-section">
-    <div class="container">
-        <div class="row align-items-center text-center" style="min-height: 80vh;">
-            <div class="col-12">
-                <h1 class="display-3 fw-bold mb-4" style="font-size: clamp(2.5rem, 5vw, 4rem); line-height: 1.2;">
-                    Get in Touch
-                </h1>
-                <p class="lead mb-5" style="font-size: 1.5rem; color: rgba(255,255,255,0.9); max-width: 800px; margin: 0 auto;">
-                    Ready to join the Socialz Water revolution? We'd love to hear from you. 
-                    Reach out for partnerships, support, or just to say hello.
-                </p>
-                <div class="d-flex justify-content-center gap-3 flex-wrap">
-                    <a href="#contact-form" class="btn btn-primary btn-lg">
-                        <i class="fas fa-envelope me-2"></i>Send Message
-                    </a>
-                    <a href="#contact-info" class="btn btn-outline-light btn-lg">
-                        <i class="fas fa-phone me-2"></i>Call Us
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-<!-- Contact Information Cards -->
-<!-- Contact Form Section - Updated -->
-<section id="contact-form" class="py-5" style="background: var(--beige);">
-    <div class="container">
-        <div class="row">
-            <!-- Form -->
-            <div class="col-lg-8">
-                <div class="bg-white rounded-4 p-5 shadow-lg">
-                    <h3 class="fw-bold mb-4" style="color: var(--dark-gray);">Send Us a Message</h3>
-                    <p class="section-subtitle mb-4">
-                        Fill out the form below and we'll get back to you as soon as possible.
-                    </p>
-                    
-                    {% if messages %}
-                        {% for message in messages %}
-                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                                <i class="fas fa-check-circle me-2"></i>{{ message }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                            </div>
-                        {% endfor %}
-                    {% endif %}
-                    
-                    <form method="post" class="needs-validation" novalidate>
-                        {% csrf_token %}
-                        <div class="row g-3">
-                            <!-- Name -->
-                            <div class="col-md-6">
-                                <label for="{{ form.name.id_for_label }}" class="form-label fw-medium">{{ form.name.label }}</label>
-                                {{ form.name }}
-                                {% if form.name.errors %}
-                                    <div class="invalid-feedback d-block">{{ form.name.errors.0 }}</div>
-                                {% endif %}
-                            </div>
-                            
-                            <!-- Email -->
-                            <div class="col-md-6">
-                                <label for="{{ form.email.id_for_label }}" class="form-label fw-medium">{{ form.email.label }}</label>
-                                {{ form.email }}
-                                {% if form.email.errors %}
-                                    <div class="invalid-feedback d-block">{{ form.email.errors.0 }}</div>
-                                {% endif %}
-                            </div>
-                            
-                            <!-- Phone -->
-                            <div class="col-md-6">
-                                <label for="{{ form.phone.id_for_label }}" class="form-label fw-medium">{{ form.phone.label }}</label>
-                                {{ form.phone }}
-                                {% if form.phone.errors %}
-                                    <div class="invalid-feedback d-block">{{ form.phone.errors.0 }}</div>
-                                {% endif %}
-                            </div>
-                            
-                            <!-- City -->
-                            <div class="col-md-6">
-                                <label for="{{ form.city.id_for_label }}" class="form-label fw-medium">{{ form.city.label }}</label>
-                                {{ form.city }}
-                                {% if form.city.errors %}
-                                    <div class="invalid-feedback d-block">{{ form.city.errors.0 }}</div>
-                                {% endif %}
-                            </div>
-                            
-                            <!-- Interest -->
-                            <div class="col-12">
-                                <label for="{{ form.interest.id_for_label }}" class="form-label fw-medium">{{ form.interest.label }}</label>
-                                {{ form.interest }}
-                                {% if form.interest.errors %}
-                                    <div class="invalid-feedback d-block">{{ form.interest.errors.0 }}</div>
-                                {% endif %}
-                            </div>
-                            
-                            <!-- Message -->
-                            <div class="col-12">
-                                <label for="{{ form.message.id_for_label }}" class="form-label fw-medium">{{ form.message.label }}</label>
-                                {{ form.message }}
-                                {% if form.message.errors %}
-                                    <div class="invalid-feedback d-block">{{ form.message.errors.0 }}</div>
-                                {% endif %}
-                            </div>
-                            
-                            <!-- Captcha -->
-                            <div class="col-12">
-                                <div class="form-check">
-                                    {{ form.verification }}
-                                    <label class="form-check-label" for="{{ form.verification.id_for_label }}">
-                                        {{ form.verification.label }} *
-                                    </label>
-                                    {% if form.verification.errors %}
-                                        <div class="invalid-feedback d-block">{{ form.verification.errors.0 }}</div>
-                                    {% endif %}
-                                </div>
-                            </div>
-                            
-                            <!-- Submit Button -->
-                            <div class="col-12">
-                                <button type="submit" class="btn btn-primary btn-lg px-5">
-                                    <i class="fas fa-paper-plane me-2"></i>Send Message
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            
-            <!-- Side Information -->
-            <div class="col-lg-4">
-                <div class="bg-white rounded-4 p-4 shadow-lg mb-4">
-                    <h5 class="fw-bold mb-3" style="color: var(--dark-gray);">Quick Response</h5>
-                    <p class="section-subtitle mb-3" style="font-size: 0.95rem;">
-                        We typically respond to all inquiries within 24 hours during business days.
-                    </p>
-                    <div class="d-flex align-items-center mb-2">
-                        <i class="fas fa-clock text-primary me-2"></i>
-                        <small>Business Hours: 9 AM - 6 PM IST</small>
-                    </div>
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-calendar text-primary me-2"></i>
-                        <small>Monday - Friday</small>
-                    </div>
-                </div>
-                
-                <div class="bg-white rounded-4 p-4 shadow-lg mb-4">
-                    <h5 class="fw-bold mb-3" style="color: var(--dark-gray);">Follow Us</h5>
-                    <p class="section-subtitle mb-3" style="font-size: 0.95rem;">
-                        Stay updated with our latest news and updates.
-                    </p>
-                    <div class="d-flex gap-2">
-                        <a href="#" style="display: flex; align-items: center; justify-content: center; width: 35px; height: 35px; border-radius: 8px; background: #1877F2; color: white; text-decoration: none; transition: all 0.3s ease;">
-                            <i class="fab fa-facebook" style="font-size: 1rem;"></i>
-                        </a>
-                        <a href="#" style="display: flex; align-items: center; justify-content: center; width: 35px; height: 35px; border-radius: 8px; background: #1DA1F2; color: white; text-decoration: none; transition: all 0.3s ease;">
-                            <i class="fab fa-twitter" style="font-size: 1rem;"></i>
-                        </a>
-                        <a href="#" style="display: flex; align-items: center; justify-content: center; width: 35px; height: 35px; border-radius: 8px; background: #E4405F; color: white; text-decoration: none; transition: all 0.3s ease;">
-                            <i class="fab fa-instagram" style="font-size: 1rem;"></i>
-                        </a>
-                        <a href="#" style="display: flex; align-items: center; justify-content: center; width: 35px; height: 35px; border-radius: 8px; background: #0A66C2; color: white; text-decoration: none; transition: all 0.3s ease;">
-                            <i class="fab fa-linkedin" style="font-size: 1rem;"></i>
-                        </a>
-                    </div>
-                </div>
-                
-                <div class="bg-white rounded-4 p-4 shadow-lg">
-                    <h5 class="fw-bold mb-3" style="color: var(--dark-gray);">Need Immediate Help?</h5>
-                    <p class="section-subtitle mb-3" style="font-size: 0.95rem;">
-                        For urgent matters, call us directly or send a WhatsApp message.
-                    </p>
-                    <a href="tel:+919876543210" class="btn btn-success btn-sm me-2 mb-2">
-                        <i class="fab fa-whatsapp me-1"></i>WhatsApp
-                    </a>
-                    <a href="tel:+919876543210" class="btn btn-primary btn-sm mb-2">
-                        <i class="fas fa-phone me-1"></i>Call Now
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+{% block extra_css %}
+<!-- CRITICAL: Header transparency override - Must be FIRST before any other CSS -->
+<style>
+    /* Ultra-specific transparency override */
+    body header#header,
+    html header#header,
+    header#header.header,
+    #header {
+        background: transparent !important;
+        background-color: transparent !important;
+        backdrop-filter: none !important;
+        box-shadow: none !important;
+        border: none !important;
+    }
+    
+    body header#header.scrolled,
+    html header#header.scrolled,
+    header#header.scrolled.header,
+    #header.scrolled {
+        background: rgba(255, 255, 255, 0.95) !important;
+        background-color: rgba(255, 255, 255, 0.95) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+    }
+    
+    /* Override any Bootstrap navbar classes */
+    .navbar, .bg-light, .bg-white {
+        background: transparent !important;
+        background-color: transparent !important;
+    }
+</style>
 
-<!-- Contact Form Section - Updated -->
-<section id="contact-form" class="py-5" style="background: var(--beige);">
-    <div class="container">
-        <div class="row">
-            <!-- Form -->
-            <div class="col-lg-8">
-                <div class="bg-white rounded-4 p-5 shadow-lg">
-                    <h3 class="fw-bold mb-4" style="color: var(--dark-gray);">Send Us a Message</h3>
-                    <p class="section-subtitle mb-4">
-                        Fill out the form below and we'll get back to you as soon as possible.
-                    </p>
-                    
-                    {% if messages %}
-                        {% for message in messages %}
-                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                                {{ message }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                            </div>
-                        {% endfor %}
-                    {% endif %}
-                    
-                    <form method="post" class="needs-validation" novalidate>
-                        {% csrf_token %}
-                        <div class="row g-3">
-                            <!-- Name -->
-                            <div class="col-md-6">
-                                <label for="{{ form.name.id_for_label }}" class="form-label fw-medium">{{ form.name.label }}</label>
-                                {{ form.name }}
-                                {% if form.name.errors %}
-                                    <div class="invalid-feedback d-block">{{ form.name.errors.0 }}</div>
-                                {% endif %}
-                            </div>
-                            
-                            <!-- Email -->
-                            <div class="col-md-6">
-                                <label for="{{ form.email.id_for_label }}" class="form-label fw-medium">{{ form.email.label }}</label>
-                                {{ form.email }}
-                                {% if form.email.errors %}
-                                    <div class="invalid-feedback d-block">{{ form.email.errors.0 }}</div>
-                                {% endif %}
-                            </div>
-                            
-                            <!-- Phone -->
-                            <div class="col-md-6">
-                                <label for="{{ form.phone.id_for_label }}" class="form-label fw-medium">{{ form.phone.label }}</label>
-                                {{ form.phone }}
-                                {% if form.phone.errors %}
-                                    <div class="invalid-feedback d-block">{{ form.phone.errors.0 }}</div>
-                                {% endif %}
-                            </div>
-                            
-                            <!-- City -->
-                            <div class="col-md-6">
-                                <label for="{{ form.city.id_for_label }}" class="form-label fw-medium">{{ form.city.label }}</label>
-                                {{ form.city }}
-                                {% if form.city.errors %}
-                                    <div class="invalid-feedback d-block">{{ form.city.errors.0 }}</div>
-                                {% endif %}
-                            </div>
-                            
-                            <!-- Interest -->
-                            <div class="col-12">
-                                <label for="{{ form.interest.id_for_label }}" class="form-label fw-medium">{{ form.interest.label }}</label>
-                                {{ form.interest }}
-                                {% if form.interest.errors %}
-                                    <div class="invalid-feedback d-block">{{ form.interest.errors.0 }}</div>
-                                {% endif %}
-                            </div>
-                            
-                            <!-- Message -->
-                            <div class="col-12">
-                                <label for="{{ form.message.id_for_label }}" class="form-label fw-medium">{{ form.message.label }}</label>
-                                {{ form.message }}
-                                {% if form.message.errors %}
-                                    <div class="invalid-feedback d-block">{{ form.message.errors.0 }}</div>
-                                {% endif %}
-                            </div>
-                            
-                            <!-- Captcha -->
-                            <div class="col-12">
-                                <div class="form-check">
-                                    {{ form.verification }}
-                                    <label class="form-check-label" for="{{ form.verification.id_for_label }}">
-                                        {{ form.verification.label }} *
-                                    </label>
-                                    {% if form.verification.errors %}
-                                        <div class="invalid-feedback d-block">{{ form.verification.errors.0 }}</div>
-                                    {% endif %}
-                                </div>
-                            </div>
-                            
-                            <!-- Submit Button -->
-                            <div class="col-12">
-                                <button type="submit" class="btn btn-primary btn-lg px-5">
-                                    <i class="fas fa-paper-plane me-2"></i>Send Message
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            
-            <!-- Side Information -->
-            <div class="col-lg-4">
-                <div class="bg-white rounded-4 p-4 shadow-lg mb-4">
-                    <h5 class="fw-bold mb-3" style="color: var(--dark-gray);">Quick Response</h5>
-                    <p class="section-subtitle mb-3" style="font-size: 0.95rem;">
-                        We typically respond to all inquiries within 24 hours during business days.
-                    </p>
-                    <div class="d-flex align-items-center mb-2">
-                        <i class="fas fa-clock text-primary me-2"></i>
-                        <small>Business Hours: 9 AM - 6 PM IST</small>
-                    </div>
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-calendar text-primary me-2"></i>
-                        <small>Monday - Friday</small>
-                    </div>
-                </div>
-                
-                <div class="bg-white rounded-4 p-4 shadow-lg mb-4">
-                    <h5 class="fw-bold mb-3" style="color: var(--dark-gray);">Follow Us</h5>
-                    <p class="section-subtitle mb-3" style="font-size: 0.95rem;">
-                        Stay updated with our latest news and updates.
-                    </p>
-                    <div class="d-flex gap-2">
-                        <a href="#" style="display: flex; align-items: center; justify-content: center; width: 35px; height: 35px; border-radius: 8px; background: #1877F2; color: white; text-decoration: none; transition: all 0.3s ease;">
-                            <i class="fab fa-facebook" style="font-size: 1rem;"></i>
-                        </a>
-                        <a href="#" style="display: flex; align-items: center; justify-content: center; width: 35px; height: 35px; border-radius: 8px; background: #1DA1F2; color: white; text-decoration: none; transition: all 0.3s ease;">
-                            <i class="fab fa-twitter" style="font-size: 1rem;"></i>
-                        </a>
-                        <a href="#" style="display: flex; align-items: center; justify-content: center; width: 35px; height: 35px; border-radius: 8px; background: #E4405F; color: white; text-decoration: none; transition: all 0.3s ease;">
-                            <i class="fab fa-instagram" style="font-size: 1rem;"></i>
-                        </a>
-                        <a href="#" style="display: flex; align-items: center; justify-content: center; width: 35px; height: 35px; border-radius: 8px; background: #0A66C2; color: white; text-decoration: none; transition: all 0.3s ease;">
-                            <i class="fab fa-linkedin" style="font-size: 1rem;"></i>
-                        </a>
-                    </div>
-                </div>
-                
-                <div class="bg-white rounded-4 p-4 shadow-lg">
-                    <h5 class="fw-bold mb-3" style="color: var(--dark-gray);">Need Immediate Help?</h5>
-                    <p class="section-subtitle mb-3" style="font-size: 0.95rem;">
-                        For urgent matters, call us directly or send a WhatsApp message.
-                    </p>
-                    <a href="tel:+919876543210" class="btn btn-success btn-sm me-2 mb-2">
-                        <i class="fab fa-whatsapp me-1"></i>WhatsApp
-                    </a>
-                    <a href="tel:+919876543210" class="btn btn-primary btn-sm mb-2">
-                        <i class="fas fa-phone me-1"></i>Call Now
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+<!-- Now load external CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-<!-- Partnership Opportunities -->
-<section class="py-5 bg-white">
-    <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="display-5 fw-bold section-title mb-3">Partnership Opportunities</h2>
-            <p class="section-subtitle" style="font-size: 1.1rem; max-width: 600px; margin: 0 auto;">
-                Join our ecosystem and be part of the innovative advertising revolution.
-            </p>
-        </div>
+<style>
+    /* Color Variables matching other pages */
+    :root {
+        --primary-green: #014a3b;
+        --dark-green: #00866a;
+        --accent-blue: #1E90FF;
+        --dark-blue: #0A3D62;
+        --dark-overlay: rgba(0, 0, 0, 0.7);
+        --white: #FFFFFF;
+        --black: #000000;
+        --dark-gray: #2C3E50;
+        --light-gray: #f8f9fa;
+    }
+    
+    /* Hero Section with Background Image - NO ANIMATION */
+    .contact-hero {
+        height: 60vh;
+        background-image: url('{% static "website/images/transparent-water-bottle-studio.jpg" %}');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: -80px;
+        padding-top: 80px;
+    }
+    
+    .contact-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: var(--dark-overlay);
+        z-index: 1;
+    }
+    
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        color: var(--white);
+    }
+    
+    .hero-title {
+        font-size: 3.5rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: -2px;
+        margin-bottom: 15px;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+    
+    .hero-subtitle {
+        font-size: 1.2rem;
+        font-weight: 300;
+        opacity: 0.9;
+        max-width: 600px;
+        margin: 0 auto;
+        text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Contact Info Section */
+    .contact-info-section {
+        padding: 80px 0;
+        background: var(--white);
+    }
+    
+    .info-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        margin-bottom: 40px;
+    }
+    
+    .info-card {
+        background: var(--white);
+        padding: 40px 30px;
+        border-radius: 20px;
+        text-align: center;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .info-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--accent-blue), var(--primary-green));
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+    }
+    
+    .info-card:hover::before {
+        transform: scaleX(1);
+    }
+    
+    .info-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 50px rgba(30, 144, 255, 0.15);
+    }
+    
+    .info-icon {
+        width: 70px;
+        height: 70px;
+        background: linear-gradient(135deg, var(--accent-blue), var(--primary-green));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 25px;
+        font-size: 28px;
+        color: var(--white);
+        box-shadow: 0 8px 25px rgba(30, 144, 255, 0.25);
+    }
+    
+    .info-card h3 {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: var(--dark-gray);
+        margin-bottom: 15px;
+    }
+    
+    .info-card p {
+        color: #636E72;
+        margin: 0;
+        line-height: 1.7;
+    }
+    
+    .info-card a {
+        color: var(--accent-blue);
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    .info-card a:hover {
+        color: var(--primary-green);
+        text-decoration: underline;
+    }
+    
+    /* Contact Form Section */
+    .contact-form-section {
+        padding: 80px 0;
+        background: var(--light-gray);
+    }
+    
+    .form-container {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+    
+    .section-header {
+        text-align: center;
+        margin-bottom: 50px;
+    }
+    
+    .section-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--dark-gray);
+        margin-bottom: 15px;
+    }
+    
+    .section-subtitle {
+        font-size: 1.1rem;
+        color: #636E72;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    .contact-form {
+        background: var(--white);
+        padding: 50px;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .form-group {
+        margin-bottom: 25px;
+    }
+    
+    .form-group label {
+        font-weight: 600;
+        color: var(--dark-gray);
+        margin-bottom: 8px;
+        display: block;
+        font-size: 0.95rem;
+    }
+    
+    .form-control {
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        padding: 12px 15px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        width: 100%;
+        background: var(--white);
+    }
+    
+    .form-control:focus {
+        border-color: var(--accent-blue);
+        box-shadow: 0 0 0 3px rgba(30, 144, 255, 0.1);
+        outline: none;
+        background: var(--white);
+    }
+    
+    .form-control:hover {
+        border-color: #d0d0d0;
+    }
+    
+    .captcha-group {
+        background: var(--light-gray);
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 25px;
+        border: 2px solid #e0e0e0;
+    }
+    
+    .captcha-label {
+        display: block;
+        margin-bottom: 10px;
+        color: #636E72;
+        font-weight: 500;
+    }
+    
+    .captcha-box {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+    
+    .captcha-display {
+        background: linear-gradient(135deg, var(--white), var(--light-gray));
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        letter-spacing: 3px;
+        color: var(--dark-gray);
+        user-select: none;
+        border: 2px solid #e0e0e0;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    
+    /* Simple White Button with Blue-Green Hover */
+    .btn-submit {
+        background: var(--white);
+        color: var(--accent-blue);
+        border: 2px solid var(--accent-blue);
+        padding: 15px 50px;
+        border-radius: 50px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 100%;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+    }
+    
+    .btn-submit:hover {
+        background: linear-gradient(135deg, var(--accent-blue), var(--primary-green));
+        color: var(--white);
+        border-color: transparent;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(30, 144, 255, 0.3);
+    }
+    
+    .btn-submit:active {
+        transform: translateY(0);
+    }
+    
+    /* Map Section */
+    .map-section {
+        padding: 80px 0;
+        background: var(--white);
+    }
+    
+    .map-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .map-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+    
+    .map-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--dark-gray);
+        margin-bottom: 15px;
+    }
+    
+    .map-subtitle {
+        font-size: 1.1rem;
+        color: #636E72;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    .map-wrapper {
+        background: var(--white);
+        padding: 15px;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .map-wrapper iframe {
+        border-radius: 15px;
+        filter: grayscale(20%);
+        transition: filter 0.3s ease;
+    }
+    
+    .map-wrapper:hover iframe {
+        filter: grayscale(0%);
+    }
+    
+    /* Enhanced CTA Section - NO ANIMATION */
+    .contact-cta {
+        padding: 80px 0;
+        background: linear-gradient(135deg, var(--accent-blue) 0%, var(--primary-green) 50%, var(--black) 100%);
+        text-align: center;
+        color: var(--white);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .cta-content {
+        position: relative;
+        z-index: 3;
+    }
+    
+    .contact-cta h2 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+    
+    .contact-cta p {
+        font-size: 1.1rem;
+        margin-bottom: 30px;
+        opacity: 0.95;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    }
+    
+    .cta-info {
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        flex-wrap: wrap;
+        margin-top: 30px;
+    }
+    
+    .cta-info-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+    
+    .cta-info-item i {
+        font-size: 1.2rem;
+        color: var(--white);
+    }
+    
+    .cta-info-item a {
+        color: var(--white);
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    
+    .cta-info-item a:hover {
+        text-decoration: underline;
+        opacity: 1;
+    }
+    
+    /* Responsive */
+    @media (max-width: 991px) {
+        .contact-hero {
+            margin-top: -70px;
+            padding-top: 70px;
+            height: 50vh;
+        }
         
-        <div class="row g-4">
-            <!-- Partners & Smart Brands -->
-            <div class="col-lg-4 col-md-6 d-flex">
-                <div class="feature-card text-center p-4 w-100 d-flex flex-column">
-                    <div class="feature-icon icon-blue mb-3" style="width: 60px; height: 60px; margin: 0 auto;">
-                        <i class="fas fa-bullhorn" style="font-size: 1.5rem;"></i>
-                    </div>
-                    <h5 class="fw-bold mb-2">Partners & Smart Brands</h5>
-                    <p class="section-subtitle mb-3 flex-grow-1" style="font-size: 0.9rem;">
-                        Advertise with us through innovative water bottle QR technology and reach your target audience.
-                    </p>
-                    <a href="mailto:partners@socialzwater.com?subject=Brand Partnership" class="btn btn-outline-primary btn-sm mt-auto">
-                        Learn More
-                    </a>
-                </div>
+        .info-cards {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 2.5rem;
+        }
+        
+        .hero-subtitle {
+            font-size: 1rem;
+        }
+        
+        .contact-form {
+            padding: 30px 20px;
+        }
+        
+        .section-title {
+            font-size: 2rem;
+        }
+        
+        .map-title {
+            font-size: 2rem;
+        }
+        
+        .contact-cta h2 {
+            font-size: 2rem;
+        }
+        
+        .cta-info {
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .btn-submit {
+            padding: 15px 30px;
+            font-size: 1rem;
+        }
+    }
+</style>
+
+{% endblock %}
+
+{% block content %}
+{% load static %}
+
+<!-- Hero Section -->
+<section class="contact-hero">
+    <div class="hero-content">
+        <h1 class="hero-title">Contact Us</h1>
+        <p class="hero-subtitle">We'd love to hear from you. Let's start a conversation about transforming your advertising strategy.</p>
+    </div>
+</section>
+
+<!-- Contact Info Section -->
+<section class="contact-info-section">
+    <div class="container">
+        <div class="info-cards">
+            <div class="info-card">
+                <div class="info-icon">📧</div>
+                <h3>Email Us</h3>
+                <p>
+                    <a href="mailto:info@socialzwater.com">info@socialzwater.com</a><br>
+                    <a href="mailto:partner@socialzwater.com">partner@socialzwater.com</a>
+                </p>
             </div>
             
-            <!-- For Business -->
-            <div class="col-lg-4 col-md-6 d-flex">
-                <div class="feature-card text-center p-4 w-100 d-flex flex-column">
-                    <div class="feature-icon icon-green mb-3" style="width: 60px; height: 60px; margin: 0 auto;">
-                        <i class="fas fa-building" style="font-size: 1.5rem;"></i>
-                    </div>
-                    <h5 class="fw-bold mb-2">For Business</h5>
-                    <p class="section-subtitle mb-3 flex-grow-1" style="font-size: 0.9rem;">
-                        Hotels, events, corporate offices - we supply premium water bottles with QR technology.
-                    </p>
-                    <a href="mailto:partners@socialzwater.com?subject=Business Partnership" class="btn btn-outline-primary btn-sm mt-auto">
-                        Learn More
-                    </a>
-                </div>
+            <div class="info-card">
+                <div class="info-icon">📱</div>
+                <h3>Call Us</h3>
+                <p>
+                    <a href="tel:+919876543210">+91 98765 43210</a><br>
+                    Mon-Sat: 9:00 AM - 6:00 PM
+                </p>
             </div>
             
-            <!-- Earn with Us -->
-            <div class="col-lg-4 col-md-6 d-flex">
-                <div class="feature-card text-center p-4 w-100 d-flex flex-column">
-                    <div class="feature-icon icon-orange mb-3" style="width: 60px; height: 60px; margin: 0 auto;">
-                        <i class="fas fa-coins" style="font-size: 1.5rem;"></i>
-                    </div>
-                    <h5 class="fw-bold mb-2">Earn with Us</h5>
-                    <p class="section-subtitle mb-3 flex-grow-1" style="font-size: 0.9rem;">
-                        Join as dealer, supplier, or manufacturer. Become part of our distribution network.
-                    </p>
-                    <a href="mailto:partners@socialzwater.com?subject=Distribution Partnership" class="btn btn-outline-primary btn-sm mt-auto">
-                        Learn More
-                    </a>
-                </div>
+            <div class="info-card">
+                <div class="info-icon">📍</div>
+                <h3>Visit Us</h3>
+                <p>
+                    Pune, Maharashtra<br>
+                    India - 411001
+                </p>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Final CTA -->
-<section class="py-5" style="background: var(--primary-blue); color: white;">
-    <div class="container text-center">
-        <div class="row">
-            <div class="col-lg-8 mx-auto">
-                <h2 class="display-6 fw-bold mb-3">Ready to Get Started?</h2>
-                <p class="lead mb-4">
-                    Whether you're interested in earning rewards, advertising your brand, or partnering with us, 
-                    we're here to help you succeed.
-                </p>
-                <div class="d-flex justify-content-center gap-3 flex-wrap">
-                    <a href="tel:+919876543210" class="btn btn-outline-light btn-lg px-4">
-                        <i class="fas fa-phone me-2"></i>Call Us Now
-                    </a>
+<!-- Contact Form Section -->
+<section class="contact-form-section">
+    <div class="container">
+        <div class="form-container">
+            <div class="section-header">
+                <h2 class="section-title">Get In Touch</h2>
+                <p class="section-subtitle">We'd love to hear from you. Send us a message and we'll respond as soon as possible.</p>
+            </div>
+            
+            <form class="contact-form" method="POST" action="{% url 'website:contact' %}">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="name">Full Name *</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="email">Email Address *</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                    </div>
                 </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="phone">Phone Number *</label>
+                            <input type="tel" class="form-control" id="phone" name="phone" pattern="[0-9]{10}" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="city">City *</label>
+                            <input type="text" class="form-control" id="city" name="city" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="subject">Subject</label>
+                    <input type="text" class="form-control" id="subject" name="subject" placeholder="How can we help you?">
+                </div>
+                
+                <div class="form-group">
+                    <label for="message">Message *</label>
+                    <textarea class="form-control" id="message" name="message" rows="5" required 
+                              placeholder="Tell us more about your inquiry..."></textarea>
+                </div>
+                
+                <!-- Simple Captcha -->
+                <div class="captcha-group">
+                    <label class="captcha-label">Verification (Prove you're human)</label>
+                    <div class="captcha-box">
+                        <span class="captcha-display" id="captchaQuestion"></span>
+                        <input type="text" class="form-control" id="captchaAnswer" name="captcha" 
+                               placeholder="Enter answer" required style="max-width: 150px;">
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-submit">Send Message</button>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- Map Section -->
+<section class="map-section">
+    <div class="container">
+        <div class="map-container">
+            <div class="map-header">
+                <h2 class="map-title">Find Us Here</h2>
+                <p class="map-subtitle">Located in the heart of Pune, Maharashtra</p>
+            </div>
+            <div class="map-wrapper">
+                <iframe 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d242117.68138720923!2d73.72288115!3d18.52489855!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc2bf2e67461101%3A0x828d43bf9d9ee343!2sPune%2C%20Maharashtra!5e0!3m2!1sen!2sin!4v1"
+                    width="100%" 
+                    height="450" 
+                    style="border:0;" 
+                    allowfullscreen="" 
+                    loading="lazy">
+                </iframe>
             </div>
         </div>
     </div>
 </section>
+
+<!-- Contact CTA Section -->
+<section class="contact-cta">
+    <div class="cta-content">
+        <h2>Ready to Start?</h2>
+        <p>Join India's most innovative water bottle advertising platform and transform your brand's reach</p>
+        <div class="cta-info">
+            <div class="cta-info-item">
+                <span>📧</span>
+                <a href="mailto:info@socialzwater.com">info@socialzwater.com</a>
+            </div>
+            <div class="cta-info-item">
+                <span>📱</span>
+                <a href="tel:+919876543210">+91 98765 43210</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Simple Captcha Generation
+    function generateCaptcha() {
+        const num1 = Math.floor(Math.random() * 10) + 1;
+        const num2 = Math.floor(Math.random() * 10) + 1;
+        const question = `${num1} + ${num2} = ?`;
+        const answer = num1 + num2;
+        
+        document.getElementById('captchaQuestion').textContent = question;
+        document.getElementById('captchaQuestion').dataset.answer = answer;
+    }
+    
+    // Generate captcha on page load
+    generateCaptcha();
+    
+        
+        // Verify captcha
+        const userAnswer = document.getElementById('captchaAnswer').value;
+        const correctAnswer = document.getElementById('captchaQuestion').dataset.answer;
+        
+        if (userAnswer != correctAnswer) {
+            alert('Incorrect verification answer. Please try again.');
+            generateCaptcha();
+            document.getElementById('captchaAnswer').value = '';
+            return false;
+        }
+        
+        // If captcha is correct, show success message
+        alert('Thank you for contacting us! We will get back to you within 24 hours.');
+        this.reset();
+        generateCaptcha();
+    });
+    
+    // Regenerate captcha on focus
+    document.getElementById('captchaAnswer').addEventListener('focus', function() {
+        if (this.value === '') {
+            generateCaptcha();
+        }
+    });
+    
+    // Smooth scroll animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }, index * 100);
+            }
+        });
+    }, observerOptions);
+    
+    // Observe contact cards for animation
+    document.querySelectorAll('.info-card').forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(30px)';
+        el.style.transition = 'all 0.6s ease';
+        observer.observe(el);
+    });
+</script>
 {% endblock %}

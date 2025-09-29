@@ -1,582 +1,666 @@
+<!-- base.html - Django Base Template -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Socialz Water - Scan, Watch, Earn{% endblock %}</title>
+    <title>{% block title %}Socialz Water - Refreshing Lives, Powering Brands{% endblock %}</title>
     
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     
+    <!-- CRITICAL: Header Transparency Fix - Must be FIRST -->
     <style>
-        :root {
-            --primary-blue: #4A5FC1;
-            --dark-blue: #3D4DB7;
-            --light-blue: #E8F0FE;
-            --orange: #F5A623;
-            --coral: #FF6B6B;
-            --green: #4CAF50;
-            --yellow: #FFD93D;
-            --beige: #F8F5F0;
-            --gray: #6C757D;
-            --dark-gray: #2C3E50;
-            --white: #FFFFFF;
+        /* Nuclear option - Force transparency across all pages */
+        header, header#header, .header-container, nav, .navbar {
+            background: transparent !important;
+            background-color: transparent !important;
+            backdrop-filter: none !important;
+            box-shadow: none !important;
         }
         
+        header.scrolled, header#header.scrolled {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(20px) !important;
+            -webkit-backdrop-filter: blur(20px) !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+        }
+    </style>
+    
+    <!-- Base CSS -->
+    <style>
+        /* CSS Reset & Variables */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
         
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            line-height: 1.6;
-            color: var(--dark-gray);
-            background: var(--white);
-        }
-        
-        /* Header */
-        .main-header {
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--dark-blue) 100%);
-            padding: 1rem 0;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        .header-brand {
-            display: flex;
-            align-items: center;
-            color: var(--white);
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 1.25rem;
-        }
-        
-        .header-brand i {
-            font-size: 1.8rem;
-            margin-right: 0.5rem;
-        }
-        
-        .header-brand:hover {
-            color: var(--white);
-        }
-        
-        .nav-pills {
-            display: flex;
-            gap: 0.5rem;
-            align-items: center;
-            justify-content: flex-end;
-        }
-        
-        .nav-pill {
-            background: rgba(255,255,255,0.1);
-            color: var(--white);
-            padding: 0.6rem 1.2rem;
-            border-radius: 25px;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255,255,255,0.2);
-            /* Added consistent sizing properties */
-            min-width: 100px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            white-space: nowrap;
-        }
-        
-        .nav-pill:hover, .nav-pill.active {
-            background: var(--white);
-            color: var(--primary-blue);
-            transform: translateY(-1px);
-        }
-        
-        /* Dropdown button styling to match other nav pills */
-        .dropdown .nav-pill {
-            min-width: 140px; /* Slightly wider for "Partner with us" */
-        }
-        
-        .cta-btn {
-            background: var(--green);
-            color: var(--white);
-            padding: 0.6rem 1.2rem;
-            border-radius: 25px;
-            text-decoration: none;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255,255,255,0.2);
-            margin-left: 1rem;
-            font-size: 0.9rem;
-            /* Consistent sizing with nav pills */
-            min-width: 140px;
-            height: 40px;
-            white-space: nowrap;
-        }
-        
-        .cta-btn:hover {
-            background: #45A049;
-            color: var(--white);
-            transform: translateY(-1px);
-        }
-        
-        /* Hero Section */
-        .hero-section {
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--dark-blue) 100%);
-            padding-top: 120px;
-            padding-bottom: 100px;
-            color: var(--white);
-            overflow: hidden;
-        }
-        
-        /* Process Steps */
-        .process-step {
-            transition: transform 0.3s ease;
-        }
-        
-        .process-step:hover {
-            transform: translateY(-5px);
-        }
-        
-        /* Cards */
-        .feature-card {
-            background: var(--white);
-            border-radius: 16px;
-            padding: 2rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            border: none;
-            transition: all 0.3s ease;
-            height: 100%;
-        }
-        
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-        }
-        
-        .feature-icon {
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--white);
-        }
-        
-        .icon-green { background: linear-gradient(135deg, #4CAF50, #45A049); }
-        .icon-blue { background: linear-gradient(135deg, #2196F3, #1976D2); }
-        .icon-orange { background: linear-gradient(135deg, #FF9800, #F57C00); }
-        .icon-coral { background: linear-gradient(135deg, #FF6B6B, #FF5252); }
-        
-        /* Buttons */
-        .btn-primary {
-            background: var(--primary-blue);
-            border: none;
-            border-radius: 25px;
-            padding: 0.75rem 1.5rem;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-primary:hover {
-            background: var(--dark-blue);
-            transform: translateY(-2px);
-        }
-        
-        .btn-outline-light {
-            border: 2px solid rgba(255,255,255,0.5);
-            color: var(--white);
-            background: transparent;
-            border-radius: 25px;
-            padding: 0.75rem 1.5rem;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-outline-light:hover {
-            background: var(--white);
-            color: var(--primary-blue);
-            border-color: var(--white);
-        }
-        
-        /* Stats */
-        .stats-card {
-            background: var(--white);
-            border-radius: 12px;
-            padding: 1.5rem;
-            text-align: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            transition: all 0.3s ease;
-            height: 100%;
-        }
-        
-        .stats-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-        }
-        
-        .stats-number {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--primary-blue);
-            margin-bottom: 0.5rem;
-        }
-        
-        .stats-label {
-            color: var(--gray);
-            font-weight: 500;
-            font-size: 0.85rem;
-        }
-        
-        /* Footer */
-        .main-footer {
-            background: var(--primary-blue);
-            color: var(--white);
-            padding: 2rem 0 1rem;
-            position: relative;
-        }
-        
-        .main-footer::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: rgba(255,255,255,0.2);
-        }
-        
-        .footer-link {
-            color: rgba(255,255,255,0.8);
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-        
-        .footer-link:hover {
-            color: var(--white);
-        }
-        
-        /* Footer Social Buttons */
-        .footer-social-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            color: var(--white);
-            text-decoration: none;
-            transition: all 0.3s ease;
-            font-size: 1.1rem;
-        }
-        
-        .footer-social-btn:hover {
-            color: var(--white);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        :root {
+            /* Primary Colors */
+            --primary-blue: #1E90FF;
+            --eco-green: #00B894;
+            --mint-green: #649641;
+            --sage-green: #92aba0;
+            
+            /* Secondary Colors */
+            --deep-navy: #0A3D62;
+            --sky-blue: #74B9FF;
+            --soft-gray: #F5F6FA;
+            
+            /* Text Colors */
+            --text-primary: #2C3E50;
+            --text-secondary: #636E72;
+            --text-light: #95a5a6;
+            --white: #FFFFFF;
+            --black: #000000;
+            
+            /* Shadows */
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+            --shadow-xl: 0 16px 48px rgba(0,0,0,0.16);
         }
         
         /* Typography */
-        .section-title {
-            font-weight: 700;
-            color: var(--dark-gray);
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--white);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            line-height: 1.2;
             margin-bottom: 1rem;
         }
         
-        .section-subtitle {
-            color: var(--gray);
-            line-height: 1.6;
+        /* Header Styles - Enhanced transparency */
+        header {
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 99999;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
-        /* Dropdown Menu Styles */
-        .dropdown-menu {
-            background: var(--white);
-            border: none;
+        .header-container {
+            max-width: 1320px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 80px;
+        }
+
+        /* Text color changes when scrolled */
+        header.scrolled .logo-text {
+            color: var(--black) !important;
+            transition: color 0.3s ease;
+        }
+
+        header.scrolled .nav-item a {
+            color: var(--black) !important;
+        }
+
+        header.scrolled .nav-item a:hover {
+            color: var(--primary-blue) !important;
+            background: rgba(30, 144, 255, 0.08);
+        }
+
+        header.scrolled .nav-item a.active {
+            color: var(--eco-green) !important;
+            background: rgba(0, 184, 148, 0.08);
+        }
+
+        header.scrolled .mobile-menu-toggle span {
+            background: var(--black) !important;
+        }
+
+        /* Logo Styles */
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+        
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--eco-green));
             border-radius: 12px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-            padding: 0.5rem 0;
-            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            box-shadow: var(--shadow-md);
         }
         
-        .dropdown-item {
-            color: var(--dark-gray);
-            padding: 0.75rem 1.5rem;
-            font-weight: 500;
+        .logo-text {
+            font-family: 'Poppins', sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--white);
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+        }
+        
+        /* Navigation Menu - Updated colors */
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 5px;
+            align-items: center;
+        }
+        
+        .nav-item a {
+            color: var(--white);
+            text-decoration: none;
+            padding: 10px 20px;
+            font-weight: 600;
+            font-size: 20px;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            position: relative;
+        }
+        
+        .nav-item a:hover {
+            color: var(--white);
+            background: rgba(0, 49, 98, 0.704);
+        }
+        
+        .nav-item a.active {
+            color: var(--eco-green);
+            background: rgba(5, 100, 81, 0.466);
+        }
+        
+        /* CTA Button in Nav - Updated with border-radius 25px */
+        .nav-cta {
+            margin-left: 20px;
+        }
+        
+        .nav-cta a {
+            background: linear-gradient(135deg, var(--primary-blue), var(--eco-green));
+            color: white !important;
+            padding: 12px 28px;
+            border-radius: 25px !important;
+            font-weight: 600;
+            box-shadow: 0 4px 14px rgba(30, 144, 255, 0.25);
             transition: all 0.3s ease;
         }
         
-        .dropdown-item:hover {
-            background: var(--light-blue);
+        .nav-cta a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(30, 144, 255, 0.35);
+        }
+        
+        /* Mobile Menu */
+        .mobile-menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            cursor: pointer;
+            padding: 8px;
+        }
+        
+        .mobile-menu-toggle span {
+            width: 24px;
+            height: 2px;
+            background: var(--white);
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+        
+        .mobile-menu-toggle.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+        
+        .mobile-menu-toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+        
+        .mobile-menu-toggle.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+        
+        /* Main Content */
+        main {
+            margin-top: 80px;
+            min-height: calc(100vh - 80px);
+        }
+        
+        /* Footer Styles - Enhanced Desktop Layout */
+        footer {
+            background: linear-gradient(135deg, #1a2332 0%, #2c3e50 100%);
+            color: white;
+            padding: 60px 0 20px;
+            margin-top: 0;
+        }
+        
+        .footer-container {
+            max-width: 1320px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr 1fr;
+            gap: 50px;
+            margin-bottom: 40px;
+            align-items: start;
+        }
+        
+        .footer-brand h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        
+        .footer-brand p {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+        
+        .footer-social {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .social-icon:hover {
+            background: var(--eco-green);
+            border-color: var(--eco-green);
+            transform: translateY(-3px);
+        }
+        
+        .footer-column h4 {
+            font-size: 16px;
+            margin-bottom: 20px;
+            color: var(--eco-green);
+            font-weight: 600;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+        
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            display: block;
+        }
+        
+        .footer-links a:hover {
+            color: var(--eco-green);
+            padding-left: 5px;
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 20px;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+        }
+        
+        /* Utility Classes */
+        .container {
+            max-width: 1320px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .section {
+            padding: 80px 0;
+        }
+        
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 14px 32px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-blue), var(--eco-green));
+            color: white;
+            box-shadow: 0 4px 14px rgba(30, 144, 255, 0.25);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(30, 144, 255, 0.35);
+        }
+        
+        .btn-outline {
+            background: transparent;
             color: var(--primary-blue);
+            border: 2px solid var(--primary-blue);
         }
         
-        .dropdown-toggle::after {
-            margin-left: 0.5rem;
+        .btn-outline:hover {
+            background: var(--primary-blue);
+            color: white;
+            box-shadow: 0 4px 14px rgba(30, 144, 255, 0.25);
         }
         
+        /* Mobile Responsive Design */
         @media (max-width: 991px) {
-            .nav-pills {
-                flex-wrap: wrap;
-                justify-content: center;
-                margin-top: 1rem;
+            /* Mobile Header - Text and Hamburger Colors */
+            .logo-text {
+                color: var(--white) !important;
             }
             
-            .cta-btn {
-                margin-left: 0;
-                margin-top: 0.5rem;
+            .nav-item a {
+                color: var(--black) !important;
             }
             
-            .hero-section {
-                padding-top: 140px;
-                padding-bottom: 60px;
+            .mobile-menu-toggle span {
+                background: var(--eco-green) !important;
             }
             
-            .hero-section .row {
+            .nav-menu {
+                position: fixed;
+                left: -100%;
+                top: 80px;
+                flex-direction: column;
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(20px);
+                width: 100%;
                 text-align: center;
+                transition: 0.3s;
+                box-shadow: var(--shadow-lg);
+                padding: 20px 0;
             }
             
-            .hero-section .col-lg-6:first-child {
-                margin-bottom: 2rem;
+            .nav-menu.active {
+                left: 0;
             }
             
-            /* Maintain consistent sizing on mobile */
-            .nav-pill {
-                min-width: 90px;
-                height: 38px;
-                font-size: 0.85rem;
-                padding: 0.5rem 1rem;
+            .nav-item {
+                margin: 8px 0;
             }
             
-            .dropdown .nav-pill {
-                min-width: 120px;
+            .mobile-menu-toggle {
+                display: flex;
             }
             
-            .cta-btn {
-                min-width: 120px;
-                height: 38px;
-                font-size: 0.85rem;
-                padding: 0.5rem 1rem;
+            /* Hide Footer on Mobile */
+            footer {
+                display: none;
+            }
+        }
+        
+        @media (min-width: 992px) {
+            /* Desktop Footer - Proper Alignment */
+            .footer-grid {
+                text-align: left;
+            }
+            
+            .footer-brand {
+                text-align: left;
+            }
+            
+            .footer-social {
+                justify-content: flex-start;
+            }
+            
+            .footer-column {
+                text-align: left;
             }
         }
         
         @media (max-width: 576px) {
-            .container {
-                padding-left: 1rem;
-                padding-right: 1rem;
+            .logo-text {
+                font-size: 18px;
             }
             
-            .feature-card {
-                padding: 1.5rem;
+            .logo-icon {
+                width: 38px;
+                height: 38px;
+                font-size: 20px;
             }
             
-            .stats-card {
-                padding: 1rem;
+            nav {
+                height: 70px;
             }
             
-            .nav-pills {
-                gap: 0.25rem;
-            }
-            
-            .nav-pill {
-                min-width: 80px;
-                height: 36px;
-                font-size: 0.8rem;
-                padding: 0.4rem 0.8rem;
-            }
-            
-            .dropdown .nav-pill {
-                min-width: 110px;
-            }
-            
-            .cta-btn {
-                min-width: 110px;
-                height: 36px;
-                font-size: 0.8rem;
-                padding: 0.4rem 0.8rem;
+            main {
+                margin-top: 70px;
             }
         }
     </style>
+    
+    {% block extra_css %}{% endblock %}
 </head>
 <body>
     <!-- Header -->
-    <header class="main-header">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-3 col-md-3 col-6">
-                    <a href="{% url 'website:home' %}" class="header-brand">
-                        <i class="fas fa-bottle-water"></i>
-                        <span>Socialz Water</span>
-                    </a>
-                </div>
+    <header id="header">
+        <div class="header-container">
+            <nav>
+                <a href="{% url 'website:home' %}" class="logo-wrapper">
+                    <div class="logo-icon">💧</div>
+                    <div class="logo-text">Socialz Water</div>
+                </a>
                 
-                <div class="col-lg-9 col-md-9 col-6">
-                    <div class="nav-pills">
-                        <a href="{% url 'website:home' %}" class="nav-pill">Home</a>
-                        <a href="{% url 'website:about' %}" class="nav-pill">About</a>
-                        
-                        <!-- Dropdown Menu -->
-                        <div class="dropdown">
-                            <a href="#" class="nav-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                Partner with us
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="{% url 'website:business_hotels' %}">
-                                    <i class="fas fa-hotel me-2"></i>For Business Hotels & Events
-                                </a></li>
-                                <li><a class="dropdown-item" href="{% url 'website:smart_brands' %}">
-                                    <i class="fas fa-bullhorn me-2"></i>For Smart Brands
-                                </a></li>
-                                <li><a class="dropdown-item" href="{% url 'website:earn_with_us' %}">
-                                    <i class="fas fa-coins me-2"></i>Earn with Us
-                                </a></li>
-                            </ul>
-                        </div>
-                        
-                        <a href="{% url 'website:contact' %}" class="nav-pill">Contact</a>
-                        <a href="{% url 'website:contact' %}" class="cta-btn">
-                            <i class="fas fa-phone"></i>
-                            Get in Touch
-                        </a>
-                    </div>
+                <ul class="nav-menu" id="navMenu">
+                    <li class="nav-item"><a href="{% url 'website:home' %}">Home</a></li>
+                    <li class="nav-item"><a href="{% url 'website:about' %}">About Us</a></li>
+                    <li class="nav-item"><a href="{% url 'website:partner' %}">Partner With Us</a></li>
+                    <li class="nav-item"><a href="{% url 'website:faqs' %}">FAQs</a></li>
+                    <li class="nav-item"><a href="{% url 'website:contact' %}">Contact</a></li>
+                    <li class="nav-cta"><a href="#" id="getStartedBtn">Get Started</a></li>
+                </ul>
+                
+                <div class="mobile-menu-toggle" id="mobileToggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
                 </div>
-            </div>
+            </nav>
         </div>
     </header>
-
+    
     <!-- Main Content -->
     <main>
-        {% block content %}
-        {% endblock %}
+        {% block content %}{% endblock %}
     </main>
-
-    <!-- Simplified Footer -->
-    <footer class="main-footer">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-4 mb-3 mb-md-0">
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-bottle-water fs-4 me-2"></i>
-                        <h5 class="mb-0 fw-bold">Socialz Water</h5>
-                    </div>
-                    <small style="color: rgba(255,255,255,0.7);">
-                        Revolutionizing water bottle advertising with QR technology.
-                    </small>
-                </div>
-                
-                <div class="col-md-4 mb-3 mb-md-0 text-center">
-                    <div class="d-flex justify-content-center gap-3 flex-wrap">
-                        <a href="{% url 'website:home' %}" class="footer-link">Home</a>
-                        <a href="{% url 'website:about' %}" class="footer-link">About</a>
-                        <a href="#" class="footer-link">Solutions</a>
-                        <a href="{% url 'website:contact' %}" class="footer-link">Contact</a>
+    
+    <!-- Footer (Hidden on Mobile) -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <h3>Socialz Water</h3>
+                    <p>Transforming water bottles into smart advertising platforms with QR technology, rewards, and measurable brand impact.</p>
+                    <div class="footer-social">
+                        <a href="#" class="social-icon">f</a>
+                        <a href="#" class="social-icon">𝕏</a>
+                        <a href="#" class="social-icon">in</a>
+                        <a href="https://www.instagram.com/socialwater.advertising?igsh=ZG84M2piOHgzc3B3" class="social-icon">📷</a>
                     </div>
                 </div>
                 
-                <div class="col-md-4 text-md-end text-center">
-                    <div class="d-flex justify-content-md-end justify-content-center gap-2 mb-2">
-                        <a href="#" class="footer-social-btn" style="background: #1877F2;">
-                            <i class="fab fa-facebook"></i>
-                        </a>
-                        <a href="#" class="footer-social-btn" style="background: #1DA1F2;">
-                            <i class="fab fa-twitter"></i>
-                        </a>
-                        <a href="#" class="footer-social-btn" style="background: #E4405F;">
-                            <i class="fab fa-instagram"></i>
-                        </a>
-                        <a href="#" class="footer-social-btn" style="background: #0A66C2;">
-                            <i class="fab fa-linkedin"></i>
-                        </a>
-                    </div>
-                    <small style="color: rgba(255,255,255,0.6);">
-                        &copy; 2025 Socialz Water. All rights reserved.
-                    </small>
+                <div class="footer-column">
+                    <h4>Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="{% url 'website:home' %}">Home</a></li>
+                        <li><a href="{% url 'website:about' %}">About Us</a></li>
+                        <li><a href="{% url 'website:partner' %}">Partner</a></li>
+                        <li><a href="{% url 'website:contact' %}">Contact</a></li>
+                    </ul>
                 </div>
+                
+                <div class="footer-column">
+                    <h4>Partner Options</h4>
+                    <ul class="footer-links">
+                        <li><a href="{% url 'website:partner' %}#brand-section">As Brand</a></li>
+                        <li><a href="{% url 'website:partner' %}#manufacturer-section">As Distributor</a></li>
+                        <li><a href="{% url 'website:partner' %}#manufacturer-section">As Manufacturer</a></li>
+                        <li><a href="{% url 'website:partner' %}#events-section">Event Solutions</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h4>Contact Info</h4>
+                    <ul class="footer-links">
+                        <li><a href="mailto:info@socialzwater.com">📧 info@socialzwater.com</a></li>
+                        <li>📱 +91 98765 43210</li>
+                        <li>📍 Pune, Maharashtra</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 Socialz Water. All rights reserved. | Refreshing Lives, Powering Brands!</p>
             </div>
         </div>
     </footer>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     
+    <!-- Enhanced JavaScript -->
     <script>
+        // Enhanced Header Scroll Effect
+        function handleHeaderTransparency() {
+            const header = document.getElementById('header');
+            
+            if (window.scrollY <= 10) {
+                header.classList.remove('scrolled');
+            } else {
+                header.classList.add('scrolled');
+            }
+        }
+        
+        // Mobile Menu Toggle
+        const mobileToggle = document.getElementById('mobileToggle');
+        const navMenu = document.getElementById('navMenu');
+        
+        if (mobileToggle && navMenu) {
+            mobileToggle.addEventListener('click', () => {
+                mobileToggle.classList.toggle('active');
+                navMenu.classList.toggle('active');
+            });
+        }
+        
+        // Get Started Button - WhatsApp/Call functionality
+        function isMobileView() {
+            return window.innerWidth <= 991;
+        }
+        
+        const getStartedBtn = document.getElementById('getStartedBtn');
+        let whatsappHandler = null;
+        
+        function openWhatsApp(e) {
+            e.preventDefault();
+            window.open('https://wa.me/919876543210', '_blank');
+        }
+        
+        function updateGetStartedBtn() {
+            if (isMobileView()) {
+                // Mobile: Call functionality
+                getStartedBtn.href = 'tel:+919876543210';
+                if (whatsappHandler) {
+                    getStartedBtn.removeEventListener('click', whatsappHandler);
+                    whatsappHandler = null;
+                }
+            } else {
+                // Desktop: WhatsApp Web functionality
+                getStartedBtn.href = '#';
+                if (!whatsappHandler) {
+                    whatsappHandler = openWhatsApp;
+                    getStartedBtn.addEventListener('click', whatsappHandler);
+                }
+            }
+        }
+        
+        // Page Load and Active State Management
+        document.addEventListener('DOMContentLoaded', function() {
+            // Ensure correct header state on page load
+            handleHeaderTransparency();
+            
+            // Initialize Get Started button
+            updateGetStartedBtn();
+            
+            // Active Navigation State
+            const currentPath = window.location.pathname;
+            document.querySelectorAll('.nav-item a').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === currentPath) {
+                    link.classList.add('active');
+                }
+            });
+        });
+        
+        // Run on scroll
+        window.addEventListener('scroll', handleHeaderTransparency);
+        
+        // Update Get Started button on resize
+        window.addEventListener('resize', updateGetStartedBtn);
+        
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('.nav-item a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (mobileToggle && navMenu) {
+                    mobileToggle.classList.remove('active');
+                    navMenu.classList.remove('active');
+                }
+            });
+        });
+        
         // Smooth scrolling for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
                 const target = document.querySelector(this.getAttribute('href'));
                 if (target) {
-                    target.scrollIntoView({ 
+                    target.scrollIntoView({
                         behavior: 'smooth',
-                        block: 'start' 
+                        block: 'start'
                     });
                 }
             });
         });
-        
-        // Active navigation highlighting
-        const currentPath = window.location.pathname;
-        document.querySelectorAll('.nav-pill').forEach(link => {
-            if (link.getAttribute('href') === currentPath) {
-                link.classList.add('active');
-            }
-        });
-        
-        // Form validation
-        (function() {
-            'use strict';
-            window.addEventListener('load', function() {
-                const forms = document.getElementsByClassName('needs-validation');
-                Array.prototype.filter.call(forms, function(form) {
-                    form.addEventListener('submit', function(event) {
-                        if (form.checkValidity() === false) {
-                            event.preventDefault();
-                            event.stopPropagation();
-                        }
-                        form.classList.add('was-validated');
-                    }, false);
-                });
-            }, false);
-        })();
-        
-        // Intersection Observer for animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-        
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }
-            });
-        }, observerOptions);
-        
-        // Observe elements for animation
-        document.addEventListener('DOMContentLoaded', function() {
-            const animateElements = document.querySelectorAll('.feature-card, .stats-card');
-            animateElements.forEach(el => {
-                el.style.opacity = '0';
-                el.style.transform = 'translateY(20px)';
-                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-                observer.observe(el);
-            });
-        });
     </script>
+    
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

@@ -1,376 +1,265 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to Socialz Water - Coming Soon</title>
-    
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <style>
-        :root {
-            --primary-blue: #4A5FC1;
-            --dark-blue: #1e3d59;
-            --black: #1a1a1a;
-            --green: #27AE60;
-            --white: #FFFFFF;
-            --light-gray: #f8f9fa;
-            --gray: #6C757D;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            line-height: 1.6;
-            color: var(--white);
-            background: linear-gradient(135deg, var(--black) 0%, var(--dark-blue) 50%, var(--primary-blue) 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem 0;
-        }
-        
-        .main-container {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1rem;
-        }
-        
-        .content-card {
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 25px;
-            padding: 3rem;
-            backdrop-filter: blur(20px);
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        }
-        
-        .brand-logo {
-            background: rgba(255,255,255,0.1);
-            border: 2px solid rgba(255,255,255,0.2);
-            border-radius: 50%;
-            width: 100px;
-            height: 100px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-            margin-bottom: 2rem;
-            animation: pulse 2s infinite;
-        }
-        
-        .brand-logo i {
-            font-size: 2.5rem;
-            color: var(--green);
-        }
-        
-        .welcome-title {
-            font-size: clamp(2rem, 4vw, 3rem);
-            font-weight: 800;
-            margin-bottom: 1rem;
-            background: linear-gradient(45deg, var(--white), var(--green));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .welcome-subtitle {
-            font-size: 1.1rem;
-            color: rgba(255,255,255,0.8);
-            margin-bottom: 1.5rem;
-            font-weight: 500;
-        }
-        
-        .launch-message {
-            background: rgba(39, 174, 96, 0.1);
-            border: 1px solid rgba(39, 174, 96, 0.3);
-            border-radius: 15px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        
-        .launch-message h4 {
-            color: var(--green);
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            font-size: 1.2rem;
-        }
-        
-        .launch-message p {
-            color: rgba(255,255,255,0.9);
-            margin-bottom: 0;
-            font-size: 1rem;
-            line-height: 1.6;
-        }
-        
-        .action-buttons {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-        
-        .action-btn {
-            background: rgba(255,255,255,0.1);
-            border: 2px solid rgba(255,255,255,0.3);
-            border-radius: 12px;
-            padding: 0.75rem 1.25rem;
-            color: var(--white);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            flex: 1;
-            text-align: center;
-            min-width: 130px;
-        }
-        
-        .action-btn:hover {
-            background: rgba(255,255,255,0.2);
-            border-color: var(--green);
-            color: var(--white);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(39, 174, 96, 0.3);
-        }
-        
-        .form-container {
-            background: rgba(255,255,255,0.95);
-            border-radius: 20px;
-            padding: 2rem;
-            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
-            color: var(--black);
-            height: fit-content;
-        }
-        
-        .form-container h4 {
-            color: var(--primary-blue);
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            font-size: 1.3rem;
-            text-align: center;
-        }
-        
-        .form-control {
-            border: 2px solid #e9ecef;
-            border-radius: 12px;
-            padding: 0.75rem 1rem;
-            font-size: 1rem;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            margin-bottom: 1rem;
-        }
-        
-        .form-control:focus {
-            border-color: var(--primary-blue);
-            box-shadow: 0 0 0 0.2rem rgba(74, 95, 193, 0.25);
-            outline: none;
-        }
-        
-        .submit-btn {
-            background: linear-gradient(45deg, var(--primary-blue), var(--green));
-            border: none;
-            border-radius: 12px;
-            padding: 0.9rem 1.5rem;
-            font-weight: 700;
-            font-size: 1rem;
-            color: var(--white);
-            width: 100%;
-            transition: all 0.3s ease;
-            margin-top: 0.5rem;
-        }
-        
-        .submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(74, 95, 193, 0.4);
-            color: var(--white);
-        }
-        
-        .submit-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-        
-        @keyframes pulse {
-            0% {
-                box-shadow: 0 0 0 0 rgba(39, 174, 96, 0.7);
-            }
-            70% {
-                box-shadow: 0 0 0 10px rgba(39, 174, 96, 0);
-            }
-            100% {
-                box-shadow: 0 0 0 0 rgba(39, 174, 96, 0);
-            }
-        }
-        
-        /* Mobile Responsive */
-        @media (max-width: 768px) {
-            body {
-                padding: 1rem 0;
-            }
-            
-            .content-card {
-                padding: 2rem 1.5rem;
-            }
-            
-            .brand-logo {
-                width: 80px;
-                height: 80px;
-                margin: 0 auto 1.5rem;
-            }
-            
-            .brand-logo i {
-                font-size: 2rem;
-            }
-            
-            .welcome-title {
-                text-align: center;
-            }
-            
-            .welcome-subtitle {
-                text-align: center;
-            }
-            
-            .form-container {
-                padding: 1.5rem;
-                margin-top: 2rem;
-            }
-            
-            .action-buttons {
-                justify-content: center;
-                margin-top: 1.5rem;
-            }
-            
-            .action-btn {
-                flex: none;
-                width: 140px;
-            }
-        }
-        
-        @media (max-width: 576px) {
-            .main-container {
-                padding: 0 0.5rem;
-            }
-            
-            .content-card {
-                padding: 1.5rem 1rem;
-            }
-            
-            .action-buttons {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .action-btn {
-                width: 100%;
-                max-width: 200px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Welcome to Socialz Water - Advertise Now</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --primary-blue:#4A5FC1;
+      --dark-blue:#1e3d59;
+      --black:#1a1a1a;
+      --green:#27AE60;
+      --white:#FFFFFF;
+      --light-gray:#f8f9fa;
+      --gray:#6C757D;
+      --radius-20:20px;
+      --radius-24:24px;
+    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html,body{height:100%;}
+    body{
+      font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+      line-height:1.6;
+      color:var(--white);
+      background:linear-gradient(135deg,var(--black) 0%,var(--dark-blue) 50%,var(--primary-blue) 100%);
+      min-height:100svh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:2rem 0;
+    }
+    .main-container{width:100%;max-width:1200px;margin:0 auto;padding:0 1rem;}
+    .content-card{
+      background:rgba(255,255,255,0.1);
+      border:1px solid rgba(255,255,255,0.2);
+      border-radius:25px;
+      padding:3rem;
+      backdrop-filter:blur(20px);
+      -webkit-backdrop-filter:blur(20px);
+      box-shadow:0 20px 60px rgba(0,0,0,0.3);
+    }
+    .brand-logo{
+      background:rgba(255,255,255,0.1);
+      border:2px solid rgba(255,255,255,0.2);
+      border-radius:50%;
+      width:100px;height:100px;
+      display:flex;align-items:center;justify-content:center;
+      backdrop-filter:blur(10px);
+      -webkit-backdrop-filter:blur(10px);
+      box-shadow:0 8px 32px rgba(0,0,0,0.3);
+      margin-bottom:2rem;
+      animation:pulse 2s infinite;
+    }
+    .brand-logo i{font-size:2.5rem;color:var(--green);}
+    .welcome-title{
+      font-size:clamp(2rem,4vw,3rem);
+      font-weight:800;
+      margin-bottom:1rem;
+      background:linear-gradient(45deg,var(--white),var(--green));
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text;
+    }
+    .welcome-subtitle{
+      font-size:1.1rem;color:rgba(255,255,255,0.85);
+      margin-bottom:1.25rem;font-weight:500;
+    }
+    .launch-message{
+      background:rgba(39,174,96,0.1);
+      border:1px solid rgba(39,174,96,0.3);
+      border-radius:15px;
+      padding:1.5rem;margin-bottom:2rem;
+    }
+    .launch-message h4{
+      color:var(--green);font-weight:700;margin-bottom:0.5rem;font-size:1.2rem;
+    }
+    .launch-message p{
+      color:rgba(255,255,255,0.95);margin-bottom:0;font-size:1rem;line-height:1.65;
+    }
+    .action-buttons{display:flex;gap:1rem;flex-wrap:wrap;}
+    .action-btn{
+      background:rgba(255,255,255,0.1);
+      border:2px solid rgba(255,255,255,0.3);
+      border-radius:12px;
+      padding:0.75rem 1.25rem;color:var(--white);
+      text-decoration:none;font-weight:700;font-size:0.95rem;
+      transition:all .3s ease;
+      backdrop-filter:blur(10px);
+      -webkit-backdrop-filter:blur(10px);
+      flex:1;text-align:center;min-width:130px;
+    }
+    .action-btn:hover{
+      background:rgba(255,255,255,0.2);
+      border-color:var(--green);
+      color:var(--white);
+      transform:translateY(-2px);
+      box-shadow:0 5px 20px rgba(39,174,96,0.3);
+    }
+    .form-container{
+      background:rgba(255,255,255,0.96);
+      border-radius:20px;
+      padding:2rem;
+      box-shadow:0 12px 40px rgba(0,0,0,0.3);
+      color:var(--black);
+      height:fit-content;
+    }
+    .form-container h4{
+      color:var(--primary-blue);
+      font-weight:700;margin-bottom:1.25rem;font-size:1.25rem;text-align:center;
+    }
+    .form-control{
+      border:2px solid #e9ecef;border-radius:12px;
+      padding:0.75rem 1rem;font-size:1rem;font-weight:500;
+      transition:all .3s ease;margin-bottom:1rem;
+    }
+    .form-control:focus{
+      border-color:var(--primary-blue);
+      box-shadow:0 0 0 0.2rem rgba(74,95,193,0.25);outline:none;
+    }
+    .submit-btn{
+      background:linear-gradient(45deg,var(--primary-blue),var(--green));
+      border:none;border-radius:12px;padding:0.9rem 1.5rem;
+      font-weight:800;font-size:1rem;color:var(--white);
+      width:100%;transition:all .3s ease;margin-top:0.5rem;
+    }
+    .submit-btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(74,95,193,0.4);color:var(--white);}
+    .submit-btn:disabled{opacity:.6;cursor:not-allowed;transform:none;}
+
+    @keyframes pulse{
+      0%{box-shadow:0 0 0 0 rgba(39,174,96,0.7);}
+      70%{box-shadow:0 0 0 10px rgba(39,174,96,0);}
+      100%{box-shadow:0 0 0 0 rgba(39,174,96,0);}
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 992px){
+      .brand-logo{margin-inline:auto;}
+    }
+    @media (max-width: 768px){
+      body{padding:1rem 0;}
+      .content-card{padding:2rem 1.5rem;}
+      .brand-logo{width:80px;height:80px;margin:0 auto 1.25rem;}
+      .brand-logo i{font-size:2rem;}
+      .welcome-title,.welcome-subtitle{text-align:center;}
+      .form-container{padding:1.5rem;margin-top:1.5rem;}
+      .action-buttons{justify-content:center;margin-top:1.25rem;}
+      .action-btn{flex:none;width:160px;}
+    }
+    @media (max-width: 576px){
+      .main-container{padding:0 0.5rem;}
+      .content-card{padding:1.5rem 1rem;}
+      .action-buttons{flex-direction:column;align-items:center;}
+      .action-btn{width:100%;max-width:220px;}
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce){
+      .brand-logo{animation:none;}
+      .action-btn,.submit-btn{transition:none;}
+    }
+  </style>
 </head>
 <body>
-    <div class="main-container">
-        <div class="content-card">
-            <div class="row align-items-center">
-                <!-- Left Section -->
-                <div class="col-lg-6 col-md-6">
-                    <div class="pe-lg-4">
-                        <!-- Brand Logo -->
-                        <div class="brand-logo">
-                            <i class="fas fa-bottle-water"></i>
-                        </div>
-                        
-                        <!-- Welcome Message -->
-                        <h1 class="welcome-title">Welcome to Socialz Water!</h1>
-                        <p class="welcome-subtitle">Thank you for scanning our QR code</p>
-                        <!-- Launch Message -->
-                        <div class="launch-message">
-                            <h4><i class="fas fa-rocket me-2"></i>We're Launching Soon!</h4>
-                            <p>
-                                We're excited to have you here! Our revolutionary QR water bottle platform is launching very soon. 
-                                Leave your details and we'll notify you the moment we go live.
-                            </p>
-                        </div>
-                        <div class="action-buttons">
-                            <a href="{% url 'website:home' %}" class="action-btn">
-                                <i class="fas fa-home me-2"></i>Visit Website
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Right Section - Form -->
-                <div class="col-lg-6 col-md-6">
-                    <div class="form-container">
-                        <h4><i class="fas fa-bell me-2"></i>Get Notified When We Launch</h4>
-                        
-                        {% if messages %}
-                            {% for message in messages %}
-                                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert" style="color: var(--black); font-size: 0.9rem; margin-bottom: 1rem; background: #d4edda; border: 1px solid #c3e6cb;">
-                                    <i class="fas fa-check-circle me-1"></i>{{ message }}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                                </div>
-                            {% endfor %}
-                        {% endif %}
-                        
-                        <form method="post">
-                            {% csrf_token %}
-                            {{ form.full_name }}
-                            {% if form.full_name.errors %}
-                                <div style="color: red; font-size: 0.8rem; margin-top: -0.5rem; margin-bottom: 0.5rem;">{{ form.full_name.errors.0 }}</div>
-                            {% endif %}
-                            
-                            {{ form.phone_number }}
-                            {% if form.phone_number.errors %}
-                                <div style="color: red; font-size: 0.8rem; margin-top: -0.5rem; margin-bottom: 0.5rem;">{{ form.phone_number.errors.0 }}</div>
-                            {% endif %}
-                            
-                            {{ form.email_address }}
-                            {% if form.email_address.errors %}
-                                <div style="color: red; font-size: 0.8rem; margin-top: -0.5rem; margin-bottom: 0.5rem;">{{ form.email_address.errors.0 }}</div>
-                            {% endif %}
-                            
-                            {{ form.how_found_us }}
-                            {% if form.how_found_us.errors %}
-                                <div style="color: red; font-size: 0.8rem; margin-top: -0.5rem; margin-bottom: 0.5rem;">{{ form.how_found_us.errors.0 }}</div>
-                            {% endif %}
-                            
-                            <button type="submit" class="submit-btn">
-                                <i class="fas fa-paper-plane me-2"></i>Notify Me When Ready!
-                            </button>
-                        </form>
-                    </div>
-                </div>
+  <div class="main-container">
+    <div class="content-card">
+      <div class="row align-items-center">
+        <!-- Left -->
+        <div class="col-lg-6 col-md-6">
+          <div class="pe-lg-4">
+            <div class="brand-logo">
+              <i class="fas fa-bottle-water"></i>
             </div>
-        </div>
-    </div>
+            <h1 class="welcome-title">Welcome to Socialz Water!</h1>
+            <p class="welcome-subtitle">Thank you for scanning our QR code</p>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <script>
-        // Fixed form submission - no preventDefault, allow normal Django submission
-        document.querySelector('form').addEventListener('submit', function(e) {
-            // Don't prevent default submission
-            const button = this.querySelector('.submit-btn');
-            
-            // Show loading state
-            button.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Submitting...';
-            button.disabled = true;
-        });
-    </script>
+            <!-- Updated live advertising copy -->
+            <div class="launch-message">
+              <h4><i class="fas fa-rocket me-2"></i>We’re Live — Advertise on Socialz Water</h4>
+              <p>
+                The QR-powered bottled water ad network is live. Share details to get the media kit, ad rates, and the quickest way to launch a campaign.
+              </p>
+            </div>
+
+            <div class="action-buttons">
+              <a href="{% url 'website:home' %}" class="action-btn">
+                <i class="fas fa-home me-2"></i>Visit Website
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right - Form -->
+        <div class="col-lg-6 col-md-6">
+          <div class="form-container">
+            <h4><i class="fas fa-briefcase me-2"></i>Get the Media Kit and Rates</h4>
+
+            {% if messages %}
+              {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert" style="color:#0f5132;font-size:0.9rem;margin-bottom:1rem;background:#d4edda;border:1px solid #c3e6cb;">
+                  <i class="fas fa-check-circle me-1"></i>{{ message }}
+                  <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+              {% endfor %}
+            {% endif %}
+
+            <form method="post">
+              {% csrf_token %}
+
+              {{ form.full_name }}
+              {% if form.full_name.errors %}
+                <div style="color:#dc3545;font-size:0.8rem;margin-top:-0.5rem;margin-bottom:0.5rem;">{{ form.full_name.errors.0 }}</div>
+              {% endif %}
+
+              {{ form.phone_number }}
+              {% if form.phone_number.errors %}
+                <div style="color:#dc3545;font-size:0.8rem;margin-top:-0.5rem;margin-bottom:0.5rem;">{{ form.phone_number.errors.0 }}</div>
+              {% endif %}
+
+              {{ form.email_address }}
+              {% if form.email_address.errors %}
+                <div style="color:#dc3545;font-size:0.8rem;margin-top:-0.5rem;margin-bottom:0.5rem;">{{ form.email_address.errors.0 }}</div>
+              {% endif %}
+
+              {{ form.how_found_us }}
+              {% if form.how_found_us.errors %}
+                <div style="color:#dc3545;font-size:0.8rem;margin-top:-0.5rem;margin-bottom:0.5rem;">{{ form.how_found_us.errors.0 }}</div>
+              {% endif %}
+
+              <button type="submit" class="submit-btn">
+                <i class="fas fa-paper-plane me-2"></i>Send Me the Media Kit
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    // Preserve normal Django submission; add subtle loading state
+    (function(){
+      const form = document.querySelector('form');
+      if(!form) return;
+      form.addEventListener('submit', function(){
+        const btn = form.querySelector('.submit-btn');
+        if(btn){
+          btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Submitting...';
+          btn.disabled = true;
+        }
+      });
+    })();
+  </script>
 </body>
 </html>

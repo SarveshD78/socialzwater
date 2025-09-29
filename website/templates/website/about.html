@@ -1,380 +1,789 @@
+<!-- about.html - Django About Us Page Template -->
 {% extends 'website/base.html' %}
-
+{% load static %}
 {% block title %}About Us - Socialz Water{% endblock %}
 
+{% block extra_css %}
+<!-- CRITICAL: Header transparency override - Must be FIRST before any other CSS -->
+<style>
+    /* Ultra-specific transparency override */
+    body header#header,
+    html header#header,
+    header#header.header,
+    #header {
+        background: transparent !important;
+        background-color: transparent !important;
+        backdrop-filter: none !important;
+        box-shadow: none !important;
+        border: none !important;
+    }
+    
+    body header#header.scrolled,
+    html header#header.scrolled,
+    header#header.scrolled.header,
+    #header.scrolled {
+        background: rgba(255, 255, 255, 0.95) !important;
+        background-color: rgba(255, 255, 255, 0.95) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+    }
+    
+    /* Override any Bootstrap navbar classes */
+    .navbar, .bg-light, .bg-white {
+        background: transparent !important;
+        background-color: transparent !important;
+    }
+</style>
+
+<!-- Now load external CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+<style>
+    /* Color Variables */
+    :root {
+        --primary-green: #014a3b;
+        --dark-green: #00866a;
+        --accent-blue: #1E90FF;
+        --dark-blue: #0A3D62;
+        --dark-overlay: rgba(0, 0, 0, 0.7);
+        --white: #FFFFFF;
+        --black: #000000;
+        --dark-gray: #2C3E50;
+        --light-gray: #f8f9fa;
+    }
+    
+    /* Hero Section */
+    .about-hero {
+        height: 70vh;
+        background-image: url('{% static "website/images/transparent-water-bottle-studio.jpg" %}');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: -80px;
+        padding-top: 80px;
+    }
+    
+    .about-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: var(--dark-overlay);
+        z-index: 1;
+    }
+    
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        color: var(--white);
+    }
+    
+    .hero-title {
+        font-size: 4rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: -2px;
+        margin-bottom: 20px;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+    
+    .hero-tagline {
+        font-size: 1.4rem;
+        font-weight: 300;
+        opacity: 0.95;
+        max-width: 700px;
+        margin: 0 auto;
+        text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* About Content Section */
+    .about-content-section {
+        padding: 80px 0;
+        background: var(--white);
+    }
+    
+    .about-image {
+        width: 100%;
+        height: 500px;
+        background-image: url('{% static "website/images/photorealistic-water-bottle.jpg" %}');
+        background-size: cover;
+        background-position: center;
+        border-radius: 20px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+    }
+    
+    .about-text-content {
+        padding-left: 50px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    
+    .section-label {
+        color: var(--accent-blue);
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 15px;
+    }
+    
+    .about-heading {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--black);
+        margin-bottom: 25px;
+        line-height: 1.2;
+    }
+    
+    .about-heading .highlight {
+        color: var(--accent-blue);
+    }
+    
+    .about-description {
+        font-size: 1.15rem;
+        line-height: 1.8;
+        color: #636E72;
+        margin-bottom: 25px;
+    }
+    
+    .about-point {
+        font-size: 1.1rem;
+        color: #636E72;
+        margin-bottom: 15px;
+        padding-left: 25px;
+        position: relative;
+    }
+    
+    .about-point::before {
+        content: '\f00c';
+        font-family: 'Font Awesome 6 Free';
+        font-weight: 900;
+        position: absolute;
+        left: 0;
+        color: var(--primary-green);
+        font-size: 1rem;
+    }
+    
+    /* Mission Vision Section */
+    .mission-vision-section {
+        padding: 100px 0;
+        background-image: url('{% static "website/images/hand-painted-blue-backdrop.jpg" %}');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        position: relative;
+    }
+    
+    .mission-vision-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(1, 74, 59, 0.8) 0%, rgba(0, 134, 105, 0.7) 100%);
+        z-index: 1;
+    }
+    
+    .mv-content {
+        position: relative;
+        z-index: 2;
+    }
+    
+    .mv-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 60px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .mv-item {
+        text-align: center;
+        color: var(--white);
+    }
+    
+    .mv-icon-wrapper {
+        width: 120px;
+        height: 120px;
+        margin: 0 auto 30px;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    .mv-icon {
+        font-size: 50px;
+        color: var(--white);
+    }
+    
+    .mv-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    .mv-text {
+        font-size: 1.2rem;
+        line-height: 1.8;
+        opacity: 0.95;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+    
+    /* How We Work Section - Arrow Layout */
+    .how-we-work-section {
+        padding: 80px 0;
+        background: linear-gradient(135deg, rgba(30, 144, 255, 0.03) 0%, rgba(0, 184, 148, 0.03) 100%);
+    }
+    
+    .section-title {
+        font-size: 2.8rem;
+        font-weight: 700;
+        color: var(--black);
+        text-align: center;
+        margin-bottom: 60px;
+    }
+    
+    .arrow-layout {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 30px;
+        margin-top: 60px;
+        flex-wrap: nowrap;
+    }
+    
+    .arrow-step {
+        background: var(--white);
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        padding: 40px 25px;
+        width: 280px;
+        text-align: center;
+        flex-shrink: 0;
+        transition: all 0.3s ease;
+        position: relative;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .arrow-step::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, var(--accent-blue), var(--primary-green));
+        border-radius: 20px 20px 0 0;
+    }
+    
+    .arrow-step:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.12);
+    }
+    
+    .step-number {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, var(--accent-blue), var(--primary-green));
+        color: var(--white);
+        font-weight: 700;
+        font-size: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        box-shadow: 0 5px 15px rgba(30, 144, 255, 0.3);
+    }
+    
+    .step-icon {
+        color: var(--accent-blue);
+        margin-bottom: 20px;
+        font-size: 3rem;
+    }
+    
+    .arrow-step h4 {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: var(--black);
+        margin-bottom: 15px;
+    }
+    
+    .arrow-step p {
+        color: #636E72;
+        line-height: 1.7;
+        font-size: 1rem;
+    }
+    
+    .arrow-line {
+        color: var(--accent-blue);
+        font-size: 3rem;
+        font-weight: bold;
+        flex-shrink: 0;
+        text-shadow: 0 2px 4px rgba(30, 144, 255, 0.3);
+    }
+    
+    /* Founders Section */
+    .founders-section {
+        padding: 80px 0;
+        background: var(--white);
+    }
+    
+    .founders-header {
+        text-align: center;
+        margin-bottom: 60px;
+    }
+    
+    .founders-title {
+        font-size: 2.8rem;
+        font-weight: 700;
+        color: var(--black);
+        margin-bottom: 15px;
+    }
+    
+    .founders-subtitle {
+        font-size: 1.2rem;
+        color: #636E72;
+    }
+    
+    .founders-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 30px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .founder-card {
+        background: var(--white);
+        border-radius: 20px;
+        padding: 40px 30px;
+        text-align: center;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .founder-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    }
+    
+    .founder-avatar {
+        width: 140px;
+        height: 140px;
+        margin: 0 auto 25px;
+        border-radius: 50%;
+        overflow: hidden;
+        box-shadow: 0 8px 25px rgba(30, 144, 255, 0.25);
+        position: relative;
+    }
+    
+    .founder-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: all 0.3s ease;
+    }
+    
+    .founder-card:hover .founder-avatar img {
+        transform: scale(1.1);
+    }
+    
+    .founder-name {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--black);
+        margin-bottom: 10px;
+    }
+    
+    .founder-role {
+        font-size: 1rem;
+        color: var(--accent-blue);
+        font-weight: 600;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    .founder-bio {
+        font-size: 1rem;
+        line-height: 1.8;
+        color: #636E72;
+        text-align: left;
+    }
+    
+    .founder-education {
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid rgba(0, 0, 0, 0.08);
+        font-size: 0.9rem;
+        color: #95a5a6;
+        font-style: italic;
+        text-align: center;
+    }
+    
+    /* Enhanced CTA Section */
+    .final-cta {
+        padding: 80px 0;
+        background: linear-gradient(135deg, var(--accent-blue) 0%, var(--primary-green) 50%, var(--black) 100%);
+        text-align: center;
+        color: var(--white);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .final-cta::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(30, 144, 255, 0.1) 0%, rgba(0, 184, 148, 0.1) 50%, rgba(0, 0, 0, 0.1) 100%);
+        animation: rotate 30s linear infinite;
+    }
+    
+    .final-cta::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(45deg, transparent 0%, rgba(30, 144, 255, 0.05) 25%, rgba(0, 184, 148, 0.05) 50%, rgba(0, 0, 0, 0.1) 75%, transparent 100%);
+        animation: shimmer 4s ease-in-out infinite;
+    }
+    
+    @keyframes rotate {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+    
+    @keyframes shimmer {
+        0%, 100% { opacity: 0; }
+        50% { opacity: 1; }
+    }
+    
+    .cta-content {
+        position: relative;
+        z-index: 3;
+    }
+    
+    .cta-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+    
+    .cta-text {
+        font-size: 1.1rem;
+        margin-bottom: 30px;
+        opacity: 0.95;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Simple White Button with Blue-Green Hover */
+    .contact-btn {
+        background: var(--white);
+        color: var(--accent-blue);
+        border: 2px solid var(--accent-blue);
+        padding: 18px 50px;
+        border-radius: 50px;
+        text-decoration: none;
+        display: inline-block;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+    }
+    
+    .contact-btn:hover {
+        background: linear-gradient(135deg, var(--accent-blue), var(--primary-green));
+        color: var(--white);
+        border-color: transparent;
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: 0 8px 25px rgba(30, 144, 255, 0.4);
+    }
+    
+    .contact-btn:active {
+        transform: translateY(-1px) scale(1.02);
+    }
+    
+    /* Responsive */
+    @media (max-width: 991px) {
+        .about-hero {
+            margin-top: -70px;
+            padding-top: 70px;
+        }
+        
+        .about-text-content {
+            padding-left: 0;
+            margin-top: 40px;
+        }
+        
+        .mv-grid {
+            grid-template-columns: 1fr;
+            gap: 40px;
+        }
+        
+        .arrow-layout {
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .arrow-line {
+            transform: rotate(90deg);
+            font-size: 2rem;
+        }
+        
+        .arrow-step {
+            width: 100%;
+            max-width: 350px;
+        }
+        
+        .founders-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 3rem;
+        }
+        
+        .about-heading {
+            font-size: 2rem;
+        }
+        
+        .founders-title {
+            font-size: 2rem;
+        }
+        
+        .cta-title {
+            font-size: 2rem;
+        }
+        
+        .arrow-line {
+            display: none;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<!-- About Us Banner -->
-<section class="hero-section">
-    <div class="container">
-        <div class="row align-items-center text-center" style="min-height: 80vh;">
-            <div class="col-12">
-                <h1 class="display-3 fw-bold mb-4" style="font-size: clamp(2.5rem, 5vw, 4rem); line-height: 1.2;">
-                    About Socialz Water
-                </h1>
-                <p class="lead mb-5" style="font-size: 1.5rem; color: rgba(255,255,255,0.9); max-width: 800px; margin: 0 auto;">
-                    Revolutionizing water bottle advertising with innovative QR technology, 
-                    connecting brands with consumers while rewarding sustainable choices.
-                </p>
-                <div class="d-flex justify-content-center gap-3 flex-wrap">
-                    <a href="#mission" class="btn btn-primary btn-lg">
-                        <i class="fas fa-arrow-down me-2"></i>Learn More
-                    </a>
-                    <a href="{% url 'website:contact' %}" class="btn btn-outline-light btn-lg">
-                        <i class="fas fa-phone me-2"></i>Get in Touch
-                    </a>
-                </div>
-            </div>
-        </div>
+{% load static %}
+
+<!-- Hero Section -->
+<section class="about-hero">
+    <div class="hero-content">
+        <h1 class="hero-title">About Socialz Water</h1>
+        <p class="hero-tagline">Revolutionizing water bottle advertising with innovative QR technology</p>
     </div>
 </section>
 
-
-<!-- About Us Paragraph -->
-<section class="py-5 bg-white">
+<!-- About Content Section -->
+<section class="about-content-section">
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-8 text-center">
-                <h2 class="display-5 fw-bold section-title mb-4">Who We Are</h2>
-                <p class="section-subtitle" style="font-size: 1.2rem; line-height: 1.8;">
-                    Socialz Water is a pioneering technology company that bridges the gap between sustainable consumption 
-                    and digital advertising. We've created an innovative platform that transforms everyday water bottles 
-                    into interactive advertising spaces, allowing consumers to earn rewards while brands connect with their 
-                    target audience in meaningful ways.
-                </p>
-                <p class="section-subtitle" style="font-size: 1.1rem; line-height: 1.7; margin-top: 2rem;">
-                    Founded on the principles of sustainability, innovation, and community engagement, we believe that 
-                    every small action can contribute to a larger positive impact. Our QR-code technology makes advertising 
-                    more engaging, rewards more accessible, and environmental consciousness more rewarding.
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Mission, Vision, How We Work -->
-<section id="mission" class="py-5" style="background: var(--beige);">
-    <div class="container">
-        <!-- Mission -->
-        <div class="row align-items-center mb-5">
-            <div class="col-lg-6">
-                <div class="bg-white rounded-4 p-5 shadow-lg">
-                    <div class="feature-icon icon-green mb-4" style="width: 80px; height: 80px;">
-                        <i class="fas fa-bullseye" style="font-size: 2rem;"></i>
-                    </div>
-                    <h3 class="fw-bold mb-3" style="color: var(--dark-gray);">Our Mission</h3>
-                    <p class="section-subtitle mb-4">
-                        To revolutionize the advertising industry by creating sustainable, reward-based connections 
-                        between brands and consumers through innovative QR technology on water bottles.
-                    </p>
-                    <div class="row g-3">
-                        <div class="col-6">
-                            <div class="d-flex align-items-center">
-                                <i class="fas fa-check-circle text-success me-2"></i>
-                                <small class="fw-medium">Sustainable Advertising</small>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="d-flex align-items-center">
-                                <i class="fas fa-check-circle text-success me-2"></i>
-                                <small class="fw-medium">Consumer Rewards</small>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="d-flex align-items-center">
-                                <i class="fas fa-check-circle text-success me-2"></i>
-                                <small class="fw-medium">Brand Engagement</small>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="d-flex align-items-center">
-                                <i class="fas fa-check-circle text-success me-2"></i>
-                                <small class="fw-medium">Environmental Impact</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6 text-center">
-                <div class="position-relative">
-                    <div style="background: var(--green); width: 300px; height: 300px; border-radius: 50%; margin: 0 auto; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 30px rgba(76, 175, 80, 0.3);">
-                        <div style="background: rgba(255,255,255,0.2); width: 200px; height: 200px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                            <i class="fas fa-globe" style="font-size: 4rem; color: white;"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Vision -->
-        <div class="row align-items-center mb-5">
-            <div class="col-lg-6 text-center order-lg-1 order-2">
-                <div class="position-relative">
-                    <div style="background: var(--primary-blue); width: 300px; height: 300px; border-radius: 50%; margin: 0 auto; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 30px rgba(74, 95, 193, 0.3);">
-                        <div style="background: rgba(255,255,255,0.2); width: 200px; height: 200px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                            <i class="fas fa-eye" style="font-size: 4rem; color: white;"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6 order-lg-2 order-1">
-                <div class="bg-white rounded-4 p-5 shadow-lg">
-                    <div class="feature-icon icon-blue mb-4" style="width: 80px; height: 80px;">
-                        <i class="fas fa-lightbulb" style="font-size: 2rem;"></i>
-                    </div>
-                    <h3 class="fw-bold mb-3" style="color: var(--dark-gray);">Our Vision</h3>
-                    <p class="section-subtitle mb-4">
-                        To become the global leader in sustainable advertising technology, creating a world where 
-                        every interaction between brands and consumers contributes to environmental conservation 
-                        and community well-being.
-                    </p>
-                    <div class="row g-3">
-                        <div class="col-6">
-                            <div class="d-flex align-items-center">
-                                <i class="fas fa-star text-warning me-2"></i>
-                                <small class="fw-medium">Global Leadership</small>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="d-flex align-items-center">
-                                <i class="fas fa-star text-warning me-2"></i>
-                                <small class="fw-medium">Innovation</small>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="d-flex align-items-center">
-                                <i class="fas fa-star text-warning me-2"></i>
-                                <small class="fw-medium">Sustainability</small>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="d-flex align-items-center">
-                                <i class="fas fa-star text-warning me-2"></i>
-                                <small class="fw-medium">Community Impact</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- How We Work -->
         <div class="row align-items-center">
             <div class="col-lg-6">
-                <div class="bg-white rounded-4 p-5 shadow-lg">
-                    <div class="feature-icon icon-orange mb-4" style="width: 80px; height: 80px;">
-                        <i class="fas fa-cogs" style="font-size: 2rem;"></i>
-                    </div>
-                    <h3 class="fw-bold mb-3" style="color: var(--dark-gray);">How We Work</h3>
-                    <p class="section-subtitle mb-4">
-                        Our innovative three-step process seamlessly integrates QR technology with water bottles, 
-                        creating a unique advertising ecosystem that benefits everyone involved - consumers, brands, 
-                        and the environment.
-                    </p>
-                    <div class="row g-3">
-                        <div class="col-6">
-                            <div class="d-flex align-items-center">
-                                <i class="fas fa-qrcode text-primary me-2"></i>
-                                <small class="fw-medium">QR Integration</small>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="d-flex align-items-center">
-                                <i class="fas fa-video text-primary me-2"></i>
-                                <small class="fw-medium">Content Delivery</small>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="d-flex align-items-center">
-                                <i class="fas fa-coins text-primary me-2"></i>
-                                <small class="fw-medium">Instant Rewards</small>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="d-flex align-items-center">
-                                <i class="fas fa-chart-line text-primary me-2"></i>
-                                <small class="fw-medium">Analytics</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <div class="about-image"></div>
             </div>
-            <div class="col-lg-6 text-center">
-                <div class="position-relative">
-                    <div style="background: var(--orange); width: 300px; height: 300px; border-radius: 50%; margin: 0 auto; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 30px rgba(245, 166, 35, 0.3);">
-                        <div style="background: rgba(255,255,255,0.2); width: 200px; height: 200px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                            <i class="fas fa-network-wired" style="font-size: 4rem; color: white;"></i>
-                        </div>
-                    </div>
+            <div class="col-lg-6">
+                <div class="about-text-content">
+                    <span class="section-label">About Us</span>
+                    <h2 class="about-heading">Who We Are & <span class="highlight">What We Do</span></h2>
+                    <p class="about-description">
+                        Socialz Water is a pioneering advertising-technology company that transforms everyday water
+                        bottles into interactive brand experiences. Through custom labels and QR-enabled campaigns, we
+                        help businesses showcase their message in a way that is direct, engaging, and trackable.
+                    </p>
+                    <p class="about-description">
+                        At our core, we believe in creating a win-win ecosystem for all stakeholders. Founded on the principles 
+                        of innovation, accessibility, and engagement, Socialz Water is redefining how India experiences advertising.
+                    </p>
+                    <div class="about-point">Brands benefit from measurable visibility and ROI</div>
+                    <div class="about-point">Consumers enjoy meaningful rewards with every scan</div>
+                    <div class="about-point">Partners unlock scalable business opportunities</div>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Step Illustrations -->
-<section class="py-5 bg-white">
+<!-- Mission Vision Section -->
+<section class="mission-vision-section">
+    <div class="mv-content">
+        <div class="container">
+            <div class="mv-grid">
+                <div class="mv-item">
+                    <div class="mv-icon-wrapper">
+                        <i class="fas fa-bullseye mv-icon"></i>
+                    </div>
+                    <h3 class="mv-title">Mission</h3>
+                    <p class="mv-text">
+                        To change the way India advertises — one water bottle at a time. With QR-powered labels and real-time 
+                        rewards, we connect brands and consumers in a way that's engaging, measurable, and unforgettable.
+                    </p>
+                </div>
+                
+                <div class="mv-item">
+                    <div class="mv-icon-wrapper">
+                        <i class="fas fa-rocket mv-icon"></i>
+                    </div>
+                    <h3 class="mv-title">Vision</h3>
+                    <p class="mv-text">
+                        To make Socialz Water the #1 Pan-India advertising platform, where every sip turns into a brand
+                        connection and every campaign delivers real results.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How We Work Section - Arrow Layout -->
+<section class="how-we-work-section">
     <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="display-5 fw-bold section-title mb-3">Our Process in Action</h2>
-            <p class="section-subtitle" style="font-size: 1.1rem; max-width: 600px; margin: 0 auto;">
-                See how our innovative three-step process creates value for everyone involved.
-            </p>
+        <h2 class="section-title">How We Work</h2>
+        <div class="arrow-layout">
+            <div class="arrow-step">
+
+                <i class="fas fa-mobile-alt step-icon"></i>
+                <h4>QR Integration</h4>
+                <p>We embed unique QR codes on water bottles, creating instant digital touchpoints for brand engagement.</p>
+            </div>
+            <div class="arrow-line">→</div>
+            <div class="arrow-step">
+
+                <i class="fas fa-users step-icon"></i>
+                <h4>Consumer Engagement</h4>
+                <p>Customers scan QR codes to access brand content and rewards instantly on their smartphones.</p>
+            </div>
+            <div class="arrow-line">→</div>
+            <div class="arrow-step">
+
+                <i class="fas fa-chart-line step-icon"></i>
+                <h4>Analytics & Rewards</h4>
+                <p>Brands get real-time analytics while consumers earn instant rewards, creating value for everyone.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Founders Section -->
+<section class="founders-section">
+    <div class="container">
+        <div class="founders-header">
+            <h2 class="founders-title">Meet Our Founders</h2>
+            <p class="founders-subtitle">The visionary minds driving innovation at Socialz Water</p>
         </div>
         
-        <div class="row g-5">
-            <!-- Step 1 -->
-            <div class="col-lg-4 text-center">
-                <div class="process-step">
-                    <div class="feature-icon icon-green mb-4" style="width: 100px; height: 100px; margin: 0 auto;">
-                        <i class="fas fa-qrcode" style="font-size: 2.5rem;"></i>
-                    </div>
-                    <div class="step-number mb-3" style="background: var(--green); color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-weight: bold;">1</div>
-                    <h4 class="fw-bold mb-3">QR Code Integration</h4>
-                    <p class="section-subtitle">
-                        We integrate unique QR codes onto water bottles, creating a seamless bridge 
-                        between physical products and digital experiences.
-                    </p>
+        <div class="founders-grid">
+            <div class="founder-card">
+                <div class="founder-avatar">
+                    <img src="{% static 'website/images/bottle.jpeg' %}" alt="Rushabh Bedmutha" />
                 </div>
-            </div>
-            
-            <!-- Step 2 -->
-            <div class="col-lg-4 text-center">
-                <div class="process-step">
-                    <div class="feature-icon icon-blue mb-4" style="width: 100px; height: 100px; margin: 0 auto;">
-                        <i class="fas fa-video" style="font-size: 2.5rem;"></i>
-                    </div>
-                    <div class="step-number mb-3" style="background: var(--primary-blue); color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-weight: bold;">2</div>
-                    <h4 class="fw-bold mb-3">Engaging Content</h4>
-                    <p class="section-subtitle">
-                        Users scan the QR code and watch carefully curated 20-30 second advertisements 
-                        that provide value and entertainment.
-                    </p>
-                </div>
-            </div>
-            
-            <!-- Step 3 -->
-            <div class="col-lg-4 text-center">
-                <div class="process-step">
-                    <div class="feature-icon icon-orange mb-4" style="width: 100px; height: 100px; margin: 0 auto;">
-                        <i class="fas fa-gift" style="font-size: 2.5rem;"></i>
-                    </div>
-                    <div class="step-number mb-3" style="background: var(--orange); color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-weight: bold;">3</div>
-                    <h4 class="fw-bold mb-3">Instant Rewards</h4>
-                    <p class="section-subtitle">
-                        Users receive immediate monetary rewards up to ₹10, while brands gain valuable 
-                        engagement and analytics data.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- FAQs Section -->
-<section class="py-5" style="background: var(--beige);">
-    <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="display-5 fw-bold section-title mb-3">Frequently Asked Questions</h2>
-            <p class="section-subtitle" style="font-size: 1.1rem; max-width: 600px; margin: 0 auto;">
-                Get answers to the most common questions about Socialz Water.
-            </p>
-        </div>
-        
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <div class="accordion" id="faqAccordion">
-                    <!-- FAQ 1 -->
-                    <div class="accordion-item mb-3 border-0 rounded-4 shadow-sm">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
-                                How does the Socialz Water QR system work?
-                            </button>
-                        </h2>
-                        <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                            <div class="accordion-body">
-                                Simply scan the QR code on any Socialz Water bottle with your smartphone camera, watch a short 20-30 second advertisement, and receive instant rewards up to ₹10. It's that easy!
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- FAQ 2 -->
-                    <div class="accordion-item mb-3 border-0 rounded-4 shadow-sm">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
-                                What types of brands advertise through Socialz Water?
-                            </button>
-                        </h2>
-                        <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                            <div class="accordion-body">
-                                We partner with a diverse range of brands including tech companies, food & beverage brands, lifestyle products, and sustainable businesses that align with our environmental values.
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- FAQ 3 -->
-                    <div class="accordion-item mb-3 border-0 rounded-4 shadow-sm">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
-                                How do I receive my rewards?
-                            </button>
-                        </h2>
-                        <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                            <div class="accordion-body">
-                                Rewards are processed instantly after watching the advertisement. You can receive payments through UPI, bank transfer, or choose to donate to environmental causes.
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- FAQ 4 -->
-                    <div class="accordion-item mb-3 border-0 rounded-4 shadow-sm">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
-                                Is there a limit to how many bottles I can scan?
-                            </button>
-                        </h2>
-                        <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                            <div class="accordion-body">
-                                Each QR code can be scanned once per unique user. However, you can scan multiple different bottles throughout the day to maximize your earnings!
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- FAQ 5 -->
-                    <div class="accordion-item mb-3 border-0 rounded-4 shadow-sm">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
-                                How does this help the environment?
-                            </button>
-                        </h2>
-                        <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                            <div class="accordion-body">
-                                By encouraging people to engage with water bottles before disposal, we increase awareness about recycling and sustainability. Plus, we partner with brands committed to environmental responsibility.
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Call to Action -->
-<section class="py-5" style="background: var(--primary-blue); color: white;">
-    <div class="container text-center">
-        <div class="row">
-            <div class="col-lg-8 mx-auto">
-                <h2 class="display-6 fw-bold mb-3">Ready to Join Our Mission?</h2>
-                <p class="lead mb-4">
-                    Be part of the sustainable advertising revolution. Whether you're a consumer, brand, or partner, 
-                    there's a place for you in the Socialz Water ecosystem.
+                <h3 class="founder-name">Rushabh Bedmutha</h3>
+                <p class="founder-role">Business & Strategy</p>
+                <p class="founder-bio">
+                    The driving force behind Socialz Water, Rushabh brings a strong business mindset and strategic vision
+                    to the team. With a passion for entrepreneurship and brand-building, he is the brain behind the
+                    concept of transforming water bottles into interactive advertising platforms.
                 </p>
-                <div class="d-flex justify-content-center gap-3 flex-wrap">
-                    <a href="{% url 'website:contact' %}" class="btn btn-outline-light btn-lg px-4">
-                        <i class="fas fa-handshake me-2"></i>Partner With Us
-                    </a>
+            </div>
+            
+            <div class="founder-card">
+                <div class="founder-avatar">
+                    <img src="{% static 'website/images/Sanika.jpeg' %}" alt="Sanika Satkar" />
                 </div>
+                <h3 class="founder-name">Sanika Satkar</h3>
+                <p class="founder-role">Technology & Creativity</p>
+                <p class="founder-bio">
+                    Currently pursuing her final year in Computer Science Engineering at MIT-ADT University, Sanika
+                    combines her technical expertise with creative problem-solving. She plays a crucial role in shaping
+                    the digital ecosystem of Socialz Water.
+                </p>
+                <p class="founder-education">MIT-ADT University | Computer Science Engineering</p>
+            </div>
+            
+            <div class="founder-card">
+                <div class="founder-avatar">
+                    <img src="{% static 'website/images/bottle.jpeg' %}" alt="Sangram Patil" />
+                </div>
+                <h3 class="founder-name">Sangram Patil</h3>
+                <p class="founder-role">Business Intelligence & Growth</p>
+                <p class="founder-bio">
+                    Pursuing an MBA in Business Intelligence at MIT-WPU, Kothrud, Sangram brings strong analytical and 
+                    managerial skills to the team. His expertise ensures that Socialz Water operates on measurable
+                    insights, helping brands achieve meaningful engagement.
+                </p>
+                <p class="founder-education">MIT-WPU, Kothrud | MBA in Business Intelligence</p>
             </div>
         </div>
     </div>
 </section>
+
+<!-- Enhanced CTA Section -->
+<section class="final-cta">
+    <div class="cta-content">
+        <h2 class="cta-title">Ready to Design Your Campaign?</h2>
+        <p class="cta-text">
+            Join the revolution and craft your unique bottle advertising campaign with Socialz Water.
+            Custom designs tailored for your brand's success!
+        </p>
+        <a href="{% url 'website:partner' %}" class="contact-btn">Start Designing</a>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Scroll animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+    
+    // Observe all animated elements
+    document.querySelectorAll('.arrow-step, .founder-card').forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(30px)';
+        el.style.transition = 'all 0.6s ease';
+        observer.observe(el);
+    });
+</script>
 {% endblock %}

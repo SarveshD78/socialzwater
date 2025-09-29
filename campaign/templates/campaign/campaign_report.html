@@ -1,0 +1,672 @@
+{% extends 'campaign/base.html' %}
+{% load static %}
+
+{% block page_title %}{{ campaign.camp_name }} - Report{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="breadcrumb-item"><a href="{% url 'sw:report_list' %}">Reports</a></li>
+<li class="breadcrumb-item active">{{ campaign.camp_name }}</li>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+  :root {
+    --primary: #667eea;
+    --primary-dark: #764ba2;
+    --success: #48bb78;
+    --danger: #f56565;
+    --warning: #ed8936;
+    --info: #4299e1;
+    --bg-card: #ffffff;
+    --bg-soft: #f7fafc;
+    --text-primary: #2d3748;
+    --text-secondary: #718096;
+    --border: #e2e8f0;
+    --radius-lg: 15px;
+    --radius-md: 12px;
+    --radius-sm: 8px;
+    --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+    --shadow-md: 0 6px 16px rgba(0,0,0,0.08);
+    --shadow-lg: 0 10px 30px rgba(102,126,234,0.18);
+  }
+
+  .campaign-header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: #fff;
+    padding: 2rem;
+    border-radius: var(--radius-lg);
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-lg);
+  }
+  .campaign-title { font-size: 2rem; font-weight: 800; margin-bottom: .25rem; letter-spacing: .2px; }
+  .campaign-meta { display: flex; gap: 1.25rem 2rem; flex-wrap: wrap; margin-top: .75rem; opacity: .98; }
+  .campaign-meta-item { display: inline-flex; align-items: center; gap: .5rem; font-weight: 600; }
+  .campaign-meta-item i { opacity: .95; }
+  .performance-badge {
+    display: inline-flex; align-items: center; gap: .5rem;
+    padding: .5rem 1rem; border-radius: 999px; font-weight: 700; font-size: .85rem;
+    background: rgba(255,255,255,0.2); color: #fff; backdrop-filter: blur(6px);
+  }
+  .action-buttons { display: flex; gap: .75rem; margin-top: 1.25rem; flex-wrap: wrap; }
+  .btn-export-data, .btn-back {
+    border: none; border-radius: var(--radius-sm); padding: .7rem 1.2rem; font-weight: 700;
+    display: inline-flex; align-items: center; gap: .5rem; transition: all .25s ease; text-decoration: none;
+  }
+  .btn-export-data { background: #fff; color: var(--primary); box-shadow: var(--shadow-sm); }
+  .btn-export-data:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .btn-back { background: transparent; color: #fff; border: 2px solid #fff; }
+  .btn-back:hover { background: rgba(255,255,255,.1); transform: translateY(-1px); }
+
+  /* Base metrics styles (as provided) */
+.metrics-grid {
+  display: grid; 
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.metric-card {
+  background: var(--bg-card); 
+  border: 1px solid var(--border); 
+  border-radius: var(--radius-md);
+  padding: 1.25rem; 
+  transition: transform .25s ease, box-shadow .25s ease; 
+  box-shadow: var(--shadow-sm);
+}
+.metric-card:hover { 
+  transform: translateY(-2px); 
+  box-shadow: var(--shadow-md); 
+}
+.metric-icon {
+  width: 52px; height: 52px; 
+  border-radius: 12px; 
+  display:flex; align-items:center; justify-content:center;
+  margin-bottom: .9rem; 
+  font-size: 1.35rem;
+}
+.metric-icon.scans { background: linear-gradient(135deg, #4299e120, #63b3ed20); color: var(--info); }
+.metric-icon.devices { background: linear-gradient(135deg, #667eea20, #764ba220); color: var(--primary); }
+.metric-icon.submissions { background: linear-gradient(135deg, #48bb7820, #68d39120); color: var(--success); }
+.metric-icon.completions { background: linear-gradient(135deg, #9f7aea20, #b794f420); color: #9f7aea; }
+.metric-icon.watch-time { background: linear-gradient(135deg, #ed893620, #f6ad5520); color: var(--warning); }
+.metric-icon.bounce { background: linear-gradient(135deg, #f5656520, #fc8b8b20); color: var(--danger); }
+.metric-value { 
+  font-size: 1.9rem; font-weight: 800; 
+  color: var(--text-primary); margin-bottom: .15rem; letter-spacing: .2px; 
+}
+.metric-label { 
+  font-size: .82rem; color: var(--text-secondary); 
+  text-transform: uppercase; letter-spacing: .6px; 
+}
+.metric-sublabel { font-size: .75rem; color: var(--text-secondary); margin-top: .25rem; }
+
+/* Additions: force 6-in-a-row at large widths with graceful fallbacks */
+@media (min-width: 1200px) {
+  .metrics-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+/* Medium screens: 3 per row */
+@media (max-width: 1199.98px) and (min-width: 768px) {
+  .metrics-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Small screens: 2 per row */
+@media (max-width: 767.98px) {
+  .metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Very small phones: 1 per row (optional) */
+@media (max-width: 399.98px) {
+  .metrics-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Optional: compact sizing to keep six cards comfortable on common laptop widths */
+@media (min-width: 1200px) {
+  .metric-card { padding: 1rem; }
+  .metric-icon { width: 48px; height: 48px; font-size: 1.25rem; margin-bottom: .7rem; }
+  .metric-value { font-size: 1.75rem; }
+}
+
+
+  .chart-section {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md);
+    padding: 1.25rem; margin-bottom: 1rem; box-shadow: var(--shadow-sm);
+  }
+  .chart-header {
+    display:flex; justify-content: space-between; align-items: center;
+    margin-bottom: 1rem; padding-bottom: .8rem; border-bottom: 2px solid var(--border);
+  }
+  .chart-title { font-size: 1.1rem; font-weight: 800; color: var(--text-primary); display:flex; align-items:center; gap:.5rem; letter-spacing:.2px; }
+
+  .funnel-container { display:flex; flex-direction: column; gap: .5rem; }
+  .funnel-step {
+    background: linear-gradient(90deg, var(--primary) 0%, var(--primary-dark) 100%); color:#fff;
+    padding: .85rem 1rem; border-radius: 10px; display:flex; justify-content: space-between; align-items:center;
+  }
+  .funnel-step:nth-child(2){ background: linear-gradient(90deg, #4299e1 0%, #63b3ed 100%); margin-left: 1rem; }
+  .funnel-step:nth-child(3){ background: linear-gradient(90deg, #48bb78 0%, #68d391 100%); margin-left: 2rem; }
+  .funnel-step:nth-child(4){ background: linear-gradient(90deg, #9f7aea 0%, #b794f4 100%); margin-left: 3rem; }
+  .funnel-step:nth-child(5){ background: linear-gradient(90deg, #ed8936 0%, #f6ad55 100%); margin-left: 4rem; }
+  .funnel-step-label { font-weight: 700; }
+  .funnel-step-value { font-weight: 800; font-size: 1.1rem; }
+
+  .stats-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
+  .stat-item {
+    padding: .9rem; background: var(--bg-soft); border-radius: 10px; display:flex; justify-content: space-between; align-items:center;
+  }
+  .stat-label { font-size: .9rem; color: var(--text-secondary); font-weight: 600; }
+  .stat-value { font-size: 1.1rem; font-weight: 800; color: var(--text-primary); }
+
+  .distribution-bars { display:flex; flex-direction: column; gap: .9rem; }
+  .distribution-item { display:flex; align-items:center; gap: 1rem; }
+  .distribution-label { min-width: 88px; font-weight: 700; color: var(--text-primary); }
+  .distribution-bar { flex:1; height: 28px; background: #f0f0f0; border-radius: 14px; position: relative; overflow: hidden; }
+  .distribution-fill {
+    height: 100%; border-radius: 14px; display:flex; align-items:center; justify-content:flex-end;
+    padding: 0 .65rem; color:#fff; font-weight: 700; font-size: .85rem; transition: width .6s ease;
+  }
+  .distribution-fill.range-0 { background: linear-gradient(90deg, #f56565, #fc8b8b); }
+  .distribution-fill.range-25 { background: linear-gradient(90deg, #ed8936, #f6ad55); }
+  .distribution-fill.range-50 { background: linear-gradient(90deg, #4299e1, #63b3ed); }
+  .distribution-fill.range-75 { background: linear-gradient(90deg, #9f7aea, #b794f4); }
+  .distribution-fill.range-100 { background: linear-gradient(90deg, #48bb78, #68d391); }
+
+  .activity-table { width: 100%; }
+  .activity-table thead th {
+    background: var(--bg-soft); padding: .7rem; font-size: .75rem; text-transform: uppercase; letter-spacing: .5px;
+    color: var(--text-secondary); font-weight: 800; border-bottom: 2px solid var(--border);
+  }
+  .activity-table tbody td { padding: .7rem; color: var(--text-secondary); border-bottom: 1px solid var(--border); }
+  .activity-table tbody tr:hover { background: var(--bg-soft); }
+
+  .device-badge, .status-badge {
+    display:inline-flex; align-items:center; gap:.35rem; padding:.25rem .5rem; border-radius: 6px; font-size:.75rem; font-weight:800;
+  }
+  .device-badge.mobile { background:#e6f3ff; color:#2563eb; }
+  .device-badge.desktop { background:#f3e8ff; color:#7c3aed; }
+  .device-badge.tablet { background:#d4f4dd; color:#16a34a; }
+  .status-badge.submitted { background:#d4f4dd; color:#16a34a; }
+  .status-badge.viewed { background:#fef3c7; color:#d97706; }
+
+  .section-grid-2 { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+  @media (min-width: 992px) { .section-grid-2 { grid-template-columns: 1fr 1fr; gap: 1.25rem; } }
+
+  .subcard { background: var(--bg-soft); padding: 1.25rem; border-radius: var(--radius-md); height: 100%; box-shadow: var(--shadow-sm); }
+
+  .peak-hours { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: .75rem; }
+  .peak-hour-item {
+    display:flex; align-items:center; justify-content:space-between; background:var(--bg-soft); border:1px solid var(--border);
+    border-radius: 10px; padding: .85rem 1.1rem; transition: all .2s ease;
+  }
+  .peak-hour-item:hover { background:#fff; box-shadow: var(--shadow-sm); transform: translateY(-1px); }
+  .peak-hour-left { display:inline-flex; align-items:center; gap: .5rem; color: var(--text-primary); font-weight: 700; font-size: .9rem; }
+  .peak-hour-right { color: var(--primary); font-weight: 800; font-size: 1.1rem; }
+
+  @media (max-width: 768px) {
+    .campaign-meta { flex-direction: column; gap: .6rem; }
+    .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+    .action-buttons { flex-direction: column; }
+    .funnel-step:nth-child(n) { margin-left: 0 !important; }
+    .stats-grid { grid-template-columns: 1fr; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="campaign-header">
+  <h1 class="campaign-title">{{ campaign.camp_name }}</h1>
+
+  <div class="campaign-meta">
+    <div class="campaign-meta-item">
+      <i class="fas fa-building"></i>
+      <span>{{ campaign.client.company_name }}</span>
+    </div>
+    <div class="campaign-meta-item">
+      <i class="fas fa-calendar"></i>
+      <span>{{ campaign.start_date|date:"M d, Y" }} - {{ campaign.end_date|date:"M d, Y" }}</span>
+    </div>
+    <div class="campaign-meta-item">
+      <i class="fas fa-map-marker-alt"></i>
+      <span>{{ campaign.area_served|default:"All Areas" }}</span>
+    </div>
+    <div class="campaign-meta-item">
+      <span class="performance-badge {{ performance_level }}">
+        {% if performance_level == 'excellent' %}
+          <i class="fas fa-star"></i> Excellent Performance
+        {% elif performance_level == 'good' %}
+          <i class="fas fa-thumbs-up"></i> Good Performance
+        {% elif performance_level == 'average' %}
+          <i class="fas fa-minus-circle"></i> Average Performance
+        {% else %}
+          <i class="fas fa-exclamation-triangle"></i> Needs Improvement
+        {% endif %}
+      </span>
+    </div>
+  </div>
+
+  <div class="action-buttons">
+    <a href="{% url 'sw:export_campaign_data' campaign.unique_id %}" class="btn-export-data">
+      <i class="fas fa-download"></i> Export Campaign Data
+    </a>
+    <a href="{% url 'sw:report_list' %}" class="btn-back">
+      <i class="fas fa-arrow-left"></i> Back to Reports
+    </a>
+  </div>
+</div>
+
+<div class="metrics-grid">
+  <div class="metric-card">
+    <div class="metric-icon scans"><i class="fas fa-qrcode"></i></div>
+    <div class="metric-value">{{ metrics.total_scans }}</div>
+    <div class="metric-label">Total Scans</div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-icon devices"><i class="fas fa-mobile-alt"></i></div>
+    <div class="metric-value">{{ metrics.unique_devices }}</div>
+    <div class="metric-label">Unique Devices</div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-icon submissions"><i class="fas fa-user-check"></i></div>
+    <div class="metric-value">{{ metrics.form_submissions }}</div>
+    <div class="metric-label">Form Submissions</div>
+    <div class="metric-sublabel">{{ metrics.form_conversion_rate }}% conversion</div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-icon completions"><i class="fas fa-play-circle"></i></div>
+    <div class="metric-value">{{ metrics.video_completions }}</div>
+    <div class="metric-label">Video Completions</div>
+    <div class="metric-sublabel">{{ metrics.video_completion_rate }}% completion</div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-icon watch-time"><i class="fas fa-clock"></i></div>
+    <div class="metric-value">{{ metrics.avg_watch_time }}s</div>
+    <div class="metric-label">Avg Watch Time</div>
+    <div class="metric-sublabel">{{ metrics.avg_video_percentage }}% watched</div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-icon bounce"><i class="fas fa-sign-out-alt"></i></div>
+    <div class="metric-value">{{ metrics.bounce_percentage }}%</div>
+    <div class="metric-label">Bounce Rate</div>
+    <div class="metric-sublabel">Scans without video view</div>
+  </div>
+</div>
+
+<div class="chart-section">
+  <div class="chart-header">
+    <h3 class="chart-title">
+      <i class="fas fa-chart-line"></i> Scan Analysis & Bottle Utilization
+    </h3>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-md-6">
+      <div class="subcard">
+        <h5 style="margin-bottom: 1.1rem; color: var(--text-primary); font-weight: 800;">
+          <i class="fas fa-qrcode"></i> Total vs Unique Scans
+        </h5>
+        <div style="height: 250px;">
+          <canvas id="scanComparisonChart"></canvas>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: .75rem; margin-top: .9rem;">
+          <div style="text-align:center;">
+            <div style="font-size: 1.35rem; font-weight: 800; color: var(--primary);">{{ metrics.total_scans }}</div>
+            <div style="font-size: .72rem; color: var(--text-secondary); text-transform: uppercase;">Total</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size: 1.35rem; font-weight: 800; color: var(--success);">{{ metrics.unique_devices }}</div>
+            <div style="font-size: .72rem; color: var(--text-secondary); text-transform: uppercase;">Unique</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size: 1.35rem; font-weight: 800; color: var(--info);">{{ metrics.form_submissions }}</div>
+            <div style="font-size: .72rem; color: var(--text-secondary); text-transform: uppercase;">Submitted</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="subcard">
+        <h5 style="margin-bottom: 1.1rem; color: var(--text-primary); font-weight: 800;">
+          <i class="fas fa-wine-bottle"></i> Bottle Capacity
+        </h5>
+        <div style="position: relative; height: 200px; display:flex; align-items:center; justify-content:center;">
+          <canvas id="bottleUtilizationChart"></canvas>
+          <div style="position: absolute; display:flex; flex-direction:column; align-items:center;">
+            <div style="font-size: 1.8rem; font-weight: 900; color: var(--primary);" id="bottlePercentage">0%</div>
+            <div style="font-size: .72rem; color: var(--text-secondary); text-transform: uppercase;">Used</div>
+          </div>
+        </div>
+        <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap: .75rem; margin-top: .8rem;">
+          <div style="text-align:center; padding: .7rem; background:#fff; border-radius: 10px; border:1px solid var(--border);">
+            <div style="font-size: 1.1rem; font-weight: 800; color: var(--text-primary);">{{ campaign.number_of_bottles }}</div>
+            <div style="font-size: .75rem; color: var(--text-secondary);">Total</div>
+          </div>
+          <div style="text-align:center; padding: .7rem; background:#fff; border-radius: 10px; border:1px solid var(--border);">
+            <div style="font-size: 1.1rem; font-weight: 800; color: {% if metrics.form_submissions >= campaign.number_of_bottles %}var(--danger){% else %}var(--success){% endif %};" id="bottleRemaining">0</div>
+            <div style="font-size: .75rem; color: var(--text-secondary);">Remaining</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Peak Hours Section (Separate) -->
+<div class="chart-section">
+  <div class="chart-header">
+    <h3 class="chart-title">
+      <i class="fas fa-clock"></i> Peak Hours Analysis
+    </h3>
+  </div>
+  <div class="peak-hours" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: .75rem;">
+    {% for hour, count in peak_hours %}
+    <div class="peak-hour-item">
+      <span class="peak-hour-left">
+        <i class="fas fa-clock"></i>
+        {% if hour < 12 %}{{ hour }}:00 AM{% elif hour == 12 %}12:00 PM{% else %}{{ hour|add:"-12" }}:00 PM{% endif %}
+      </span>
+      <span class="peak-hour-right">{{ count }} scans</span>
+    </div>
+    {% empty %}
+    <div class="peak-hour-item">
+      <span class="peak-hour-left"><i class="fas fa-info-circle"></i> No peak hours data</span>
+      <span class="peak-hour-right">0</span>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- Device & Platform Statistics -->
+<div class="chart-section">
+  <div class="chart-header">
+    <h3 class="chart-title">
+      <i class="fas fa-laptop-mobile"></i> Device & Platform Statistics
+    </h3>
+  </div>
+  <div class="stats-grid">
+    <div>
+      <h5 style="margin-bottom: 1rem; color: var(--text-primary); font-weight: 800;">Device Types</h5>
+      {% for stat in device_stats %}
+      <div class="stat-item">
+        <span class="stat-label">
+          {% if stat.device_type == 'mobile' %}<i class="fas fa-mobile-alt"></i> Mobile
+          {% elif stat.device_type == 'desktop' %}<i class="fas fa-desktop"></i> Desktop
+          {% elif stat.device_type == 'tablet' %}<i class="fas fa-tablet-alt"></i> Tablet
+          {% else %}<i class="fas fa-question-circle"></i> {{ stat.device_type|title }}{% endif %}
+        </span>
+        <span class="stat-value">{{ stat.count }}</span>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div>
+      <h5 style="margin-bottom: 1rem; color: var(--text-primary); font-weight: 800;">Top Browsers</h5>
+      {% for stat in browser_stats %}
+      <div class="stat-item">
+        <span class="stat-label">{{ stat.browser }}</span>
+        <span class="stat-value">{{ stat.count }}</span>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div>
+      <h5 style="margin-bottom: 1rem; color: var(--text-primary); font-weight: 800;">Operating Systems</h5>
+      {% for stat in os_stats %}
+      <div class="stat-item">
+        <span class="stat-label">{{ stat.os }}</span>
+        <span class="stat-value">{{ stat.count }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  </div>
+</div>
+
+<div class="section-grid-2">
+  <div class="chart-section">
+    <div class="chart-header">
+      <h3 class="chart-title"><i class="fas fa-calendar-alt"></i> 30-Day Activity Trend</h3>
+    </div>
+    <div style="height: 350px;">
+      <canvas id="dailyTrendChart"></canvas>
+    </div>
+  </div>
+
+  <div class="chart-section">
+    <div class="chart-header">
+      <h3 class="chart-title"><i class="fas fa-filter"></i> Engagement Funnel</h3>
+    </div>
+    <div class="funnel-container">
+      {% for label, value in engagement_funnel.items %}
+      <div class="funnel-step">
+        <span class="funnel-step-label">{{ label }}</span>
+        <span class="funnel-step-value">{{ value }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<div class="chart-section">
+  <div class="chart-header">
+    <h3 class="chart-title"><i class="fas fa-chart-bar"></i> Video Watch Distribution</h3>
+  </div>
+  <div class="distribution-bars">
+    {% for range, count in watch_distribution.items %}
+    <div class="distribution-item">
+      <span class="distribution-label">{{ range }}</span>
+      <div class="distribution-bar">
+        <div class="distribution-fill range-{{ range|cut:'%'|cut:'-' }}"
+             style="width:{% if metrics.total_scans > 0 %}{% widthratio count metrics.total_scans 100 %}{% else %}0{% endif %}%">
+          {{ count }} scans
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<div class="section-grid-2">
+  <div class="chart-section">
+    <div class="chart-header">
+      <h3 class="chart-title"><i class="fas fa-clock"></i> Recent Activity</h3>
+    </div>
+
+    {% if recent_submissions %}
+    <div>
+      <h5 style="margin-bottom: .8rem; color: var(--text-primary); font-weight: 800;">
+        <i class="fas fa-user-check"></i> Recent Form Submissions
+      </h5>
+      <div class="table-responsive">
+        <table class="activity-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Phone</th>
+              <th>Device</th>
+              <th>Watch Time</th>
+              <th>Submitted At</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for submission in recent_submissions %}
+            <tr>
+              <td><strong>{{ submission.user_name }}</strong></td>
+              <td>{{ submission.user_phone }}</td>
+              <td><span class="device-badge {{ submission.device_type }}">{{ submission.device_type|title }}</span></td>
+              <td>{{ submission.video_percentage|floatformat:0 }}%</td>
+              <td>{{ submission.form_submitted_at|date:"M d, Y H:i" }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% else %}
+    <div class="text-muted">No recent submissions found.</div>
+    {% endif %}
+  </div>
+
+  <div class="chart-section">
+    <div class="chart-header">
+      <h3 class="chart-title"><i class="fas fa-qrcode"></i> Recent Scans</h3>
+    </div>
+
+    {% if recent_scans %}
+    <div class="table-responsive">
+      <table class="activity-table">
+        <thead>
+          <tr>
+            <th>Device Type</th>
+            <th>Browser</th>
+            <th>Watch %</th>
+            <th>Status</th>
+            <th>Scanned At</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for scan in recent_scans %}
+          <tr>
+            <td><span class="device-badge {{ scan.device_type }}">{{ scan.device_type|title }}</span></td>
+            <td>{{ scan.browser }}</td>
+            <td>{{ scan.video_percentage|floatformat:0 }}%</td>
+            <td>
+              {% if scan.form_submitted %}
+                <span class="status-badge submitted"><i class="fas fa-check"></i> Submitted</span>
+              {% else %}
+                <span class="status-badge viewed"><i class="fas fa-eye"></i> Viewed</span>
+              {% endif %}
+            </td>
+            <td>{{ scan.scanned_at|date:"M d, Y H:i" }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="text-muted">No recent scans found.</div>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Scan Comparison Chart
+  new Chart(document.getElementById('scanComparisonChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Scans'],
+      datasets: [
+        { label: 'Total', data: [{{ metrics.total_scans }}], backgroundColor: 'rgba(102,126,234,.85)', borderRadius: 8 },
+        { label: 'Unique', data: [{{ metrics.unique_devices }}], backgroundColor: 'rgba(72,187,120,.85)', borderRadius: 8 },
+        { label: 'Submissions', data: [{{ metrics.form_submissions }}], backgroundColor: 'rgba(66,153,225,.85)', borderRadius: 8 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } },
+        x: { grid: { display: false }, ticks: { display: false } }
+      }
+    }
+  });
+
+  // Bottle Utilization - FIXED CALCULATION
+  const totalBottles = {{ campaign.number_of_bottles }};
+  const usedBottles = {{ metrics.form_submissions }};
+  const remaining = Math.max(0, totalBottles - usedBottles);
+  const percent = totalBottles > 0 ? Math.min(100, Math.round((usedBottles / totalBottles) * 100)) : 0;
+
+  // Update DOM elements
+  document.getElementById('bottlePercentage').textContent = percent + '%';
+  document.getElementById('bottleRemaining').textContent = remaining;
+
+  new Chart(document.getElementById('bottleUtilizationChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Used', 'Remaining'],
+      datasets: [{
+        data: [usedBottles, remaining],
+        backgroundColor: [ percent >= 100 ? '#f56565' : (percent >= 80 ? '#ed8936' : '#48bb78'), '#e2e8f0' ],
+        borderWidth: 0, cutout: '72%'
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(c) {
+              const value = c.parsed || 0;
+              const pct = totalBottles > 0 ? ((value / totalBottles) * 100).toFixed(1) : 0;
+              return c.label + ': ' + value + ' (' + pct + '%)';
+            }
+          }
+        }
+      }
+    }
+  });
+
+  // Daily Trend Chart
+  const dailyData = {{ daily_trend|safe }};
+  new Chart(document.getElementById('dailyTrendChart'), {
+    type: 'line',
+    data: {
+      labels: dailyData.map(d => d.date),
+      datasets: [
+        {
+          label: 'Scans',
+          data: dailyData.map(d => d.scans),
+          borderColor: 'rgba(102,126,234,1)', backgroundColor: 'rgba(102,126,234,0.12)',
+          borderWidth: 3, tension: 0.35, fill: true, pointRadius: 3.5, pointBackgroundColor: 'rgba(102,126,234,1)'
+        },
+        {
+          label: 'Submissions',
+          data: dailyData.map(d => d.submissions),
+          borderColor:'rgba(72,187,120,1)', backgroundColor: 'rgba(72,187,120,0.12)',
+          borderWidth: 3, tension: 0.35, fill: true, pointRadius: 3.5, pointBackgroundColor: 'rgba(72,187,120,1)'
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: true, position: 'top', labels: { usePointStyle: true, padding: 14, font: { size: 12, weight: '700' } } }
+      },
+      scales: {
+        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)', drawBorder: false } },
+        x: { grid: { display: false, drawBorder: false }, ticks: { maxRotation: 0, autoSkip: true, maxTicksLimit: 8 } }
+      }
+    }
+  });
+
+  // Animate distribution bars
+  setTimeout(() => {
+    document.querySelectorAll('.distribution-fill').forEach(fill => {
+      const width = fill.style.width;
+      fill.style.width = '0%';
+      setTimeout(() => fill.style.width = width, 120);
+    });
+  }, 120);
+});
+</script>
+{% endblock %}

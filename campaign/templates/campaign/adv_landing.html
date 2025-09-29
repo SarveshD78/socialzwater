@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>{{ campaign.camp_name }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            overflow: hidden; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            min-height: 100dvh;
+        }
+        
+        .video-container {
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh; /* Dynamic viewport height for mobile */
+            top: 0;
+            left: 0;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .video-container.hidden {
+            display: none;
+        }
+        
+        #campaignVideo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Better for mobile - fills screen */
+        }
+        
+        .audio-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            border: 2px solid white;
+            color: white;
+            padding: 12px;
+            cursor: pointer;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+        
+        .audio-toggle:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.1);
+        }
+        
+        .video-timer {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            pointer-events: none;
+            letter-spacing: 0.5px;
+            z-index: 1001;
+        }
+        
+        .content-container {
+            display: none;
+            width: 100%;
+            height: 100vh;
+            height: 100dvh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow-y: auto;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .content-container.show {
+            display: block;
+        }
+        
+        .form-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 20px;
+            margin: 15px auto;
+            max-width: 500px;
+            animation: slideUp 0.6s ease;
+        }
+        
+        @keyframes slideUp {
+            from { 
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to { 
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .company-header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .company-header h2 {
+            color: #333;
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+        
+        .company-header p {
+            color: #666;
+            font-size: 15px;
+            margin: 5px 0;
+        }
+        
+        .custom-message {
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            color: #444;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+        
+        .form-section {
+            margin-top: 20px;
+        }
+        
+        .form-section h4 {
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 600;
+            text-align: center;
+            font-size: 18px;
+        }
+        
+        .form-control {
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 12px 15px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+        }
+        
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.1);
+            outline: none;
+        }
+        
+        .btn-submit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 30px;
+            font-size: 18px;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .social-links {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 2px solid #f0f0f0;
+            text-align: center;
+        }
+        
+        .social-links h5 {
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .social-links a {
+            display: inline-block;
+            margin: 0 10px;
+            color: #667eea;
+            font-size: 28px;
+            transition: all 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            transform: translateY(-3px);
+            color: #764ba2;
+        }
+        
+        .alert-custom {
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            font-weight: 500;
+            animation: slideDown 0.5s ease;
+        }
+        
+        @keyframes slideDown {
+            from { 
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to { 
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .alert-success-custom {
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+            color: #0a5f3d;
+            border: none;
+        }
+        
+        .alert-error-custom {
+            background: linear-gradient(135deg, #fc6076 0%, #ff9a44 100%);
+            color: white;
+            border: none;
+        }
+        
+        .btn-watch-again {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 10px 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+        
+        .btn-watch-again:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .reward-message {
+            text-align: center;
+            padding: 25px;
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+        
+        .reward-message h3 {
+            color: #0a5f3d;
+            margin-bottom: 10px;
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .reward-message p {
+            color: #0a5f3d;
+            font-size: 16px;
+            margin: 8px 0;
+            font-weight: 500;
+        }
+        
+        .info-badge {
+            display: inline-block;
+            background: #f8f9fa;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: #666;
+            margin: 3px;
+        }
+        
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-left: 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error-text {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .error-text.show {
+            display: block;
+        }
+
+        /* Mobile-specific optimizations */
+        @media (max-width: 768px) {
+            .video-timer {
+                top: 10px;
+                font-size: 14px;
+                padding: 8px 20px;
+            }
+            
+            .audio-toggle {
+                width: 45px;
+                height: 45px;
+                top: 10px;
+                right: 10px;
+            }
+            
+            .form-card {
+                margin: 10px;
+                padding: 20px;
+                border-radius: 15px;
+            }
+            
+            .company-header h2 {
+                font-size: 22px;
+            }
+            
+            .company-header p {
+                font-size: 14px;
+            }
+            
+            .social-links a {
+                font-size: 24px;
+                margin: 0 8px;
+            }
+            
+            .form-section h4 {
+                font-size: 16px;
+            }
+            
+            .btn-submit {
+                font-size: 16px;
+                padding: 12px 20px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .form-card {
+                margin: 8px;
+                padding: 15px;
+            }
+            
+            .company-header h2 {
+                font-size: 20px;
+            }
+            
+            .custom-message {
+                font-size: 14px;
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Video Container -->
+    <div class="video-container {% if show_form or already_submitted %}hidden{% endif %}" id="videoContainer">
+        <video id="campaignVideo" autoplay muted playsinline webkit-playsinline>
+            <source src="{{ campaign.video.url }}" type="video/mp4" />
+            Your browser does not support the video tag.
+        </video>
+        <div class="video-timer" id="videoTimer">Loading...</div>
+        <button class="audio-toggle" id="audioToggle"><i class="fas fa-volume-mute"></i></button>
+    </div>
+
+    <!-- Content Container -->
+    <div class="content-container {% if show_form or already_submitted %}show{% endif %}" id="contentContainer">
+        <div class="container py-3">
+            <div class="form-card">
+                <!-- Company Header -->
+                <div class="company-header">
+                    <h2>{{ campaign.camp_name }}</h2>
+                    <p><i class="fas fa-building"></i> {{ campaign.client.company_name }}</p>
+                    <div class="mt-2">
+                        <span class="info-badge"><i class="fas fa-map-marker-alt"></i> {{ campaign.area_served }}</span>
+                    </div>
+                </div>
+
+                <!-- Messages -->
+                {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert-custom {% if message.tags == 'success' %}alert-success-custom{% else %}alert-error-custom{% endif %}">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                {% endif %}
+
+                <!-- Form or Success Message -->
+                {% if already_submitted %}
+                    <!-- Thank You Message Only - No Video Replay -->
+                    <div class="reward-message">
+                        <i class="fas fa-check-circle fa-3x" style="color: #0a5f3d; margin-bottom: 15px;"></i>
+                        <h3>Thank You!</h3>
+                        <p>Your information has been submitted successfully.</p>
+                        <p><strong>You will receive your reward within 24 hours.</strong></p>
+                    </div>
+                    
+                    <!-- Custom Campaign Message if exists -->
+                    {% if campaign.customized_message %}
+                    <div class="custom-message">
+                        <i class="fas fa-gift"></i> {{ campaign.customized_message }}
+                    </div>
+                    {% endif %}
+                {% else %}
+                    <!-- Custom Message Before Form -->
+                    {% if campaign.customized_message and not already_submitted %}
+                    <div class="custom-message">
+                        <i class="fas fa-gift"></i> {{ campaign.customized_message }}
+                    </div>
+                    {% endif %}
+
+                    <!-- Registration Form -->
+                    <div class="form-section">
+                        <h4><i class="fas fa-user-plus"></i> Register for Your Reward</h4>
+                        <form method="post" id="rewardForm">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <input type="text" 
+                                       name="name" 
+                                       placeholder="Enter your full name" 
+                                       class="form-control" 
+                                       required 
+                                       minlength="3"
+                                       maxlength="100" />
+                            </div>
+                            <div class="mb-3">
+                                <input type="tel" 
+                                       name="phone" 
+                                       id="phoneInput"
+                                       placeholder="Enter 10-digit phone number" 
+                                       pattern="[0-9]{10}" 
+                                       class="form-control" 
+                                       required 
+                                       maxlength="10" />
+                                <div class="error-text" id="phoneError">
+                                    <i class="fas fa-exclamation-circle"></i> <span id="phoneErrorText"></span>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn-submit" id="submitBtn">
+                                <span id="btnText">Submit & Get Reward</span>
+                                <span class="loading-spinner" id="loadingSpinner"></span>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Watch Again Option Only Before Submission -->
+                    {% if not show_form %}
+                    <div class="text-center mt-3">
+                        <button onclick="watchAgain()" class="btn-watch-again">
+                            <i class="fas fa-redo"></i> Watch Video Again
+                        </button>
+                    </div>
+                    {% endif %}
+                {% endif %}
+
+                <!-- Social Links -->
+                {% if campaign.facebook_link or campaign.instagram_link or campaign.website_link %}
+                <div class="social-links">
+                    <h5>Connect With Us</h5>
+                    {% if campaign.facebook_link %}
+                    <a href="{{ campaign.facebook_link }}" target="_blank" rel="noopener noreferrer">
+                        <i class="fab fa-facebook"></i>
+                    </a>
+                    {% endif %}
+                    {% if campaign.instagram_link %}
+                    <a href="{{ campaign.instagram_link }}" target="_blank" rel="noopener noreferrer">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    {% endif %}
+                    {% if campaign.website_link %}
+                    <a href="{{ campaign.website_link }}" target="_blank" rel="noopener noreferrer">
+                        <i class="fas fa-globe"></i>
+                    </a>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const video = document.getElementById('campaignVideo');
+        const videoContainer = document.getElementById('videoContainer');
+        const contentContainer = document.getElementById('contentContainer');
+        const audioToggle = document.getElementById('audioToggle');
+        const videoTimer = document.getElementById('videoTimer');
+        const scanId = {{ scan_id }};
+        const resumePosition = {{ resume_position|default:0 }};
+        const showFormDirectly = {{ show_form|lower }};
+        const alreadySubmitted = {{ already_submitted|lower }};
+        let videoDuration = 0;
+        let updateInterval;
+        let timerInterval;
+        let videoStarted = false;
+
+        // If already submitted or form should show directly, skip video entirely
+        if (alreadySubmitted || showFormDirectly) {
+            videoContainer.classList.add('hidden');
+            contentContainer.classList.add('show');
+            // Don't set up any video event listeners if already submitted
+        } else if (!alreadySubmitted) {
+            // Video metadata loaded
+            video.addEventListener('loadedmetadata', () => {
+                videoDuration = Math.floor(video.duration);
+                console.log('Video duration:', videoDuration);
+                
+                // Resume from last position if applicable
+                if (resumePosition > 0 && resumePosition < videoDuration) {
+                    video.currentTime = resumePosition;
+                    console.log('Resuming from:', resumePosition);
+                }
+                
+                // Send initial duration to server only if new start
+                if (!videoStarted && scanId && scanId !== 0) {
+                    videoStarted = true;
+                    fetch('{% url "sw:track_video_progress" %}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        body: JSON.stringify({
+                            scan_id: scanId,
+                            video_duration: videoDuration,
+                            watched_seconds: resumePosition || 0,
+                            completed: false
+                        })
+                    });
+                }
+                
+                updateTimer();
+                timerInterval = setInterval(updateTimer, 1000);
+                updateInterval = setInterval(() => trackProgress(false), 5000);
+            });
+
+            // Video time update
+            video.addEventListener('timeupdate', () => {
+                updateTimer();
+            });
+
+            // Video ended
+            video.addEventListener('ended', () => {
+                clearInterval(updateInterval);
+                clearInterval(timerInterval);
+                trackProgress(true);
+                showContent();
+            });
+
+            // Audio toggle
+            audioToggle.addEventListener('click', () => {
+                video.muted = !video.muted;
+                audioToggle.innerHTML = video.muted ? 
+                    '<i class="fas fa-volume-mute"></i>' : 
+                    '<i class="fas fa-volume-up"></i>';
+            });
+        }
+
+        // Update countdown timer
+        function updateTimer() {
+            const remaining = Math.max(0, Math.floor(videoDuration - video.currentTime));
+            const minutes = Math.floor(remaining / 60);
+            const seconds = remaining % 60;
+            videoTimer.textContent = `${minutes}:${seconds.toString().padStart(2, '0')} remaining`;
+        }
+
+        // Show content after video
+        function showContent() {
+            videoContainer.classList.add('hidden');
+            contentContainer.classList.add('show');
+        }
+
+        // Track video progress
+        function trackProgress(completed = false) {
+            // Only track if we have a valid scan_id
+            if (!scanId || scanId === 0) return;
+            
+            const currentTime = Math.floor(video.currentTime);
+            fetch('{% url "sw:track_video_progress" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    scan_id: scanId,
+                    video_duration: videoDuration,
+                    watched_seconds: currentTime,
+                    completed: completed
+                })
+            }).catch(error => console.error('Error tracking progress:', error));
+        }
+
+        // Watch video again (only available before form submission)
+        function watchAgain() {
+            contentContainer.classList.remove('show');
+            videoContainer.classList.remove('hidden');
+            video.currentTime = 0;
+            video.play();
+            
+            // Reset intervals
+            clearInterval(timerInterval);
+            clearInterval(updateInterval);
+            timerInterval = setInterval(updateTimer, 1000);
+            updateInterval = setInterval(() => trackProgress(false), 5000);
+        }
+
+        // Form validation
+        const rewardForm = document.getElementById('rewardForm');
+        const phoneInput = document.getElementById('phoneInput');
+        const phoneError = document.getElementById('phoneError');
+        const phoneErrorText = document.getElementById('phoneErrorText');
+        const submitBtn = document.getElementById('submitBtn');
+        const btnText = document.getElementById('btnText');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+
+        // Phone input validation
+        if (phoneInput) {
+            phoneInput.addEventListener('input', function(e) {
+                // Only allow numbers
+                this.value = this.value.replace(/[^0-9]/g, '');
+                
+                // Hide error on input
+                phoneError.classList.remove('show');
+                
+                // Check length
+                if (this.value.length > 10) {
+                    this.value = this.value.slice(0, 10);
+                }
+            });
+        }
+
+        // Form submission
+        if (rewardForm) {
+            rewardForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const phone = phoneInput.value;
+                const name = this.name.value.trim();
+                
+                // Validate phone
+                if (!/^\d{10}$/.test(phone)) {
+                    phoneErrorText.textContent = 'Please enter a valid 10-digit phone number';
+                    phoneError.classList.add('show');
+                    phoneInput.focus();
+                    return;
+                }
+                
+                // Validate name
+                if (name.length < 3) {
+                    alert('Please enter your full name (minimum 3 characters)');
+                    this.name.focus();
+                    return;
+                }
+                
+                // Show loading
+                submitBtn.disabled = true;
+                btnText.textContent = 'Submitting...';
+                loadingSpinner.style.display = 'inline-block';
+                
+                // Submit form
+                this.submit();
+            });
+        }
+
+        // Debug mode - skip video with Ctrl+S
+        {% if debug %}
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 's' && e.ctrlKey) {
+                e.preventDefault();
+                showContent();
+            }
+        });
+        {% endif %}
+    </script>
+</body>
+</html>

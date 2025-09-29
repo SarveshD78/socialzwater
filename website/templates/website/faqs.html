@@ -1,0 +1,639 @@
+<!-- faq.html - Django FAQ Page Template -->
+{% extends 'website/base.html' %}
+{% load static %}
+
+{% block title %}FAQs - Socialz Water{% endblock %}
+
+{% block extra_css %}
+<!-- CRITICAL: Header transparency override - Must be FIRST before any other CSS -->
+<style>
+    /* Ultra-specific transparency override */
+    body header#header,
+    html header#header,
+    header#header.header,
+    #header {
+        background: transparent !important;
+        background-color: transparent !important;
+        backdrop-filter: none !important;
+        box-shadow: none !important;
+        border: none !important;
+    }
+    
+    body header#header.scrolled,
+    html header#header.scrolled,
+    header#header.scrolled.header,
+    #header.scrolled {
+        background: rgba(255, 255, 255, 0.95) !important;
+        background-color: rgba(255, 255, 255, 0.95) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+    }
+    
+    /* Override any Bootstrap navbar classes */
+    .navbar, .bg-light, .bg-white {
+        background: transparent !important;
+        background-color: transparent !important;
+    }
+</style>
+
+<!-- Now load external CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+    /* Color Variables matching other pages */
+    :root {
+        --primary-green: #014a3b;
+        --dark-green: #00866a;
+        --accent-blue: #1E90FF;
+        --dark-blue: #0A3D62;
+        --dark-overlay: rgba(0, 0, 0, 0.7);
+        --white: #FFFFFF;
+        --black: #000000;
+        --dark-gray: #2C3E50;
+        --light-gray: #f8f9fa;
+    }
+    
+    /* Hero Section with Background Image */
+    .faq-hero {
+        height: 60vh;
+        background-image: url('{% static "website/images/transparent-water-bottle-studio.jpg" %}');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: -80px;
+        padding-top: 80px;
+    }
+    
+    .faq-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: var(--dark-overlay);
+        z-index: 1;
+    }
+    
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        color: var(--white);
+    }
+    
+    .hero-title {
+        font-size: 3.5rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: -2px;
+        margin-bottom: 15px;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.1rem;
+        font-weight: 300;
+        opacity: 0.9;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+    
+    /* FAQ Sections with Alternating Layout */
+    .faq-section {
+        padding: 60px 0;
+        background: var(--white);
+    }
+    
+    .faq-section:nth-child(even) {
+        background: var(--light-gray);
+    }
+    
+    .faq-image {
+        width: 100%;
+        height: 300px;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        background-size: cover;
+        background-position: center;
+    }
+    
+    .faq-image:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+    }
+    
+    .faq-content {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    
+    .section-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--accent-blue);
+        margin-bottom: 20px;
+        padding-bottom: 8px;
+        border-bottom: 3px solid;
+        border-image: linear-gradient(90deg, var(--accent-blue), var(--primary-green)) 1;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    .faq-item {
+        background: var(--white);
+        border-radius: 8px;
+        margin-bottom: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .faq-item:hover {
+        box-shadow: 0 4px 15px rgba(30, 144, 255, 0.1);
+        transform: translateY(-1px);
+    }
+    
+    .faq-question {
+        padding: 12px 15px;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: var(--white);
+        transition: all 0.3s ease;
+    }
+    
+    .faq-question:hover {
+        background: linear-gradient(135deg, rgba(30, 144, 255, 0.03) 0%, rgba(0, 184, 148, 0.03) 100%);
+    }
+    
+    .faq-question h3 {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--dark-gray);
+        margin: 0;
+        flex: 1;
+        line-height: 1.4;
+    }
+    
+    .faq-icon {
+        width: 20px;
+        height: 20px;
+        background: linear-gradient(135deg, var(--accent-blue), var(--primary-green));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--white);
+        font-size: 12px;
+        transition: transform 0.3s ease;
+        flex-shrink: 0;
+        margin-left: 10px;
+    }
+    
+    .faq-item.active .faq-icon {
+        transform: rotate(45deg);
+    }
+    
+    .faq-answer {
+        padding: 0 15px;
+        max-height: 0;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        background: var(--white);
+    }
+    
+    .faq-item.active .faq-answer {
+        padding: 12px 15px 15px;
+        max-height: 200px;
+    }
+    
+    .faq-answer p {
+        color: #636E72;
+        line-height: 1.5;
+        margin: 0;
+        font-size: 0.85rem;
+    }
+    
+    /* Enhanced Contact CTA with Blue-Green-Black Gradient */
+    .faq-cta {
+        padding: 80px 0;
+        background: linear-gradient(135deg, var(--accent-blue) 0%, var(--primary-green) 50%, var(--black) 100%);
+        text-align: center;
+        color: var(--white);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .faq-cta::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(30, 144, 255, 0.1) 0%, rgba(0, 184, 148, 0.1) 50%, rgba(0, 0, 0, 0.1) 100%);
+        animation: rotate 30s linear infinite;
+    }
+    
+    .faq-cta::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(45deg, transparent 0%, rgba(30, 144, 255, 0.05) 25%, rgba(0, 184, 148, 0.05) 50%, rgba(0, 0, 0, 0.1) 75%, transparent 100%);
+        animation: shimmer 4s ease-in-out infinite;
+    }
+    
+    @keyframes rotate {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+    
+    @keyframes shimmer {
+        0%, 100% { opacity: 0; }
+        50% { opacity: 1; }
+    }
+    
+    .cta-content {
+        position: relative;
+        z-index: 3;
+    }
+    
+    .faq-cta h2 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+    
+    .faq-cta p {
+        font-size: 1.1rem;
+        margin-bottom: 30px;
+        opacity: 0.95;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Simple White Button with Blue-Green Hover */
+    .contact-btn {
+        background: var(--white);
+        color: var(--accent-blue);
+        border: 2px solid var(--accent-blue);
+        padding: 18px 50px;
+        border-radius: 25px;
+        text-decoration: none;
+        display: inline-block;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+    }
+    
+    .contact-btn:hover {
+        background: linear-gradient(135deg, var(--accent-blue), var(--primary-green));
+        color: var(--white);
+        border-color: 2px solid var(--accent-blue);
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: 0 8px 25px rgba(30, 144, 255, 0.4);
+    }
+    
+    .contact-btn:active {
+        transform: translateY(-1px) scale(1.02);
+    }
+    
+    /* Responsive */
+    @media (max-width: 991px) {
+        .faq-hero {
+            margin-top: -70px;
+            padding-top: 70px;
+            height: 50vh;
+        }
+        
+        .faq-image {
+            height: 250px;
+            margin-bottom: 30px;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 2.5rem;
+        }
+        
+        .hero-subtitle {
+            font-size: 1rem;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+        }
+        
+        .faq-question h3 {
+            font-size: 0.85rem;
+        }
+        
+        .faq-image {
+            height: 200px;
+        }
+        
+        .faq-cta h2 {
+            font-size: 2rem;
+        }
+        
+        .faq-cta p {
+            font-size: 1rem;
+        }
+        
+        .contact-btn {
+            padding: 15px 40px;
+            font-size: 1rem;
+        }
+    }
+</style>
+
+{% endblock %}
+
+{% block content %}
+{% load static %}
+
+<!-- Hero Section -->
+<section class="faq-hero">
+    <div class="hero-content">
+        <h1 class="hero-title">Frequently Asked Questions</h1>
+        <p class="hero-subtitle">Find answers to common questions about Socialz Water and our innovative advertising solutions</p>
+    </div>
+</section>
+
+<!-- General Questions Section - Image Left, Content Right -->
+<section class="faq-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-5">
+                <div class="faq-image" style="background-image: url('{% static 'website/images/qmark.jpg' %}');"></div>
+            </div>
+            <div class="col-lg-7">
+                <div class="faq-content">
+                    <h2 class="section-title">General Questions</h2>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>What is Socialz Water?</h3>
+                            <span class="faq-icon">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Socialz Water transforms everyday water bottles into interactive brand experiences through QR codes, connecting brands with consumers while offering instant rewards.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>How does it work?</h3>
+                            <span class="faq-icon">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Simple: QR integration → Consumer scans → Instant rewards + brand analytics. Every scan creates value for both consumers and brands.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>Where are bottles available?</h3>
+                            <span class="faq-icon">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Strategic placement across retail shops, colleges, corporate offices, gyms, hotels, restaurants, and events throughout India.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>What makes Socialz Water different from traditional advertising?</h3>
+                            <span class="faq-icon">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Unlike traditional advertising, we offer direct consumer interaction, instant rewards, real-time measurable results, and turn every bottle into a personalized brand touchpoint.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>Is there any minimum order requirement?</h3>
+                            <span class="faq-icon">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>We accommodate various scales - from small event orders (100+ bottles) to large corporate campaigns (10,000+ bottles). Contact us for a customized quote.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- For Brands Section - Content Left, Image Right -->
+<section class="faq-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-7">
+                <div class="faq-content">
+                    <h2 class="section-title">For Brands</h2>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>How can my brand partner with Socialz Water?</h3>
+                            <span class="faq-icon">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Get your brand on our bottle labels with custom branding, QR-enabled engagement, and strategic placement. Contact us to get started.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>What analytics do brands receive?</h3>
+                            <span class="faq-icon">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Real-time analytics including scan rates, engagement metrics, geographic distribution, demographics, and ROI measurements.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>Why is it cost-effective?</h3>
+                            <span class="faq-icon">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Every bottle is a mini-billboard with direct engagement, measurable results, targeted reach, and significantly lower cost per engagement.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>How long does it take to launch a campaign?</h3>
+                            <span class="faq-icon">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Campaign setup takes 3-5 business days after design approval. This includes QR code integration, label printing, and distribution to strategic locations.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>Can we track which locations perform best?</h3>
+                            <span class="faq-icon">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Yes! Our analytics provide location-wise performance data, peak engagement times, demographic insights, and conversion rates to optimize your campaign strategy.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="faq-image" style="background-image: url('{% static 'website/images/water-bottle.jpeg' %}');"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Rewards & Partnership Section - Image Left, Content Right -->
+<section class="faq-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-5">
+                <div class="faq-image" style="background-image: url('{% static 'website/images/qr.jpg' %}');"></div>
+            </div>
+            <div class="col-lg-7">
+                <div class="faq-content">
+                    <h2 class="section-title">Rewards & Partnership</h2>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>How do consumers get rewards?</h3>
+                            <span class="faq-icon">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Scan the QR code with your smartphone camera for instant access to cashback (up to ₹5), discount coupons, or special offers.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>Is QR scanning safe?</h3>
+                            <span class="faq-icon">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Absolutely! Our QR codes are secure and only direct to verified brand websites and official offer pages. No special app required.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>Can I become a partner?</h3>
+                            <span class="faq-icon">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Yes! Join as distributor, manufacturer, or event organizer. We offer steady growth opportunities and long-term partnerships.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>Custom bottles for events?</h3>
+                            <span class="faq-icon">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Yes! Custom-labeled bottles (250ml/500ml) for hotels, restaurants, weddings, conferences - with or without QR codes.</p>
+                        </div>
+                    </div> 
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>How quickly can rewards be redeemed?</h3>
+                            <span class="faq-icon">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Rewards are instant! Discount codes work immediately, cashback reflects within 24-48 hours, and special offers can be used right away.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact CTA -->
+<section class="faq-cta">
+    <div class="cta-content">
+        <h2>Still Have Questions?</h2>
+        <p>Our team is here to help you understand how Socialz Water can transform your advertising strategy</p>
+        <a href="{% url 'website:contact' %}" class="contact-btn">Contact Us Today</a>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // FAQ Accordion functionality
+    document.querySelectorAll('.faq-question').forEach(question => {
+        question.addEventListener('click', function() {
+            const faqItem = this.parentElement;
+            const wasActive = faqItem.classList.contains('active');
+            
+            // Close all FAQ items in the same section
+            const section = this.closest('.faq-section');
+            section.querySelectorAll('.faq-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Toggle current item if it wasn't active
+            if (!wasActive) {
+                faqItem.classList.add('active');
+            }
+        });
+    });
+    
+    // Smooth scroll animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }, index * 100);
+            }
+        });
+    }, observerOptions);
+    
+    // Observe FAQ sections for animation
+    document.querySelectorAll('.faq-section .faq-content, .faq-image').forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(30px)';
+        el.style.transition = 'all 0.6s ease';
+        observer.observe(el);
+    });
+</script>
+{% endblock %}

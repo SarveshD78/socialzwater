@@ -1,0 +1,384 @@
+{% extends 'campaign/base.html' %}
+{% load static %}
+
+{% block title %}Scan Analytics - Socialz Water{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="h3 mb-0 text-gray-800">Scan Analytics</h2>
+            <p class="text-muted mb-0">
+                {% if campaign %}
+                    Campaign: {{ campaign.camp_name }}
+                {% else %}
+                    All Campaigns
+                {% endif %}
+            </p>
+        </div>
+        <div class="d-flex gap-2">
+            {% if campaign %}
+                <a href="{% url 'sw:export_scan_campaign_data' campaign.pk %}" class="btn btn-success">
+                    <i class="fas fa-download me-2"></i>Export CSV
+                </a>
+            {% else %}
+                <a href="{% url 'sw:export_scan_data' %}" class="btn btn-success">
+                    <i class="fas fa-download me-2"></i>Export All
+                </a>
+            {% endif %}
+            <a href="{% url 'sw:campaign_management' %}" class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left me-2"></i>Back to Campaigns
+            </a>
+        </div>
+    </div>
+
+    <!-- Date Filter -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">From Date</label>
+                    <input type="date" name="date_from" class="form-control" value="{{ date_from }}">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">To Date</label>
+                    <input type="date" name="date_to" class="form-control" value="{{ date_to }}">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">&nbsp;</label>
+                    <button type="submit" class="btn btn-primary d-block">Apply Filter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Key Metrics Row -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Scans</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_scans }}</div>
+                            <small class="text-muted">All QR code scans</small>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-qrcode fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Unique Devices</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ unique_devices }}</div>
+                            <small class="text-muted">Individual users</small>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-mobile-alt fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Form Submissions</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_submissions }}</div>
+                            <small class="text-muted">Completed rewards</small>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-user-check fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Conversion Rate</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ conversion_rate|floatformat:1 }}%</div>
+                            <small class="text-muted">Scan to submission</small>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-percentage fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row mb-4">
+        <!-- Device Breakdown -->
+        <div class="col-lg-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Device Types</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="deviceChart"></canvas>
+                    <div class="mt-3">
+                        {% for device in device_stats %}
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-capitalize">{{ device.device_type }}</span>
+                            <strong>{{ device.count }}</strong>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Video Engagement -->
+        <div class="col-lg-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Video Engagement</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="videoChart"></canvas>
+                    <div class="mt-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Completed</span>
+                            <strong>{{ video_metrics.completed }}</strong>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Partial Watch</span>
+                            <strong>{{ video_metrics.partial_watch }}</strong>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Skipped Early</span>
+                            <strong>{{ video_metrics.skipped_early }}</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Daily Trend -->
+        <div class="col-lg-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Daily Trend (30 days)</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="trendChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Multiple Scans from Same Device -->
+    <div class="row mb-4">
+        <div class="col-lg-6">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Repeat Scanners</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Device ID</th>
+                                    <th>Scans</th>
+                                    <th>Unique Names</th>
+                                    <th>First Scan</th>
+                                    <th>Last Scan</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for device in repeat_devices %}
+                                <tr>
+                                    <td><code>{{ device.device_fingerprint|slice:":8" }}...</code></td>
+                                    <td><span class="badge bg-primary">{{ device.scan_count }}</span></td>
+                                    <td><span class="badge bg-info">{{ device.unique_names }}</span></td>
+                                    <td>{{ device.first_scan|date:"M d, H:i" }}</td>
+                                    <td>{{ device.last_scan|date:"M d, H:i" }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Browser Stats -->
+        <div class="col-lg-6">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Top Browsers</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Browser</th>
+                                    <th>Count</th>
+                                    <th>Percentage</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for browser in browser_stats %}
+                                <tr>
+                                    <td>{{ browser.browser|default:"Unknown" }}</td>
+                                    <td>{{ browser.count }}</td>
+                                    <td>
+                                        <div class="progress">
+                                            <div class="progress-bar" style="width: {% widthratio browser.count total_scans 100 %}%">
+                                                {% widthratio browser.count total_scans 100 %}%
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Scans -->
+    <div class="card shadow">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Recent Scans</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Campaign</th>
+                            <th>Device</th>
+                            <th>Browser</th>
+                            <th>Video Watch</th>
+                            <th>Name</th>
+                            <th>Phone</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for scan in recent_scans %}
+                        <tr>
+                            <td>{{ scan.scanned_at|date:"M d, H:i" }}</td>
+                            <td>{{ scan.campaign.camp_name }}</td>
+                            <td>
+                                <span class="badge bg-secondary">{{ scan.device_type }}</span>
+                            </td>
+                            <td>{{ scan.browser|slice:":20" }}</td>
+                            <td>
+                                {% if scan.video_completed %}
+                                    <span class="badge bg-success">Completed</span>
+                                {% else %}
+                                    <span class="badge bg-warning">{{ scan.video_watched }}s</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ scan.user_name|default:"-" }}</td>
+                            <td>{{ scan.user_phone|default:"-" }}</td>
+                            <td>
+                                {% if scan.form_submitted %}
+                                    <span class="badge bg-success">Submitted</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Scanned</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.border-left-primary { border-left: 4px solid #4e73df !important; }
+.border-left-success { border-left: 4px solid #1cc88a !important; }
+.border-left-info { border-left: 4px solid #36b9cc !important; }
+.border-left-warning { border-left: 4px solid #f6c23e !important; }
+.text-xs { font-size: .875rem; }
+.font-weight-bold { font-weight: 700 !important; }
+.text-uppercase { text-transform: uppercase !important; }
+.text-gray-800 { color: #5a5c69 !important; }
+.text-gray-300 { color: #dddfeb !important; }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Device Chart
+new Chart(document.getElementById('deviceChart'), {
+    type: 'doughnut',
+    data: {
+        labels: [{% for d in device_stats %}'{{ d.device_type|capfirst }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+        datasets: [{
+            data: [{% for d in device_stats %}{{ d.count }}{% if not forloop.last %},{% endif %}{% endfor %}],
+            backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e']
+        }]
+    },
+    options: {
+        maintainAspectRatio: false,
+        legend: { position: 'bottom' }
+    }
+});
+
+// Video Chart
+new Chart(document.getElementById('videoChart'), {
+    type: 'pie',
+    data: {
+        labels: ['Completed', 'Partial', 'Skipped'],
+        datasets: [{
+            data: [{{ video_metrics.completed }}, {{ video_metrics.partial_watch }}, {{ video_metrics.skipped_early }}],
+            backgroundColor: ['#1cc88a', '#f6c23e', '#e74a3b']
+        }]
+    },
+    options: {
+        maintainAspectRatio: false,
+        legend: { position: 'bottom' }
+    }
+});
+
+// Trend Chart
+new Chart(document.getElementById('trendChart'), {
+    type: 'line',
+    data: {
+        labels: [{% for d in daily_scans %}'{{ d.date|date:"M d" }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+        datasets: [{
+            label: 'Scans',
+            data: [{% for d in daily_scans %}{{ d.total }}{% if not forloop.last %},{% endif %}{% endfor %}],
+            borderColor: '#4e73df',
+            fill: false
+        }]
+    },
+    options: {
+        maintainAspectRatio: false,
+        scales: {
+            y: { beginAtZero: true }
+        }
+    }
+});
+</script>
+{% endblock %}

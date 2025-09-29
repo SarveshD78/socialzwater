@@ -1,0 +1,825 @@
+<!-- partner.html - Django Partner With Us Page Template -->
+{% extends 'website/base.html' %}
+{% load static %}
+{% block title %}Partner With Us - Socialz Water{% endblock %}
+
+{% block extra_css %}
+<!-- CRITICAL: Header transparency override - Must be FIRST before any other CSS -->
+<style>
+    /* Ultra-specific transparency override */
+    body header#header,
+    html header#header,
+    header#header.header,
+    #header {
+        background: transparent !important;
+        background-color: transparent !important;
+        backdrop-filter: none !important;
+        box-shadow: none !important;
+        border: none !important;
+    }
+    
+    body header#header.scrolled,
+    html header#header.scrolled,
+    header#header.scrolled.header,
+    #header.scrolled {
+        background: rgba(255, 255, 255, 0.95) !important;
+        background-color: rgba(255, 255, 255, 0.95) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+    }
+    
+    /* Override any Bootstrap navbar classes */
+    .navbar, .bg-light, .bg-white {
+        background: transparent !important;
+        background-color: transparent !important;
+    }
+</style>
+
+<!-- Now load external CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    /* Color Variables */
+    :root {
+        --primary-green: #014a3b;
+        --dark-green: #00866a;
+        --accent-blue: #1E90FF;
+        --dark-blue: #0A3D62;
+        --dark-overlay: rgba(0, 0, 0, 0.7);
+        --white: #FFFFFF;
+        --black: #000000;
+        --dark-gray: #2C3E50;
+        --light-gray: #f8f9fa;
+    }
+    
+    /* Smooth scrolling for entire page */
+    html {
+        scroll-behavior: smooth;
+    }
+    
+    /* Hero Section */
+    .partner-hero {
+        height: 70vh;
+        background-image: url('{% static "website/images/transparent-water-bottle-studio.jpg" %}');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: -80px;
+        padding-top: 80px;
+    }
+
+    .partner-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: var(--dark-overlay);
+        z-index: 1;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        color: var(--white);
+    }
+
+    .hero-title {
+        font-size: 4rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: -2px;
+        margin-bottom: 20px;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .hero-subtitle {
+        font-size: 1.3rem;
+        font-weight: 300;
+        opacity: 0.9;
+        max-width: 600px;
+        margin: 0 auto;
+        text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Section Title */
+    .partners-section-title {
+        text-align: center;
+        padding: 60px 0 40px;
+        background: var(--white);
+    }
+
+    .partners-section-title h2 {
+        font-size: 3rem;
+        font-weight: 700;
+        color: var(--primary-green);
+        margin-bottom: 15px;
+        position: relative;
+        display: inline-block;
+    }
+
+    .partners-section-title h2::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--accent-blue), var(--primary-green));
+        border-radius: 2px;
+    }
+
+    .partners-section-title p {
+        font-size: 1.2rem;
+        color: #636E72;
+        margin: 0;
+    }
+
+    /* Navigation Buttons */
+    .partners-nav-section {
+        background: var(--white);
+        padding-bottom: 80px;
+    }
+
+    .partners-nav-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        flex-wrap: wrap;
+    }
+
+    .nav-btn {
+        cursor: pointer;
+        padding: 18px 35px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        border-radius: 50px;
+        border: 2px solid var(--accent-blue);
+        color: var(--accent-blue);
+        background-color: var(--white);
+        box-shadow: 0 5px 20px rgba(30, 144, 255, 0.2);
+        transition: all 0.3s ease;
+        min-width: 220px;
+        text-align: center;
+    }
+
+    .nav-btn:hover,
+    .nav-btn.active {
+        background: linear-gradient(135deg, var(--accent-blue), var(--primary-green));
+        color: var(--white);
+        border-color: transparent;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 30px rgba(30, 144, 255, 0.4);
+    }
+
+    /* Partner Section Styles */
+    .partner-section {
+        padding: 80px 0;
+        scroll-margin-top: 100px; /* Fixed offset for smooth scrolling */
+    }
+
+    .partner-section:nth-child(odd) {
+        background: var(--light-gray);
+    }
+
+    .partner-section:nth-child(even) {
+        background: var(--white);
+    }
+
+    .partner-section-content {
+        display: flex;
+        align-items: center;
+        gap: 50px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .partner-image {
+        flex: 0 0 45%;
+        height: 400px;
+        border-radius: 20px;
+        background-size: cover;
+        background-position: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .partner-image:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .partner-info {
+        flex: 1;
+        padding: 0 20px;
+    }
+
+    .partner-badge {
+        display: inline-block;
+        background: linear-gradient(135deg, rgba(30, 144, 255, 0.1), rgba(1, 74, 59, 0.1));
+        color: var(--primary-green);
+        padding: 8px 20px;
+        border-radius: 25px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+    }
+
+    .partner-info h3 {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: var(--accent-blue);
+        margin-bottom: 20px;
+        line-height: 1.3;
+    }
+
+    .partner-info p {
+        font-size: 1.1rem;
+        line-height: 1.7;
+        color: #636E72;
+        margin-bottom: 25px;
+    }
+
+    .partner-features {
+        list-style: none;
+        padding: 0;
+        margin-bottom: 30px;
+    }
+
+    .partner-features li {
+        position: relative;
+        padding-left: 30px;
+        margin-bottom: 12px;
+        font-size: 1rem;
+        color: #636E72;
+        font-weight: 500;
+    }
+
+    .partner-features li::before {
+        content: '\f00c';
+        font-family: 'Font Awesome 6 Free';
+        font-weight: 900;
+        position: absolute;
+        left: 0;
+        color: var(--primary-green);
+        font-size: 1rem;
+    }
+
+    .enquire-btn {
+        display: inline-block;
+        padding: 15px 40px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        background: linear-gradient(135deg, var(--accent-blue), var(--primary-green));
+        color: var(--white);
+        border-radius: 50px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 6px 25px rgba(30, 144, 255, 0.3);
+    }
+
+    .enquire-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 35px rgba(30, 144, 255, 0.4);
+        color: var(--white);
+    }
+
+    /* Enquiry Form Section */
+    .enquiry-section {
+        padding: 80px 0;
+        background: 
+            linear-gradient(rgba(0, 0, 0, 0.686), rgba(0, 0, 0, 0.686)),
+            url('{% static "website/images/two-serious-adult-business-men-discussing-issue.jpg" %}');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        backdrop-filter: blur(3px);
+        color: var(--white);
+    }
+
+    .text-column h2 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+    }
+
+    .text-column p {
+        font-size: 1.1rem;
+        margin-bottom: 15px;
+    }
+
+    .form-container {
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    .form-wrapper {
+        background: var(--white);
+        padding: 50px;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.424);
+        color: var(--dark-gray);
+    }
+
+    .form-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .form-header h2 {
+        font-size: 2.5rem;
+        color: var(--dark-gray);
+        margin-bottom: 15px;
+    }
+
+    .form-control, .form-select {
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        padding: 12px 15px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: var(--primary-green);
+        box-shadow: 0 0 0 3px rgba(0, 184, 148, 0.1);
+        outline: none;
+    }
+
+    .captcha-wrapper {
+        background: var(--light-gray);
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .captcha-display {
+        background: var(--white);
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: bold;
+        letter-spacing: 3px;
+        color: var(--dark-gray);
+        user-select: none;
+        border: 2px solid #e0e0e0;
+    }
+
+    .submit-btn {
+        background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+        color: var(--white);
+        padding: 15px 50px;
+        border: none;
+        border-radius: 50px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 20px rgba(0, 184, 148, 0.3);
+        width: 100%;
+    }
+
+    .submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(0, 184, 148, 0.4);
+    }
+
+    /* Enhanced CTA Section */
+    .final-cta {
+        padding: 80px 0;
+        background: linear-gradient(135deg, var(--accent-blue) 0%, var(--primary-green) 50%, var(--black) 100%);
+        text-align: center;
+        color: var(--white);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .final-cta::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(30, 144, 255, 0.1) 0%, rgba(0, 184, 148, 0.1) 50%, rgba(0, 0, 0, 0.1) 100%);
+        animation: rotate 30s linear infinite;
+    }
+
+    .final-cta::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(45deg, transparent 0%, rgba(30, 144, 255, 0.05) 25%, rgba(0, 184, 148, 0.05) 50%, rgba(0, 0, 0, 0.1) 75%, transparent 100%);
+        animation: shimmer 4s ease-in-out infinite;
+    }
+
+    @keyframes rotate {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
+    @keyframes shimmer {
+        0%, 100% { opacity: 0; }
+        50% { opacity: 1; }
+    }
+
+    .cta-content {
+        position: relative;
+        z-index: 3;
+    }
+
+    .final-cta h2 {
+        font-size: 2.8rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .final-cta p {
+        font-size: 1.2rem;
+        margin-bottom: 40px;
+        opacity: 0.95;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .contact-info-wrapper {
+        display: flex;
+        justify-content: center;
+        gap: 50px;
+        flex-wrap: wrap;
+    }
+
+    .contact-info-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 1.1rem;
+    }
+
+    .contact-info-item a {
+        color: var(--white);
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .contact-info-item a:hover {
+        text-decoration: underline;
+    }
+
+    .contact-info-item i {
+        font-size: 1.2rem;
+        color: var(--white);
+    }
+
+    /* Simple White Button with Blue-Green Hover */
+    .contact-btn {
+        background: var(--white);
+        color: var(--accent-blue);
+        border: 2px solid var(--accent-blue);
+        padding: 18px 50px;
+        border-radius: 50px;
+        text-decoration: none;
+        display: inline-block;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+        margin-bottom: 30px;
+    }
+
+    .contact-btn:hover {
+        background: linear-gradient(135deg, var(--accent-blue), var(--primary-green));
+        color: var(--white);
+        border-color: transparent;
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: 0 8px 25px rgba(30, 144, 255, 0.4);
+    }
+
+    /* Responsive */
+    @media (max-width: 991px) {
+        .partner-hero {
+            margin-top: -70px;
+            padding-top: 70px;
+        }
+
+        .partner-section-content {
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .partner-image {
+            flex: none;
+            width: 100%;
+            height: 300px;
+        }
+
+        .partners-nav-buttons {
+            gap: 15px;
+        }
+
+        .nav-btn {
+            min-width: auto;
+            padding: 15px 25px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 2.5rem;
+        }
+
+        .partners-section-title h2 {
+            font-size: 2.2rem;
+        }
+
+        .partner-info h3 {
+            font-size: 1.8rem;
+        }
+
+        .form-wrapper {
+            padding: 30px 20px;
+        }
+
+        .final-cta h2 {
+            font-size: 2rem;
+        }
+
+        .contact-info-wrapper {
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .partners-nav-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .nav-btn {
+            width: 100%;
+            max-width: 300px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+{% load static %}
+
+<!-- Hero Section -->
+<section class="partner-hero">
+    <div class="hero-content">
+        <h1 class="hero-title">Partner With Us</h1>
+        <p class="hero-subtitle">Join hands with us for a journey into the future of impactful advertising</p>
+    </div>
+</section>
+
+<!-- Section Title -->
+<section class="partners-section-title">
+    <div class="container">
+        <h2>Choose Your Partnership Path</h2>
+        <p>Multiple ways to collaborate and grow with Socialz Water</p>
+    </div>
+</section>
+
+<!-- Navigation Buttons -->
+<section class="partners-nav-section">
+    <div class="container">
+        <div class="partners-nav-buttons">
+            <button class="nav-btn active" data-target="#brand-section">
+                <i class="fas fa-building me-2"></i> Partner as Brand
+            </button>
+            <button class="nav-btn" data-target="#manufacturer-section">
+                <i class="fas fa-industry me-2"></i> Manufacturer & Distributor
+            </button>
+            <button class="nav-btn" data-target="#events-section">
+                <i class="fas fa-calendar-alt me-2"></i> Event Organizers
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- Partner as Brand Section -->
+<section id="brand-section" class="partner-section">
+    <div class="container">
+        <div class="partner-section-content">
+            <div class="partner-image" style="background-image: url('{% static 'website/images/partnership-agreement-cooperation-collaboartion-concept.jpg' %}');"></div>
+            <div class="partner-info">
+                <span class="partner-badge">For Smart Brands</span>
+                <h3>Partner as Brand</h3>
+                <p>
+                    Put your label on our bottles and reach thousands daily. With QR codes + cashback, every sip drives
+                    engagement and measurable ROI. Bottles are placed across retail shops, colleges, corporates, and events,
+                    ensuring visibility where it matters most.
+                </p>
+                <ul class="partner-features">
+                    <li>Direct consumer engagement through QR technology</li>
+                    <li>Real-time analytics and ROI tracking</li>
+                    <li>Strategic placement across multiple touchpoints</li>
+                </ul>
+                <a href="#enquiry-form" class="enquire-btn">Get Started as Brand Partner</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Manufacturer & Distributor Section -->
+<section id="manufacturer-section" class="partner-section">
+    <div class="container">
+        <div class="partner-section-content">
+            <div class="partner-info">
+                <span class="partner-badge">Supply Chain Partners</span>
+                <h3>Manufacturer & Distributor Callout</h3>
+                <p>
+                    Join as a dealer or manufacturer to provide bottles at scale and strengthen our supply chain — a
+                    partnership that grows with us. By providing bottles at factory rates or enabling smooth distribution,
+                    you help us deliver cost-effective and large-scale advertising solutions.
+                </p>
+                <ul class="partner-features">
+                    <li>Steady business growth opportunities</li>
+                    <li>Long-term partnership agreements</li>
+                    <li>Be part of India's advertising revolution</li>
+                </ul>
+                <a href="#enquiry-form" class="enquire-btn">Join Our Supply Network</a>
+            </div>
+            <div class="partner-image" style="background-image: url('{% static 'website/images/happy-black-manual-worker-shaking-hands-with-company-engineer-factory-plant.jpg' %}');"></div>
+        </div>
+    </div>
+</section>
+
+<!-- Event Organizers Section -->
+<section id="events-section" class="partner-section">
+    <div class="container">
+        <div class="partner-section-content">
+            <div class="partner-image" style="background-image: url('{% static 'website/images/two-serious-adult-business-men-discussing-issue.jpg' %}');"></div>
+            <div class="partner-info">
+                <span class="partner-badge">Event Solutions</span>
+                <h3>Partner as Event Organizers</h3>
+                <p>
+                    Get custom-labeled bottles for restaurants, hotels, or events. With or without QR codes, turn
+                    every table or gathering into a branding opportunity. Perfect for weddings, conferences, and corporate events.
+                </p>
+                <ul class="partner-features">
+                    <li><strong>Without QR:</strong> Perfect for one-day events</li>
+                    <li><strong>With QR:</strong> Add digital engagement with instant rewards</li>
+                    <li>Custom branding for memorable experiences</li>
+                </ul>
+                <a href="#enquiry-form" class="enquire-btn">Customize for Your Event</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Enquiry Form Section -->
+<section class="enquiry-section" id="enquiry-form">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0 text-column">
+                <h2>Let's Connect, Let's Transform</h2>
+                <p>Partner for Exclusive Opportunities!</p>
+                <p>Join hands with us for a journey into the future of impactful advertising.</p>
+            </div>
+            <div class="col-lg-6">
+                <div class="form-container">
+                    <div class="form-wrapper">
+                        <div class="form-header">
+                            <h2>Get in Touch</h2>
+                        </div>
+                        <form method="POST" action="{% url 'website:partner' %}">
+                            {% csrf_token %}
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control" placeholder="Full Name" name="full_name" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="email" class="form-control" placeholder="Your Email" name="email" required>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <input type="tel" class="form-control" placeholder="Number" name="phone" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <select class="form-select" name="partner_type" required>
+                                        <option value="">--Partner as--</option>
+                                        <option value="brand">Partner as Brand</option>
+                                        <option value="manufacturer">Manufacturer</option>
+                                        <option value="distributor">Distributor</option>
+                                        <option value="event">Event Organizer</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <textarea class="form-control" rows="5" placeholder="Type Your Message" name="message"></textarea>
+                            </div>
+                            <div class="captcha-wrapper">
+                                <input type="text" class="form-control" placeholder="ENTER CAPTCHA" style="max-width: 200px;">
+                                <span class="captcha-display">83EGBA5L</span>
+                            </div>
+                            <button type="submit" class="submit-btn">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Enhanced CTA Section -->
+<section class="final-cta">
+    <div class="cta-content">
+        <h2>Ready to Partner with Us?</h2>
+        <p>Join India's most innovative water bottle advertising platform and start your growth journey today!</p>
+        <a href="#enquiry-form" class="contact-btn">Start Partnership</a>
+        
+        <div class="contact-info-wrapper">
+            <div class="contact-info-item">
+                <i class="fas fa-envelope"></i>
+                <a href="mailto:partner@socialzwater.com">partner@socialzwater.com</a>
+            </div>
+            <div class="contact-info-item">
+                <i class="fas fa-phone"></i>
+                <a href="tel:+917528875288">+91 75288 75288</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Enhanced smooth scrolling with proper offset calculation
+    function smoothScrollTo(targetId, offset = 100) {
+        const target = document.querySelector(targetId);
+        if (target) {
+            const targetPosition = target.offsetTop - offset;
+            window.scrollTo({
+                top: targetPosition,
+                behavior: 'smooth'
+            });
+        }
+    }
+
+    // Navigation buttons with improved active state management
+    const navButtons = document.querySelectorAll('.nav-btn');
+    navButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Remove active from all buttons
+            navButtons.forEach(btn => btn.classList.remove('active'));
+            // Add active to clicked button
+            this.classList.add('active');
+            
+            // Smooth scroll to target
+            const targetId = this.getAttribute('data-target');
+            smoothScrollTo(targetId, 90);
+        });
+    });
+
+    // Highlight active button on scroll
+    window.addEventListener('scroll', function() {
+        const scrollPos = window.scrollY + 150;
+        
+        navButtons.forEach(button => {
+            const targetId = button.getAttribute('data-target');
+            const section = document.querySelector(targetId);
+            
+            if (section) {
+                const sectionTop = section.offsetTop;
+                const sectionBottom = sectionTop + section.offsetHeight;
+                
+                if (scrollPos >= sectionTop && scrollPos < sectionBottom) {
+                    navButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                }
+            }
+        });
+    });
+
+    // Enquire buttons smooth scroll to form
+    document.querySelectorAll('.enquire-btn, .contact-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            smoothScrollTo('#enquiry-form', 90);
+        });
+    });
+
+</script>
+{% endblock %}
