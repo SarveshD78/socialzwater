@@ -141,6 +141,6 @@ CSRF_COOKIE_SECURE = False     # True only if HTTPS
 X_FRAME_OPTIONS = 'DENY'
 
 
-SITE_DOMAIN = 'http://127.0.0.1:8000'
+SITE_DOMAIN = 'https://socialzwater.in'
 TIME_ZONE = 'Asia/Kolkata'  # This sets IST as default
 USE_TZ = True

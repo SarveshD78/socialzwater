@@ -9,6 +9,12 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     
+    <!-- Font Awesome for Social Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Load Django Static -->
+    {% load static %}
+    
     <!-- CRITICAL: Header Transparency Fix - Must be FIRST -->
     <style>
         /* Nuclear option - Force transparency across all pages */
@@ -127,25 +133,24 @@
             background: var(--black) !important;
         }
 
-        /* Logo Styles */
+        /* Logo Styles - Updated to use image */
         .logo-wrapper {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             text-decoration: none;
         }
         
-        .logo-icon {
-            width: 45px;
-            height: 45px;
-            background: linear-gradient(135deg, var(--primary-blue), var(--eco-green));
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            color: white;
-            box-shadow: var(--shadow-md);
+        .logo-image {
+            height: 50px;
+            width: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.15));
+            transition: all 0.3s ease;
+        }
+
+        header.scrolled .logo-image {
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
         }
         
         .logo-text {
@@ -186,7 +191,7 @@
             background: rgba(5, 100, 81, 0.466);
         }
         
-        /* CTA Button in Nav - Updated with border-radius 25px */
+        /* CTA Button in Nav */
         .nav-cta {
             margin-left: 20px;
         }
@@ -241,7 +246,7 @@
             min-height: calc(100vh - 80px);
         }
         
-        /* Footer Styles - Enhanced Desktop Layout */
+        /* Footer Styles - ALL COLUMNS CENTERED */
         footer {
             background: linear-gradient(135deg, #1a2332 0%, #2c3e50 100%);
             color: white;
@@ -263,6 +268,11 @@
             align-items: start;
         }
         
+        /* Brand column - keep left aligned */
+        .footer-brand {
+            text-align: left;
+        }
+        
         .footer-brand h3 {
             font-size: 24px;
             margin-bottom: 15px;
@@ -278,6 +288,7 @@
         .footer-social {
             display: flex;
             gap: 12px;
+            justify-content: flex-start;
         }
         
         .social-icon {
@@ -292,12 +303,18 @@
             color: white;
             text-decoration: none;
             transition: all 0.3s ease;
+            font-size: 18px;
         }
         
         .social-icon:hover {
             background: var(--eco-green);
             border-color: var(--eco-green);
             transform: translateY(-3px);
+        }
+        
+        /* Other columns - centered */
+        .footer-column {
+            text-align: center;
         }
         
         .footer-column h4 {
@@ -309,10 +326,13 @@
         
         .footer-links {
             list-style: none;
+            padding: 0;
+            margin: 0;
         }
         
         .footer-links li {
             margin-bottom: 12px;
+            text-align: center;
         }
         
         .footer-links a {
@@ -320,12 +340,16 @@
             text-decoration: none;
             transition: all 0.3s ease;
             font-size: 14px;
-            display: block;
+            display: inline-block;
         }
         
         .footer-links a:hover {
             color: var(--eco-green);
-            padding-left: 5px;
+        }
+
+        .footer-links li:not(:has(a)) {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
         }
         
         .footer-bottom {
@@ -386,7 +410,6 @@
         
         /* Mobile Responsive Design */
         @media (max-width: 991px) {
-            /* Mobile Header - Text and Hamburger Colors */
             .logo-text {
                 color: var(--white) !important;
             }
@@ -425,28 +448,12 @@
                 display: flex;
             }
             
-            /* Hide Footer on Mobile */
             footer {
                 display: none;
             }
-        }
-        
-        @media (min-width: 992px) {
-            /* Desktop Footer - Proper Alignment */
-            .footer-grid {
-                text-align: left;
-            }
-            
-            .footer-brand {
-                text-align: left;
-            }
-            
-            .footer-social {
-                justify-content: flex-start;
-            }
-            
-            .footer-column {
-                text-align: left;
+
+            .logo-image {
+                height: 40px;
             }
         }
         
@@ -455,10 +462,8 @@
                 font-size: 18px;
             }
             
-            .logo-icon {
-                width: 38px;
-                height: 38px;
-                font-size: 20px;
+            .logo-image {
+                height: 35px;
             }
             
             nav {
@@ -479,7 +484,7 @@
         <div class="header-container">
             <nav>
                 <a href="{% url 'website:home' %}" class="logo-wrapper">
-                    <div class="logo-icon">💧</div>
+                    <img src="{% static 'website/images/SocialZWaterLogo.png' %}" alt="Socialz Water Logo" class="logo-image">
                     <div class="logo-text">Socialz Water</div>
                 </a>
                 
@@ -514,10 +519,10 @@
                     <h3>Socialz Water</h3>
                     <p>Transforming water bottles into smart advertising platforms with QR technology, rewards, and measurable brand impact.</p>
                     <div class="footer-social">
-                        <a href="#" class="social-icon">f</a>
-                        <a href="#" class="social-icon">𝕏</a>
-                        <a href="#" class="social-icon">in</a>
-                        <a href="https://www.instagram.com/socialwater.advertising?igsh=ZG84M2piOHgzc3B3" class="social-icon">📷</a>
+                        <a href="#" class="social-icon" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-icon" title="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-icon" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="https://www.instagram.com/socialwater.advertising?igsh=ZG84M2piOHgzc3B3" class="social-icon" title="Instagram"><i class="fab fa-instagram"></i></a>
                     </div>
                 </div>
                 
@@ -544,9 +549,10 @@
                 <div class="footer-column">
                     <h4>Contact Info</h4>
                     <ul class="footer-links">
-                        <li><a href="mailto:info@socialzwater.com">📧 info@socialzwater.com</a></li>
-                        <li>📱 +91 98765 43210</li>
-                        <li>📍 Pune, Maharashtra</li>
+                        <li><a href="mailto:info@socialzwater.com"><i class="fas fa-envelope"></i> info@socialzwater.com</a></li>
+                        <li><a href="tel:+918379938123"><i class="fas fa-phone"></i> +91 83799 38123</a></li>
+                        <li><i class="fas fa-map-marker-alt"></i> Plot No. 22, Indiranagar</li>
+                        <li>Chinchwad, Pune-411033</li>
                     </ul>
                 </div>
             </div>
@@ -559,10 +565,8 @@
     
     <!-- Enhanced JavaScript -->
     <script>
-        // Enhanced Header Scroll Effect
         function handleHeaderTransparency() {
             const header = document.getElementById('header');
-            
             if (window.scrollY <= 10) {
                 header.classList.remove('scrolled');
             } else {
@@ -570,7 +574,6 @@
             }
         }
         
-        // Mobile Menu Toggle
         const mobileToggle = document.getElementById('mobileToggle');
         const navMenu = document.getElementById('navMenu');
         
@@ -581,7 +584,6 @@
             });
         }
         
-        // Get Started Button - WhatsApp/Call functionality
         function isMobileView() {
             return window.innerWidth <= 991;
         }
@@ -591,19 +593,17 @@
         
         function openWhatsApp(e) {
             e.preventDefault();
-            window.open('https://wa.me/919876543210', '_blank');
+            window.open('https://wa.me/918379938123', '_blank');
         }
         
         function updateGetStartedBtn() {
             if (isMobileView()) {
-                // Mobile: Call functionality
-                getStartedBtn.href = 'tel:+919876543210';
+                getStartedBtn.href = 'tel:+918379938123';
                 if (whatsappHandler) {
                     getStartedBtn.removeEventListener('click', whatsappHandler);
                     whatsappHandler = null;
                 }
             } else {
-                // Desktop: WhatsApp Web functionality
                 getStartedBtn.href = '#';
                 if (!whatsappHandler) {
                     whatsappHandler = openWhatsApp;
@@ -612,15 +612,10 @@
             }
         }
         
-        // Page Load and Active State Management
         document.addEventListener('DOMContentLoaded', function() {
-            // Ensure correct header state on page load
             handleHeaderTransparency();
-            
-            // Initialize Get Started button
             updateGetStartedBtn();
             
-            // Active Navigation State
             const currentPath = window.location.pathname;
             document.querySelectorAll('.nav-item a').forEach(link => {
                 link.classList.remove('active');
@@ -630,13 +625,9 @@
             });
         });
         
-        // Run on scroll
         window.addEventListener('scroll', handleHeaderTransparency);
-        
-        // Update Get Started button on resize
         window.addEventListener('resize', updateGetStartedBtn);
         
-        // Close mobile menu when clicking a link
         document.querySelectorAll('.nav-item a').forEach(link => {
             link.addEventListener('click', () => {
                 if (mobileToggle && navMenu) {
@@ -646,7 +637,6 @@
             });
         });
         
-        // Smooth scrolling for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();

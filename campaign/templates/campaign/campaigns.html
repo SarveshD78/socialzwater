@@ -371,7 +371,9 @@
             <div class="text-center">
                 {% if campaign.qr_code %}
                 <img src="{{ campaign.qr_code.url }}" alt="QR Code" style="width: 100px; height: 100px; border-radius: 8px;">
-                {% endif %}
+            {% else %}
+                <span class="text-muted small">No QR Code</span>
+            {% endif %}
             </div>
         </div>
         

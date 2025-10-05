@@ -287,7 +287,7 @@ def campaign_list(request):
                     import os
                     from django.conf import settings
                     
-                    domain = getattr(settings, 'SITE_DOMAIN', 'http://localhost:8000')
+                    domain = getattr(settings, 'SITE_DOMAIN', 'https://socialzwater.in')
                     qr_url = f"{domain}/sw/adv/{campaign.unique_id}/"
                     
                     # Create larger QR code for better quality
